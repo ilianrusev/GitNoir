@@ -81,40 +81,6 @@ export const isCaseUnlocked = (caseId) => {
   return user.reputation >= caseData.unlock_cost;
 };
 
-// Unlock a case
-export const unlockCase = (caseId) => {
-  const caseData = getCaseById(caseId);
-  const user = normalizeReputation(getCurrentUser());
-
-  if (!caseData) throw new Error("Case not found");
-  if (!user) throw new Error("Not authenticated");
-
-  // Already completed or in progress
-  if (user.completed_cases.includes(caseId)) {
-    return { message: "Case already completed", unlocked: true };
-  }
-  if (user.case_progress[caseId]) {
-    return { message: "Case already unlocked", unlocked: true };
-  }
-
-  // Auto unlock when reputation requirement is met (no spending)
-  if (user.reputation < caseData.unlock_cost) {
-    throw new Error(
-      `Not enough reputation. Need ${caseData.unlock_cost}, have ${user.reputation}`,
-    );
-  }
-
-  // Mark in progress without deducting reputation
-  user.case_progress[caseId] = {
-    current_step: 0,
-    completed_steps: [],
-    earned_points: 0,
-  };
-
-  saveGameUser(user);
-  return { message: "Case unlocked successfully", unlocked: true };
-};
-
 // Validate a command
 export const validateCommand = (
   caseId,
@@ -359,15 +325,4 @@ export const getLeaderboard = async ({ forceRefresh = false } = {}) => {
     });
 
   return leaderboardMemoryCache.pendingRequest;
-};
-
-// Reset all progress (for testing)
-export const resetProgress = () => {
-  const user = normalizeReputation(getCurrentUser());
-  if (user) {
-    user.reputation = 0;
-    user.completed_cases = [];
-    user.case_progress = {};
-    saveGameUser(user);
-  }
 };
