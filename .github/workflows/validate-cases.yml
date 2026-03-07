@@ -1,0 +1,39 @@
+name: Validate Cases
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/data/cases/**"
+      - "src/data/schemas/**"
+      - "scripts/validate-cases.mjs"
+  pull_request:
+    paths:
+      - "src/data/cases/**"
+      - "src/data/schemas/**"
+      - "scripts/validate-cases.mjs"
+
+jobs:
+  validate-cases:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-audit --no-fund
+          fi
+
+      - name: Validate case files
+        run: npm run validate:cases
