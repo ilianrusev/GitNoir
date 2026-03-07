@@ -37,7 +37,7 @@ export default function SingleCase({
     >
       {isNewCase && (
         <div className="absolute top-0 left-0 z-20 w-24 h-24 pointer-events-none overflow-hidden">
-          <span className="absolute top-3 -left-7 w-28 rotate-[-45deg] bg-[#d00000] text-[#fff] font-mono text-[10px] tracking-widest text-center py-1 shadow-sm">
+          <span className="absolute top-3 -left-7 w-28 -rotate-45 bg-[#d00000] text-[#fff] font-mono text-[10px] tracking-widest text-center py-1 shadow-sm">
             NEW
           </span>
         </div>
