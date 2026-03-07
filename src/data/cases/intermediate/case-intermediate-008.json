@@ -5,7 +5,7 @@
   "difficulty": "Advanced",
   "unlock_cost": 300,
   "total_points": 260,
-  "created_at": "2026-03-01",
+  "created_at": "2026-03-08",
   "story_intro": "The rain slicked streets glistened under the flickering neon lights. Somewhere in the repository, history was being rewritten. Commits disappeared like footprints in puddles; branches twisted like alleyways, hiding secrets. The city’s code was corrupted, and only a detective with sharp instincts could trace the invisible trail.\n\nYour task: navigate the shadows of Git history, interrogate the branches, uncover what was lost, and bring the hidden truth back into the light. Each command is a clue, each diff a lead, and every recovered commit a victory against the shadows of the repository.",
   "steps": [
     {
