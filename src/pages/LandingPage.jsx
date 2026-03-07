@@ -18,10 +18,14 @@ export default function LandingPage() {
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
-  const handleLogout = () => {
-    logout();
-    toast.success("Logged out successfully");
-    closeMobileMenu();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logged out successfully");
+      closeMobileMenu();
+    } catch (error) {
+      toast.error(error.message || "Logout failed. Please try again.");
+    }
   };
 
   return (

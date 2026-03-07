@@ -1,17 +1,24 @@
 // Mock data service - handles all game data locally without backend
-import casesData from '../data/cases.json';
+import casesData from "../data/cases.json";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../firebase";
 
 const STORAGE_KEYS = {
-  USER: 'git_quest_user',
-  PROGRESS: 'git_quest_progress',
-  LEADERBOARD: 'git_quest_leaderboard'
+  USER: "git_quest_user",
+  PROGRESS: "git_quest_progress",
+  LEADERBOARD: "git_quest_leaderboard",
 };
 
 // Generate a simple UUID
 const generateId = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -23,7 +30,7 @@ export const getCases = () => {
 
 // Get a single case by ID
 export const getCaseById = (caseId) => {
-  return casesData.cases.find(c => c.id === caseId);
+  return casesData.cases.find((c) => c.id === caseId);
 };
 
 // Get current user from localStorage
@@ -38,43 +45,125 @@ export const saveUser = (user) => {
   updateLeaderboard(user);
 };
 
-// Register a new user
-export const registerUser = (username, email, password) => {
-  // Check if email already exists
-  const existingUser = getCurrentUser();
-  if (existingUser && existingUser.email === email) {
-    throw new Error('User with this email already exists');
+// Sync Firebase auth user with local game profile
+export const syncUserFromFirebaseUser = (firebaseUser, options = {}) => {
+  if (!firebaseUser) {
+    localStorage.removeItem(STORAGE_KEYS.USER);
+    return null;
   }
 
-  const newUser = {
-    id: generateId(),
-    username,
-    email,
-    password, // In a real app, this would be hashed
+  const { password = "" } = options;
+  const storedUser = getCurrentUser();
+  const isSameUser =
+    storedUser &&
+    (storedUser.id === firebaseUser.uid ||
+      storedUser.email === firebaseUser.email);
+
+  if (isSameUser) {
+    const syncedUser = {
+      ...storedUser,
+      id: firebaseUser.uid,
+      email: firebaseUser.email || storedUser.email,
+      username:
+        storedUser.username ||
+        firebaseUser.displayName ||
+        (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Detective"),
+      password: storedUser.password || password,
+    };
+
+    saveUser(syncedUser);
+    return syncedUser;
+  }
+
+  const newLocalUser = {
+    id: firebaseUser.uid,
+    username:
+      firebaseUser.displayName ||
+      (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Detective"),
+    email: firebaseUser.email || "",
+    password,
     reputation: 0,
     completed_cases: [],
     case_progress: {},
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
   };
 
-  saveUser(newUser);
-  return newUser;
+  saveUser(newLocalUser);
+  return newLocalUser;
+};
+
+// Register a new user
+export const registerUser = async (username, email, password) => {
+  try {
+    const credentials = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
+
+    if (username.trim()) {
+      await updateProfile(credentials.user, {
+        displayName: username.trim(),
+      });
+    }
+
+    return syncUserFromFirebaseUser(credentials.user, { password });
+  } catch (error) {
+    const registrationErrors = {
+      "auth/email-already-in-use": "An account with this email already exists.",
+      "auth/invalid-email": "Please enter a valid email address.",
+      "auth/weak-password": "Password must be at least 6 characters.",
+      "auth/network-request-failed":
+        "Network error. Check your connection and try again.",
+    };
+
+    const message =
+      registrationErrors[error.code] ||
+      "Registration failed. Please try again.";
+
+    throw new Error(message);
+  }
 };
 
 // Login user
-export const loginUser = (email, password) => {
-  const user = getCurrentUser();
-  
-  if (!user || user.email !== email || user.password !== password) {
-    throw new Error('Invalid email or password');
-  }
+export const loginUser = async (email, password) => {
+  try {
+    const credentials = await signInWithEmailAndPassword(auth, email, password);
+    console.log(credentials.user);
+    return syncUserFromFirebaseUser(credentials.user, { password });
+  } catch (error) {
+    const loginErrors = {
+      "auth/invalid-email": "Please enter a valid email address.",
+      "auth/invalid-credential": "Invalid email or password.",
+      "auth/user-not-found": "No account found with this email.",
+      "auth/wrong-password": "Invalid email or password.",
+      "auth/too-many-requests": "Too many attempts. Please try again later.",
+      "auth/network-request-failed": "Network error. Check your connection and try again.",
+    };
 
-  return user;
+    const message =
+      loginErrors[error.code] ||
+      "Login failed. Check your credentials and try again.";
+
+    throw new Error(message);
+  }
 };
 
 // Logout user
-export const logoutUser = () => {
-  localStorage.removeItem(STORAGE_KEYS.USER);
+export const logoutUser = async () => {
+  try {
+    await signOut(auth);
+  } catch (error) {
+    const logoutErrors = {
+      "auth/network-request-failed":
+        "Network error while logging out. Please try again.",
+    };
+
+    const message = logoutErrors[error.code] || "Logout failed. Please try again.";
+    throw new Error(message);
+  } finally {
+    localStorage.removeItem(STORAGE_KEYS.USER);
+  }
 };
 
 // Get user progress
@@ -86,7 +175,7 @@ export const getUserProgress = () => {
     user_id: user.id,
     reputation: user.reputation,
     completed_cases: user.completed_cases,
-    case_progress: user.case_progress
+    case_progress: user.case_progress,
   };
 };
 
@@ -94,13 +183,13 @@ export const getUserProgress = () => {
 export const isCaseUnlocked = (caseId) => {
   const caseData = getCaseById(caseId);
   const user = getCurrentUser();
-  
+
   if (!caseData) return false;
   if (caseData.unlock_cost === 0) return true;
   if (!user) return false;
   if (user.completed_cases.includes(caseId)) return true;
   if (user.case_progress[caseId]) return true;
-  
+
   return user.reputation >= caseData.unlock_cost;
 };
 
@@ -109,20 +198,22 @@ export const unlockCase = (caseId) => {
   const caseData = getCaseById(caseId);
   const user = getCurrentUser();
 
-  if (!caseData) throw new Error('Case not found');
-  if (!user) throw new Error('Not authenticated');
+  if (!caseData) throw new Error("Case not found");
+  if (!user) throw new Error("Not authenticated");
 
   // Already completed or in progress
   if (user.completed_cases.includes(caseId)) {
-    return { message: 'Case already completed', unlocked: true };
+    return { message: "Case already completed", unlocked: true };
   }
   if (user.case_progress[caseId]) {
-    return { message: 'Case already unlocked', unlocked: true };
+    return { message: "Case already unlocked", unlocked: true };
   }
 
   // Check if can afford
   if (user.reputation < caseData.unlock_cost) {
-    throw new Error(`Not enough reputation. Need ${caseData.unlock_cost}, have ${user.reputation}`);
+    throw new Error(
+      `Not enough reputation. Need ${caseData.unlock_cost}, have ${user.reputation}`,
+    );
   }
 
   // Deduct cost and unlock
@@ -130,21 +221,26 @@ export const unlockCase = (caseId) => {
   user.case_progress[caseId] = {
     current_step: 0,
     completed_steps: [],
-    earned_points: 0
+    earned_points: 0,
   };
 
   saveUser(user);
-  return { message: 'Case unlocked successfully', unlocked: true };
+  return { message: "Case unlocked successfully", unlocked: true };
 };
 
 // Validate a command
-export const validateCommand = (caseId, stepIndex, command, isReplay = false) => {
+export const validateCommand = (
+  caseId,
+  stepIndex,
+  command,
+  isReplay = false,
+) => {
   const caseData = getCaseById(caseId);
   const user = getCurrentUser();
 
-  if (!caseData) throw new Error('Case not found');
-  if (!user) throw new Error('Not authenticated');
-  if (stepIndex >= caseData.steps.length) throw new Error('Invalid step index');
+  if (!caseData) throw new Error("Case not found");
+  if (!user) throw new Error("Not authenticated");
+  if (stepIndex >= caseData.steps.length) throw new Error("Invalid step index");
 
   const step = caseData.steps[stepIndex];
   const userCommand = command.trim().toLowerCase();
@@ -155,7 +251,10 @@ export const validateCommand = (caseId, stepIndex, command, isReplay = false) =>
   // Check if command matches any expected command
   let isCorrect = false;
   for (const expected of step.expected_commands) {
-    if (userCommand === expected.toLowerCase() || userCommand.startsWith(expected.toLowerCase())) {
+    if (
+      userCommand === expected.toLowerCase() ||
+      userCommand.startsWith(expected.toLowerCase())
+    ) {
       isCorrect = true;
       break;
     }
@@ -168,7 +267,7 @@ export const validateCommand = (caseId, stepIndex, command, isReplay = false) =>
         current_step: 0,
         completed_steps: [],
         earned_points: 0,
-        is_replay: isAlreadyCompleted
+        is_replay: isAlreadyCompleted,
       };
     }
 
@@ -176,7 +275,10 @@ export const validateCommand = (caseId, stepIndex, command, isReplay = false) =>
     let pointsEarned = 0;
 
     // Award points ONLY if step not already completed AND not a replay of completed case
-    if (!caseProgress.completed_steps.includes(stepIndex) && !isAlreadyCompleted) {
+    if (
+      !caseProgress.completed_steps.includes(stepIndex) &&
+      !isAlreadyCompleted
+    ) {
       pointsEarned = step.points;
       caseProgress.completed_steps.push(stepIndex);
       caseProgress.earned_points += pointsEarned;
@@ -206,12 +308,12 @@ export const validateCommand = (caseId, stepIndex, command, isReplay = false) =>
     // Different feedback for replay
     let feedback;
     if (caseCompleted) {
-      feedback = isAlreadyCompleted 
-        ? "Case replayed! No additional reputation earned." 
+      feedback = isAlreadyCompleted
+        ? "Case replayed! No additional reputation earned."
         : "Case solved! Your reputation precedes you.";
     } else {
-      feedback = isAlreadyCompleted 
-        ? "Correct! (Replay mode - no points)" 
+      feedback = isAlreadyCompleted
+        ? "Correct! (Replay mode - no points)"
         : "Correct! Well done, detective.";
     }
 
@@ -220,7 +322,7 @@ export const validateCommand = (caseId, stepIndex, command, isReplay = false) =>
       feedback,
       points_earned: pointsEarned,
       next_step: caseCompleted ? null : nextStep,
-      case_completed: caseCompleted
+      case_completed: caseCompleted,
     };
   } else {
     return {
@@ -228,7 +330,7 @@ export const validateCommand = (caseId, stepIndex, command, isReplay = false) =>
       feedback: `That's not quite right. Hint: ${step.hint}`,
       points_earned: 0,
       next_step: null,
-      case_completed: false
+      case_completed: false,
     };
   }
 };
@@ -236,21 +338,23 @@ export const validateCommand = (caseId, stepIndex, command, isReplay = false) =>
 // Update leaderboard
 const updateLeaderboard = (user) => {
   let leaderboard = getLeaderboard();
-  
+
   // Find and update or add user
-  const existingIndex = leaderboard.findIndex(entry => entry.username === user.username);
-  
+  const existingIndex = leaderboard.findIndex(
+    (entry) => entry.username === user.username,
+  );
+
   if (existingIndex >= 0) {
     leaderboard[existingIndex] = {
       username: user.username,
       reputation: user.reputation,
-      cases_solved: user.completed_cases.length
+      cases_solved: user.completed_cases.length,
     };
   } else {
     leaderboard.push({
       username: user.username,
       reputation: user.reputation,
-      cases_solved: user.completed_cases.length
+      cases_solved: user.completed_cases.length,
     });
   }
 
@@ -258,7 +362,7 @@ const updateLeaderboard = (user) => {
   leaderboard.sort((a, b) => b.reputation - a.reputation);
   leaderboard = leaderboard.slice(0, 10).map((entry, index) => ({
     ...entry,
-    rank: index + 1
+    rank: index + 1,
   }));
 
   localStorage.setItem(STORAGE_KEYS.LEADERBOARD, JSON.stringify(leaderboard));

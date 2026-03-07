@@ -31,11 +31,15 @@ export default function Header({ variant = "default", reputation }) {
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-    toast.success("Logged out successfully");
-    closeMobileMenu();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+      toast.success("Logged out successfully");
+      closeMobileMenu();
+    } catch (error) {
+      toast.error(error.message || "Logout failed. Please try again.");
+    }
   };
 
   // Landing page variant (for non-authenticated pages)

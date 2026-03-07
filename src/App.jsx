@@ -2,12 +2,14 @@ import { useState, useEffect, createContext, useContext } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 import {
   getCurrentUser,
   loginUser,
   registerUser,
   logoutUser,
-  saveUser,
+  syncUserFromFirebaseUser,
 } from "./services/gameService";
 
 // Pages
@@ -22,6 +24,7 @@ import NotebookPage from "./pages/NotebookPage";
 
 // Auth Context
 const AuthContext = createContext(null);
+const MIN_AUTH_LOADING_MS = 250;
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -36,28 +39,43 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load user from localStorage
-    const storedUser = getCurrentUser();
-    if (storedUser) {
-      setUser(storedUser);
-    }
-    setLoading(false);
+    const authCheckStartedAt = Date.now();
+    let loadingTimeout;
+
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      const syncedUser = syncUserFromFirebaseUser(firebaseUser);
+      setUser(syncedUser);
+
+      const elapsed = Date.now() - authCheckStartedAt;
+      const remaining = Math.max(MIN_AUTH_LOADING_MS - elapsed, 0);
+
+      loadingTimeout = setTimeout(() => {
+        setLoading(false);
+      }, remaining);
+    });
+
+    return () => {
+      unsubscribe();
+      if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+      }
+    };
   }, []);
 
   const login = async (email, password) => {
-    const userData = loginUser(email, password);
+    const userData = await loginUser(email, password);
     setUser(userData);
     return userData;
   };
 
   const register = async (username, email, password) => {
-    const userData = registerUser(username, email, password);
+    const userData = await registerUser(username, email, password);
     setUser(userData);
     return userData;
   };
 
-  const logout = () => {
-    logoutUser();
+  const logout = async () => {
+    await logoutUser();
     setUser(null);
   };
 
