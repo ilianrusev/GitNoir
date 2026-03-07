@@ -59,8 +59,8 @@ export default function Header({ variant = "default", reputation }) {
             >
               Leaderboard
             </Link>
-            <a
-              href="https://github.com"
+            <Link
+              to="https://github.com/ilianrusev/GitNoir/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center text-[#a3a3a3] hover:text-[#e5e5e5] transition-colors"
@@ -68,9 +68,9 @@ export default function Header({ variant = "default", reputation }) {
               data-testid="nav-github-btn"
             >
               <GitHubIcon className="w-5 h-5" />
-            </a>
-            <a
-              href="https://buymeacoffee.com"
+            </Link>
+            <Link
+              to="https://buymeacoffee.com/ilianrusev"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-[#ffdd00] hover:text-[#ffb703] transition-colors"
@@ -78,7 +78,7 @@ export default function Header({ variant = "default", reputation }) {
               data-testid="nav-coffee-btn"
             >
               <CoffeeIcon className="w-5 h-5" />
-            </a>
+            </Link>
             {user ? (
               <Link to="/dashboard">
                 <Button className="btn-primary" data-testid="nav-dashboard-btn">
@@ -129,8 +129,8 @@ export default function Header({ variant = "default", reputation }) {
               >
                 Leaderboard
               </Link>
-              <a
-                href="https://github.com"
+              <Link
+                to="https://github.com/ilianrusev/GitNoir/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 py-3 px-4 text-[#a3a3a3] hover:text-[#e5e5e5] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
@@ -139,9 +139,9 @@ export default function Header({ variant = "default", reputation }) {
               >
                 <GitHubIcon className="w-5 h-5" />
                 GitHub
-              </a>
-              <a
-                href="https://buymeacoffee.com/ilianrusev"
+              </Link>
+              <Link
+                to="https://buymeacoffee.com/ilianrusev"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 py-3 px-4 text-[#ffdd00] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
@@ -149,7 +149,7 @@ export default function Header({ variant = "default", reputation }) {
               >
                 <CoffeeIcon className="w-5 h-5" />
                 Buy Me a Coffee
-              </a>
+              </Link>
 
               <div className="border-t border-[#333] pt-4 mt-4">
                 {user ? (
