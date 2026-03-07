@@ -1,0 +1,84 @@
+{
+  "id": "case-016",
+  "title": "THE NIGHT OF VANISHING COMMITS",
+  "description": "An unknown hand has been rewriting history in the repo. Track the missing commits, uncover hidden changes, and restore the truth.",
+  "difficulty": "Advanced",
+  "unlock_cost": 300,
+  "total_points": 260,
+  "created_at": "2026-03-01",
+  "story_intro": "The rain slicked streets glistened under the flickering neon lights. Somewhere in the repository, history was being rewritten. Commits disappeared like footprints in puddles; branches twisted like alleyways, hiding secrets. The city’s code was corrupted, and only a detective with sharp instincts could trace the invisible trail.\n\nYour task: navigate the shadows of Git history, interrogate the branches, uncover what was lost, and bring the hidden truth back into the light. Each command is a clue, each diff a lead, and every recovered commit a victory against the shadows of the repository.",
+  "steps": [
+    {
+      "instruction": "Survey the city: list all branches to see where the rogue commits might be hiding.",
+      "narrative": "The fog rolls over the rooftops. You peer down the alleyways of the repo, trying to spot where the miscreants left their traces. Every branch could be a hiding place for secrets.",
+      "expected_commands": ["git branch", "git branch -a"],
+      "hint": "Check local and remote branches",
+      "points": 20
+    },
+    {
+      "instruction": "Inspect the commit history for suspicious activity.",
+      "narrative": "Street lamps flicker as you comb through the commit log. Some messages seem ordinary, others oddly terse. Every commit could tell a story—look closely.",
+      "expected_commands": ["git log", "git log --oneline --graph --all"],
+      "hint": "Visualize the commit history to detect anomalies",
+      "points": 25
+    },
+    {
+      "instruction": "Check the reflog to find commits that may have been lost or reset.",
+      "narrative": "Even when the city forgets, the shadows remember. The reflog holds records of all recent HEAD movements. Somewhere there is a footprint that will lead you to the missing commits.",
+      "expected_commands": ["git reflog", "git log -g"],
+      "hint": "Reflog records HEAD changes, including lost commits",
+      "points": 25
+    },
+    {
+      "instruction": "Compare the 'main' branch with the 'suspect' branch to find hidden differences.",
+      "narrative": "The suspect branch lurks in the darkness. What secrets does it hold? You draw the diff, tracing the lines like a detective tracking footprints in the rain.",
+      "expected_commands": ["git diff main..suspect", "git diff HEAD..suspect"],
+      "hint": "Compare branches to find missing changes",
+      "points": 30
+    },
+    {
+      "instruction": "Recover a commit that was accidentally dropped using its hash.",
+      "narrative": "You find a fragment of the past, a clue hidden in plain sight. With careful hands, you lift it back into the present, restoring a piece of history erased by unknown hands.",
+      "expected_commands": [
+        "git cherry-pick <commit-hash>",
+        "git reset --hard <commit-hash>"
+      ],
+      "hint": "Use cherry-pick or reset to restore commits",
+      "points": 35
+    },
+    {
+      "instruction": "Inspect differences in a specific file across two recovered commits.",
+      "narrative": "A single file holds the key. Focus your attention on the file that contains the clues. Each line tells a story that others tried to erase.",
+      "expected_commands": ["git diff <commit1> <commit2> -- <file>"],
+      "hint": "Diff the file that contains the evidence between two commits",
+      "points": 30
+    },
+    {
+      "instruction": "Check which files were deleted or altered in the lost commits.",
+      "narrative": "Some files have vanished, wiped clean like chalk from a blackboard. You interrogate the commits, looking for what was removed, trying to reconstruct the scene before it disappears forever.",
+      "expected_commands": [
+        "git show --name-status <commit-hash>",
+        "git diff --name-status <commit1> <commit2>"
+      ],
+      "hint": "Show added, modified, or deleted files in a commit or between two commits",
+      "points": 25
+    },
+    {
+      "instruction": "Create a branch to save your recovered history.",
+      "narrative": "With the truth pieced together, you stake your claim. A new branch becomes a safe house for the recovered history, keeping it from the shadows that tried to erase it.",
+      "expected_commands": [
+        "git checkout -b <branch-name>",
+        "git branch <branch-name>"
+      ],
+      "hint": "Make a new branch to store recovered commits",
+      "points": 25
+    },
+    {
+      "instruction": "Tag the restored state for reference and accountability.",
+      "narrative": "Every detective needs a record. You tag this moment in history, a marker that the city’s secrets have been unearthed and preserved for posterity.",
+      "expected_commands": ["git tag <tag-name>", "git push origin <tag-name>"],
+      "hint": "Tag and optionally push the recovered state",
+      "points": 20
+    }
+  ]
+}
