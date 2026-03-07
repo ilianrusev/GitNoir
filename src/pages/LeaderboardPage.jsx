@@ -5,6 +5,7 @@ import { getLeaderboard, getUserProgress } from "../services/gameService";
 import { Award, Trophy, ArrowLeft, Medal, Users } from "lucide-react";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
+import { toast } from "sonner";
 
 export default function LeaderboardPage() {
   const { user } = useAuth();
@@ -13,15 +14,24 @@ export default function LeaderboardPage() {
   const [progress, setProgress] = useState(null);
 
   useEffect(() => {
-    loadLeaderboard();
+    void loadLeaderboard();
   }, []);
 
-  const loadLeaderboard = () => {
-    const data = getLeaderboard();
-    const userProgress = getUserProgress();
-    setLeaderboard(data);
-    setProgress(userProgress);
-    setLoading(false);
+  const loadLeaderboard = async ({ forceRefresh = false } = {}) => {
+    try {
+      const [data, userProgress] = await Promise.all([
+        getLeaderboard({ forceRefresh }),
+        Promise.resolve(getUserProgress()),
+      ]);
+      setLeaderboard(data);
+      setProgress(userProgress);
+    } catch (error) {
+      toast.error("Failed to load leaderboard");
+      setLeaderboard([]);
+      setProgress(getUserProgress());
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getRankIcon = (rank) => {

@@ -1,4 +1,6 @@
 // Mock data service - handles all game data locally without backend
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { db } from "../firebase";
 import { getCurrentUser, saveUser } from "./authService";
 
 const caseModules = import.meta.glob("../data/cases/**/*.json", {
@@ -14,7 +16,16 @@ const casesData = Object.values(caseModules)
   });
 
 const STORAGE_KEYS = {
-  LEADERBOARD: "git_quest_leaderboard",
+  LEADERBOARD: "git_quest_leaderboard_cache",
+};
+
+const LEADERBOARD_CACHE_TTL_MS = 5 * 60 * 1000;
+const USERS_COLLECTION = "users";
+
+const leaderboardMemoryCache = {
+  data: null,
+  fetchedAt: 0,
+  pendingRequest: null,
 };
 
 // Get all cases
@@ -29,7 +40,7 @@ export const getCaseById = (caseId) => {
 
 const saveGameUser = (user, options = {}) => {
   saveUser(user, options);
-  updateLeaderboard(user);
+  updateLeaderboardCacheFromUser(user);
 };
 
 const normalizeReputation = (user) => {
@@ -211,10 +222,81 @@ export const validateCommand = (
   }
 };
 
-// Update leaderboard
-const updateLeaderboard = (user) => {
+const normalizeLeaderboard = (entries = []) => {
+  const sorted = [...entries]
+    .map((entry) => ({
+      username: entry.username,
+      reputation: Number(entry.reputation ?? 0),
+      cases_solved: Number(entry.cases_solved ?? 0),
+    }))
+    .filter((entry) => entry.reputation !== 10)
+    .sort((a, b) => b.reputation - a.reputation)
+    .slice(0, 10);
+
+  return sorted.map((entry, index) => ({
+    ...entry,
+    rank: index + 1,
+  }));
+};
+
+const readLeaderboardCache = () => {
+  const raw = localStorage.getItem(STORAGE_KEYS.LEADERBOARD);
+  if (!raw) return null;
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed?.data)) return null;
+    return {
+      data: normalizeLeaderboard(parsed.data),
+      fetchedAt: Number(parsed.fetchedAt ?? 0),
+    };
+  } catch {
+    return null;
+  }
+};
+
+const writeLeaderboardCache = (data, fetchedAt = Date.now()) => {
+  const normalizedData = normalizeLeaderboard(data);
+  leaderboardMemoryCache.data = normalizedData;
+  leaderboardMemoryCache.fetchedAt = fetchedAt;
+
+  localStorage.setItem(
+    STORAGE_KEYS.LEADERBOARD,
+    JSON.stringify({ data: normalizedData, fetchedAt }),
+  );
+
+  return normalizedData;
+};
+
+const fetchLeaderboardFromUsersTable = async () => {
+  const usersRef = collection(db, USERS_COLLECTION);
+  const leaderboardQuery = query(usersRef, orderBy("reputation", "desc"), limit(10));
+  const snapshot = await getDocs(leaderboardQuery);
+
+  const entries = snapshot.docs.map((userDoc) => {
+    const userData = userDoc.data();
+    const email = userData.email || "";
+    const fallbackName = email.includes("@")
+      ? email.split("@")[0]
+      : "Detective";
+
+    return {
+      username: userData.display_name || fallbackName,
+      reputation: Number(userData.reputation ?? 0),
+      cases_solved: Array.isArray(userData.completed_cases)
+        ? userData.completed_cases.length
+        : 0,
+    };
+  });
+
+  return normalizeLeaderboard(entries);
+};
+
+const updateLeaderboardCacheFromUser = (user) => {
   const normalizedUser = normalizeReputation(user);
-  let leaderboard = getLeaderboard();
+  const cached =
+    leaderboardMemoryCache.data || readLeaderboardCache()?.data || [];
+  let leaderboard = [...cached];
 
   // Find and update or add user
   const existingIndex = leaderboard.findIndex(
@@ -235,27 +317,48 @@ const updateLeaderboard = (user) => {
     });
   }
 
-  // Sort by reputation and assign ranks
-  leaderboard.sort((a, b) => (b.reputation ?? 0) - (a.reputation ?? 0));
-  leaderboard = leaderboard.slice(0, 10).map((entry, index) => ({
-    ...entry,
-    reputation: entry.reputation ?? 0,
-    rank: index + 1,
-  }));
-
-  localStorage.setItem(STORAGE_KEYS.LEADERBOARD, JSON.stringify(leaderboard));
+  writeLeaderboardCache(leaderboard, Date.now());
 };
 
 // Get leaderboard
-export const getLeaderboard = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.LEADERBOARD);
-  if (!data) return [];
+export const getLeaderboard = async ({ forceRefresh = false } = {}) => {
+  const now = Date.now();
 
-  const parsed = JSON.parse(data);
-  return parsed.map((entry) => ({
-    ...entry,
-    reputation: entry.reputation ?? entry.earned_reputation ?? 0,
-  }));
+  if (!forceRefresh && leaderboardMemoryCache.data) {
+    const memoryFresh =
+      now - leaderboardMemoryCache.fetchedAt < LEADERBOARD_CACHE_TTL_MS;
+    if (memoryFresh) {
+      return leaderboardMemoryCache.data;
+    }
+  }
+
+  const storedCache = readLeaderboardCache();
+  if (!forceRefresh && storedCache?.data) {
+    const storedFresh = now - storedCache.fetchedAt < LEADERBOARD_CACHE_TTL_MS;
+    if (storedFresh) {
+      leaderboardMemoryCache.data = storedCache.data;
+      leaderboardMemoryCache.fetchedAt = storedCache.fetchedAt;
+      return storedCache.data;
+    }
+  }
+
+  if (leaderboardMemoryCache.pendingRequest) {
+    return leaderboardMemoryCache.pendingRequest;
+  }
+
+  leaderboardMemoryCache.pendingRequest = fetchLeaderboardFromUsersTable()
+    .then((entries) => writeLeaderboardCache(entries, Date.now()))
+    .catch((error) => {
+      if (storedCache?.data) {
+        return storedCache.data;
+      }
+      throw error;
+    })
+    .finally(() => {
+      leaderboardMemoryCache.pendingRequest = null;
+    });
+
+  return leaderboardMemoryCache.pendingRequest;
 };
 
 // Reset all progress (for testing)
