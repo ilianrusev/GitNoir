@@ -4,7 +4,7 @@
   "description": "An unknown hand has been rewriting history in the repo. Track the missing commits, uncover hidden changes, and restore the truth.",
   "difficulty": "Advanced",
   "unlock_cost": 300,
-  "total_points": 260,
+  "total_points": 240,
   "created_at": "2026-03-08",
   "story_intro": "The rain slicked streets glistened under the flickering neon lights. Somewhere in the repository, history was being rewritten. Commits disappeared like footprints in puddles; branches twisted like alleyways, hiding secrets. The city’s code was corrupted, and only a detective with sharp instincts could trace the invisible trail.\n\nYour task: navigate the shadows of Git history, interrogate the branches, uncover what was lost, and bring the hidden truth back into the light. Each command is a clue, each diff a lead, and every recovered commit a victory against the shadows of the repository.",
   "steps": [
@@ -13,7 +13,7 @@
       "narrative": "The fog rolls over the rooftops. You peer down the alleyways of the repo, trying to spot where the miscreants left their traces. Every branch could be a hiding place for secrets.",
       "expected_commands": ["git branch", "git branch -a"],
       "hint": "Check local and remote branches",
-      "points": 20
+      "points": 25
     },
     {
       "instruction": "Inspect the commit history for suspicious activity.",
