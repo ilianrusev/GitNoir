@@ -30,7 +30,6 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Integrate Google OAuth later
     toast.info("Google login coming soon! Use email/password for now.");
   };
 
