@@ -40,6 +40,19 @@ Instead of tutorials, players learn by **investigating problems and fixing repos
 
 ---
 
+## ✅ Case Validation
+
+Before opening a pull request that changes case files, run local schema validation:
+
+```bash
+npm run validate:cases
+```
+
+This validates all JSON files in `src/data/cases` against the schemas in `src/data/schemas`.
+If any file is invalid, the command exits with an error and prints the validation details.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome!
