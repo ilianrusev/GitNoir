@@ -13,7 +13,6 @@
       "narrative": "I walked into the dark server room. The humming machines cast eerie shadows. To find what's missing, I needed to see the full picture.",
       "expected_commands": [
         "git log",
-        "git log --oneline",
         "git log -a"
       ],
       "hint": "Use the command to view commit history",
