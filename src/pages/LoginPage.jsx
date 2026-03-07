@@ -46,7 +46,7 @@ export default function LoginPage() {
         <div className="max-w-md">
           <div className="flex items-center gap-3 mb-8">
             <Terminal className="w-8 h-8 text-[#00ff41]" />
-            <span className="font-typewriter text-2xl text-[#ffb703]">GIT QUEST</span>
+            <span className="font-typewriter text-2xl text-[#ffb703]">GIT NOIR</span>
           </div>
 
           <h1 className="font-typewriter text-3xl text-[#e5e5e5] mb-2">

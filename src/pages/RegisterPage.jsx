@@ -105,7 +105,7 @@ export default function RegisterPage() {
           <div className="flex items-center gap-3 mb-8">
             <Terminal className="w-8 h-8 text-[#00ff41]" />
             <span className="font-typewriter text-2xl text-[#ffb703]">
-              GIT QUEST
+              GIT NOIR
             </span>
           </div>
 

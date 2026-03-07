@@ -32,7 +32,7 @@ export default function LandingPage() {
           <Link to="/" className="flex items-center gap-2 md:gap-3">
             <Terminal className="w-5 h-5 md:w-6 md:h-6 text-[#00ff41]" />
             <span className="font-typewriter text-lg md:text-xl text-[#ffb703] tracking-wider">
-              GIT QUEST
+              GIT NOIR
             </span>
           </Link>
 
@@ -421,12 +421,12 @@ export default function LandingPage() {
             >
               <AccordionTrigger className="px-6 py-4 hover:no-underline">
                 <span className="font-typewriter text-lg text-[#ffb703] text-left">
-                  WHAT IS GIT QUEST?
+                  WHAT IS GIT NOIR?
                 </span>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6">
                 <p className="text-[#a3a3a3] leading-relaxed">
-                  Git Quest is a free, gamified learning platform where you
+                  Git Noir is a free, gamified learning platform where you
                   master Git commands by solving detective mysteries. Each case
                   presents a story-driven scenario where you type real Git
                   commands to progress through the investigation.
@@ -446,7 +446,7 @@ export default function LandingPage() {
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6">
                 <p className="text-[#a3a3a3] leading-relaxed">
-                  No! Git Quest runs entirely in your browser. You don't need to
+                  No! Git Noir runs entirely in your browser. You don't need to
                   install Git or any other software. Our simulated terminal
                   accepts Git commands and validates them against the expected
                   solutions.
@@ -466,7 +466,7 @@ export default function LandingPage() {
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6">
                 <p className="text-[#a3a3a3] leading-relaxed">
-                  Yes, Git Quest is completely free and always will be. It's a
+                  Yes, Git Noir is completely free and always will be. It's a
                   community-driven project built by developers who want to make
                   learning Git more accessible and fun. If you'd like to support
                   the project, you can buy us a coffee!
@@ -547,7 +547,7 @@ export default function LandingPage() {
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6">
                 <p className="text-[#a3a3a3] leading-relaxed">
-                  Git Quest is open to contributions! You can help by creating
+                  Git Noir is open to contributions! You can help by creating
                   new cases, fixing bugs, improving the UI, or translating
                   content. Check out our GitHub repository to get started or
                   join our community discussions.
@@ -591,7 +591,7 @@ export default function LandingPage() {
               <div className="flex items-center gap-3 mb-4">
                 <Terminal className="w-6 h-6 text-[#00ff41]" />
                 <span className="font-typewriter text-xl text-[#ffb703]">
-                  GIT QUEST
+                  GIT NOIR
                 </span>
               </div>
               <p className="text-sm text-[#a3a3a3] leading-relaxed mb-4">
@@ -610,7 +610,7 @@ export default function LandingPage() {
                 COMMUNITY DRIVEN
               </h4>
               <p className="text-sm text-[#a3a3a3] leading-relaxed mb-4">
-                Git Quest is built by developers, for developers. We welcome
+                Git Noir is built by developers, for developers. We welcome
                 contributions of all kinds - new cases, bug fixes, translations,
                 and ideas!
               </p>
@@ -656,7 +656,7 @@ export default function LandingPage() {
                 SUPPORT THE PROJECT
               </h4>
               <p className="text-sm text-[#a3a3a3] leading-relaxed mb-4">
-                If Git Quest helped you learn, consider buying me a coffee! Your
+                If Git Noir helped you learn, consider buying me a coffee! Your
                 support helps keep the servers running and motivates new
                 content.
               </p>
@@ -682,7 +682,7 @@ export default function LandingPage() {
           {/* Bottom Bar */}
           <div className="pt-8 border-t border-[#222] flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="font-mono text-xs text-[#444]">
-              © 2024 Git Quest. Made with caffeine and commit messages.
+              © 2026 Git Noir. Made with caffeine and commit messages.
             </p>
             <div className="flex items-center gap-6">
               <span className="font-mono text-xs text-[#666]">

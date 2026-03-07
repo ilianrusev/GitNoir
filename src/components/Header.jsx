@@ -46,7 +46,7 @@ export default function Header({ variant = "default", reputation }) {
           <Link to="/" className="flex items-center gap-2 md:gap-3">
             <Terminal className="w-5 h-5 md:w-6 md:h-6 text-[#00ff41]" />
             <span className="font-typewriter text-lg md:text-xl text-[#ffb703] tracking-wider">
-              GIT QUEST
+              GIT NOIR
             </span>
           </Link>
 
@@ -196,7 +196,7 @@ export default function Header({ variant = "default", reputation }) {
         <Link to="/" className="flex items-center gap-2 md:gap-3">
           <Terminal className="w-5 h-5 md:w-6 md:h-6 text-[#00ff41]" />
           <span className="font-typewriter text-lg md:text-xl text-[#ffb703] tracking-wider">
-            GIT QUEST
+            GIT NOIR
           </span>
         </Link>
 

@@ -413,7 +413,7 @@ export default function GamePage() {
           >
             {/* Welcome Message */}
             <div className="mb-4 text-[#666]">
-              <p>Git Quest Detective Terminal v1.0</p>
+              <p>Git Noir Detective Terminal v1.0</p>
               <p>Type your git commands below.</p>
               {isReplay && (
                 <p className="text-[#ffb703] mt-2">⚠ REPLAY MODE - No points will be earned</p>

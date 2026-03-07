@@ -151,34 +151,6 @@ export default function NotebookPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Navigation */}
-      {/* <nav className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-[#333]">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 md:gap-3">
-            <Terminal className="w-5 h-5 md:w-6 md:h-6 text-[#00ff41]" />
-            <span className="font-typewriter text-lg md:text-xl text-[#ffb703] tracking-wider">
-              GIT QUEST
-            </span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              to="/dashboard"
-              className="nav-link hidden md:block"
-              data-testid="nav-dashboard"
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/cases"
-              className="nav-link hidden md:block"
-              data-testid="nav-cases"
-            >
-              Cases
-            </Link>
-          </div>
-        </div>
-      </nav> */}
-
       <Header reputation={progress?.reputation || 0} />
 
       {/* Main Content */}
