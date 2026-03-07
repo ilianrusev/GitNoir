@@ -53,6 +53,67 @@ If any file is invalid, the command exits with an error and prints the validatio
 
 ---
 
+## 🧩 Tutorial: Add a New Case
+
+Follow these steps to add a case that works with the current data structure and schemas.
+
+1. Pick a difficulty folder:
+	 - `src/data/cases/beginner`
+	 - `src/data/cases/intermediate`
+	 - `src/data/cases/advanced`
+
+2. Create a new file using this naming pattern:
+	 - `case-beginner-00X.json`
+	 - `case-intermediate-00X.json`
+	 - `case-advanced-00X.json`
+
+3. Use this JSON structure (all fields are required):
+
+```json
+{
+	"id": "case-021",
+	"title": "THE BRANCH ALIBI",
+	"description": "A suspect branch disappeared after a rushed investigation.",
+	"difficulty": "Beginner",
+	"unlock_cost": 0,
+	"total_points": 100,
+	"story_intro": "A short detective-style intro to the scenario.",
+	"steps": [
+		{
+			"instruction": "Check all local branches.",
+			"narrative": "I needed to see every lead before making a move.",
+			"expected_commands": ["git branch"],
+			"hint": "List branches",
+			"points": 50
+		},
+		{
+			"instruction": "Switch to the suspect branch.",
+			"narrative": "Time to chase the main lead.",
+			"expected_commands": ["git switch feature/alibi", "git checkout feature/alibi"],
+			"hint": "Move to the branch",
+			"points": 50
+		}
+	]
+}
+```
+
+4. Keep values valid:
+	 - `id` must match `case-###` (example: `case-021`)
+	 - `difficulty` must be exactly `Beginner`, `Intermediate`, or `Advanced`
+	 - `unlock_cost` must be `0` or higher
+	 - `total_points` must be at least `1`
+	 - each step needs: `instruction`, `narrative`, `expected_commands`, `hint`, `points`
+
+5. Validate before committing:
+
+```bash
+npm run validate:cases
+```
+
+If validation passes, your case is ready for PR review.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome!
