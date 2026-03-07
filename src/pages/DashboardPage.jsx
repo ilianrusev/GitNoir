@@ -23,15 +23,14 @@ export default function DashboardPage() {
     setProgress(userProgress);
   };
 
-  const availableReputation = progress?.available_reputation || 0;
-  const earnedReputation = progress?.earned_reputation || 0;
+  const reputation = progress?.reputation || 0;
   const completedCount = progress?.completed_cases?.length || 0;
 
   const checkUnlocked = (caseData) => {
     if (caseData.unlock_cost === 0) return true;
     if (progress?.completed_cases?.includes(caseData.id)) return true;
     if (progress?.case_progress?.[caseData.id]) return true;
-    return availableReputation >= caseData.unlock_cost;
+    return reputation >= caseData.unlock_cost;
   };
 
   const getCaseStatus = (caseData) => {
@@ -42,7 +41,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      <Header reputation={availableReputation} />
+      <Header reputation={reputation} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
@@ -65,7 +64,7 @@ export default function DashboardPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="stat-card" data-testid="stat-reputation">
-            <div className="stat-value">{earnedReputation}</div>
+            <div className="stat-value">{reputation}</div>
             <div className="stat-label">Reputation</div>
           </div>
           <div className="stat-card" data-testid="stat-cases-solved">

@@ -10,11 +10,9 @@ export default function SingleCase({
   caseProgress,
   animationDelay,
   variant = "dashboard",
-  canUnlock = false,
-  onUnlock,
 }) {
   const isCasesVariant = variant === "cases";
-  const shouldSoftLockBlur = isCasesVariant && !unlocked && !canUnlock;
+  const shouldSoftLockBlur = isCasesVariant && !unlocked;
 
   return (
     <div
@@ -88,7 +86,7 @@ export default function SingleCase({
               {!unlocked && (
                 <span className="font-mono text-xs text-[#666] flex items-center gap-1">
                   <Lock className="w-3 h-3" />
-                  {caseData.unlock_cost} REP
+                  REQUIRES {caseData.unlock_cost} REP
                 </span>
               )}
             </div>
@@ -110,18 +108,15 @@ export default function SingleCase({
             ) : (
               <Button
                 className={
-                  canUnlock
-                    ? "btn-primary"
-                    : shouldSoftLockBlur
-                      ? "btn-outline opacity-75 relative z-20 blur-[0.px]"
-                      : "btn-outline opacity-50"
+                  shouldSoftLockBlur
+                    ? "btn-outline opacity-75 relative z-20"
+                    : "btn-outline opacity-50"
                 }
-                onClick={() => canUnlock && onUnlock?.(caseData)}
-                disabled={!canUnlock}
+                disabled
                 data-testid={`unlock-case-${caseData.id}`}
               >
                 <Lock className="w-4 h-4 mr-2" />
-                Unlock ({caseData.unlock_cost} REP)
+                Locked ({caseData.unlock_cost} REP)
               </Button>
             )}
           </>

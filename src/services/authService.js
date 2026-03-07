@@ -8,7 +8,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { deleteField, doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
 const STORAGE_KEYS = {
@@ -25,9 +25,7 @@ export const getCurrentUser = () => {
 const persistUserProfile = async (user) => {
   if (!user?.id) return;
 
-  const availableReputation =
-    user.available_reputation ?? user.reputation ?? 0;
-  const earnedReputation = user.earned_reputation ?? user.reputation ?? 0;
+  const reputation = user.reputation ?? 0;
 
   const userDocRef = doc(db, USERS_COLLECTION, user.id);
   await setDoc(
@@ -35,12 +33,13 @@ const persistUserProfile = async (user) => {
     {
       display_name: user.username,
       email: user.email || "",
-      earned_reputation: earnedReputation,
-      available_reputation: availableReputation,
+      reputation,
       completed_cases: user.completed_cases ?? [],
       case_progress: user.case_progress ?? {},
       created_at: user.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      earned_reputation: deleteField(),
+      available_reputation: deleteField(),
     },
     { merge: true },
   );
@@ -48,10 +47,19 @@ const persistUserProfile = async (user) => {
 
 export const saveUser = (user, options = {}) => {
   const { persistProfile = true } = options;
-  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+  const normalizedUser = {
+    ...user,
+    reputation:
+      user?.reputation ?? user?.available_reputation ?? user?.earned_reputation ?? 0,
+  };
+
+  delete normalizedUser.available_reputation;
+  delete normalizedUser.earned_reputation;
+
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(normalizedUser));
 
   if (persistProfile) {
-    void persistUserProfile(user);
+    void persistUserProfile(normalizedUser);
   }
 };
 
@@ -70,21 +78,18 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   const dbUser = userSnapshot.exists() ? userSnapshot.data() : null;
   const needsReputationMigration =
     !dbUser ||
-    dbUser.earned_reputation === undefined ||
-    dbUser.available_reputation === undefined;
+    dbUser.reputation === undefined ||
+    dbUser.earned_reputation !== undefined ||
+    dbUser.available_reputation !== undefined;
   const shouldPersistProfile = persistProfile || needsReputationMigration;
 
-  const availableReputation =
+  const reputation =
+    dbUser?.reputation ??
     dbUser?.available_reputation ??
-    dbUser?.reputation ??
-    storedUser?.available_reputation ??
-    storedUser?.reputation ??
-    0;
-  const earnedReputation =
     dbUser?.earned_reputation ??
-    dbUser?.reputation ??
-    storedUser?.earned_reputation ??
     storedUser?.reputation ??
+    storedUser?.available_reputation ??
+    storedUser?.earned_reputation ??
     0;
 
   const defaultUsername =
@@ -101,9 +106,7 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
       defaultUsername,
     email: firebaseUser.email || storedUser?.email || "",
     password: storedUser?.password || password,
-    earned_reputation: earnedReputation,
-    available_reputation: availableReputation,
-    reputation: availableReputation,
+    reputation,
     completed_cases:
       dbUser?.completed_cases ?? storedUser?.completed_cases ?? [],
     case_progress: dbUser?.case_progress ?? storedUser?.case_progress ?? {},

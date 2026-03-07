@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../App";
-import { getCases, getUserProgress, unlockCase } from "../services/gameService";
+import { getCases, getUserProgress } from "../services/gameService";
 import { ArrowLeft, Filter } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
@@ -10,12 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
-import { toast } from "sonner";
 import Header from "../components/Header";
 import SingleCase from "../components/SingleCase";
 
 export default function CasesPage() {
-  const { refreshUser } = useAuth();
   const [cases, setCases] = useState([]);
   const [progress, setProgress] = useState(null);
   const [filter, setFilter] = useState("all");
@@ -31,26 +28,11 @@ export default function CasesPage() {
     setProgress(userProgress);
   };
 
-  const handleUnlock = (caseData) => {
-    try {
-      unlockCase(caseData.id);
-      toast.success(`Case "${caseData.title}" unlocked!`);
-      refreshUser();
-      loadData();
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
   const isCaseUnlocked = (caseData) => {
     if (caseData.unlock_cost === 0) return true;
     if (progress?.completed_cases?.includes(caseData.id)) return true;
     if (progress?.case_progress?.[caseData.id]) return true;
-    return false;
-  };
-
-  const canUnlock = (caseData) => {
-    return (progress?.available_reputation || 0) >= caseData.unlock_cost;
+    return (progress?.reputation || 0) >= caseData.unlock_cost;
   };
 
   const getCaseStatus = (caseData) => {
@@ -74,7 +56,7 @@ export default function CasesPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      <Header reputation={progress?.available_reputation || 0} />
+      <Header reputation={progress?.reputation || 0} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
@@ -163,8 +145,6 @@ export default function CasesPage() {
                 caseProgress={caseProgress}
                 animationDelay={`${index * 0.05}s`}
                 variant="cases"
-                canUnlock={canUnlock(caseData)}
-                onUnlock={handleUnlock}
               />
             );
           })}

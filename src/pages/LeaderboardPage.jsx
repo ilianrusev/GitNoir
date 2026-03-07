@@ -40,7 +40,7 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       {user ? (
-        <Header reputation={progress?.available_reputation || 0} />
+        <Header reputation={progress?.reputation || 0} />
       ) : (
         <Header variant="landing" />
       )}
@@ -154,7 +154,7 @@ export default function LeaderboardPage() {
                     <div className="text-right flex items-center justify-end gap-2">
                       <Award className="w-4 h-4 text-[#ffb703]" />
                       <span className="font-mono text-[#ffb703]">
-                        {entry.earned_reputation ?? 0}
+                        {entry.reputation ?? 0}
                       </span>
                     </div>
                   </div>

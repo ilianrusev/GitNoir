@@ -4,7 +4,7 @@ import { useAuth } from "../App";
 import {
   getCaseById,
   getUserProgress,
-  unlockCase,
+  isCaseUnlocked,
   validateCommand,
 } from "../services/gameService";
 import {
@@ -54,19 +54,18 @@ export default function GamePage() {
 
   const loadCase = () => {
     try {
-      // Unlock case first if needed
-      try {
-        unlockCase(caseId);
-      } catch (e) {
-        // Already unlocked or free case
-      }
-
       const caseInfo = getCaseById(caseId);
       const progress = getUserProgress();
       
       if (!caseInfo) {
         toast.error("Case not found");
         navigate("/dashboard");
+        return;
+      }
+
+      if (!isCaseUnlocked(caseId)) {
+        toast.error("You need more reputation to access this case.");
+        navigate("/cases");
         return;
       }
 
