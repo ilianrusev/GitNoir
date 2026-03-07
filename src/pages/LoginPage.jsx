@@ -142,7 +142,7 @@ export default function LoginPage() {
           <p className="mt-8 text-center text-sm text-[#a3a3a3]">
             New to the agency?{" "}
             <Link to="/register" className="text-[#ffb703] hover:underline" data-testid="login-register-link">
-              Create your badge
+              Create your detective badge
             </Link>
           </p>
         </div>

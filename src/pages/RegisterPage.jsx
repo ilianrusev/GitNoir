@@ -91,7 +91,7 @@ export default function RegisterPage() {
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-[#00ff41]" />
               <span className="text-sm text-[#a3a3a3]">
-                5 mystery cases to solve
+                Many mystery cases to solve
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -266,7 +266,7 @@ export default function RegisterPage() {
           </form>
 
           <p className="mt-8 text-center text-sm text-[#a3a3a3]">
-            Already have a badge?{" "}
+            Already have a detective badge?{" "}
             <Link
               to="/login"
               className="text-[#ffb703] hover:underline"
