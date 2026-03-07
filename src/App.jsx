@@ -7,6 +7,7 @@ import { auth } from "./firebase";
 import {
   getCurrentUser,
   loginUser,
+  loginWithGoogleUser,
   registerUser,
   logoutUser,
   syncUserFromFirebaseUser,
@@ -78,6 +79,14 @@ const AuthProvider = ({ children }) => {
     return userData;
   };
 
+  const loginWithGoogle = async () => {
+    const result = await loginWithGoogleUser();
+    if (result?.user) {
+      setUser(result.user);
+    }
+    return result;
+  };
+
   const logout = async () => {
     await logoutUser();
     setUser(null);
@@ -91,7 +100,15 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout, refreshUser }}
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        loginWithGoogle,
+        logout,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -13,7 +13,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -42,9 +42,28 @@ export default function RegisterPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: Integrate Google OAuth later
-    toast.info("Google login coming soon! Use email/password for now.");
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+
+    try {
+      const result = await loginWithGoogle();
+
+      if (result?.user) {
+        if (result.isNewUser) {
+          toast.success("Badge created! Welcome to the agency, Detective.");
+        } else {
+          toast.success("Welcome back, Detective!");
+        }
+        navigate("/dashboard");
+        return;
+      }
+
+      toast.info("Redirecting to Google sign-in...");
+    } catch (error) {
+      toast.error(error.message || "Google sign-in failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -221,6 +240,7 @@ export default function RegisterPage() {
               type="button"
               onClick={handleGoogleLogin}
               className="w-full bg-[#1a1a1a] border border-[#333] text-[#e5e5e5] hover:border-[#ffb703] hover:bg-[#1a1a1a] font-mono uppercase tracking-wider text-sm py-3 flex items-center justify-center gap-3"
+              disabled={loading}
               data-testid="google-register-btn"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">

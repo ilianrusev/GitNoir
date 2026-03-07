@@ -2,7 +2,11 @@
 import casesData from "../data/cases.json";
 import {
   createUserWithEmailAndPassword,
+  getAdditionalUserInfo,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  signInWithRedirect,
   signOut,
   updateProfile,
 } from "firebase/auth";
@@ -15,6 +19,7 @@ const STORAGE_KEYS = {
   LEADERBOARD: "git_quest_leaderboard",
 };
 const USERS_COLLECTION = "users";
+const googleProvider = new GoogleAuthProvider();
 
 // Generate a simple UUID
 const generateId = () => {
@@ -61,10 +66,14 @@ const persistUserProfile = async (user) => {
 };
 
 // Save user to localStorage
-export const saveUser = (user) => {
+export const saveUser = (user, options = {}) => {
+  const { persistProfile = true } = options;
   localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
   updateLeaderboard(user);
-  void persistUserProfile(user);
+
+  if (persistProfile) {
+    void persistUserProfile(user);
+  }
 };
 
 // Sync Firebase auth user with local game profile
@@ -74,12 +83,14 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
     return null;
   }
 
-  const { password = "", displayName = "" } = options;
+  const { password = "", displayName = "", persistProfile = false } =
+    options;
   const normalizedDisplayName = displayName.trim();
   const storedUser = getCurrentUser();
   const userDocRef = doc(db, USERS_COLLECTION, firebaseUser.uid);
   const userSnapshot = await getDoc(userDocRef);
   const dbUser = userSnapshot.exists() ? userSnapshot.data() : null;
+  const shouldPersistProfile = persistProfile || !dbUser;
 
   const defaultUsername =
     firebaseUser.displayName ||
@@ -103,7 +114,7 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
       dbUser?.created_at || storedUser?.created_at || new Date().toISOString(),
   };
 
-  saveUser(syncedUser);
+  saveUser(syncedUser, { persistProfile: shouldPersistProfile });
   return syncedUser;
 };
 
@@ -125,6 +136,7 @@ export const registerUser = async (username, email, password) => {
     return await syncUserFromFirebaseUser(credentials.user, {
       password,
       displayName: username,
+      persistProfile: true,
     });
   } catch (error) {
     const registrationErrors = {
@@ -147,7 +159,10 @@ export const registerUser = async (username, email, password) => {
 export const loginUser = async (email, password) => {
   try {
     const credentials = await signInWithEmailAndPassword(auth, email, password);
-    return await syncUserFromFirebaseUser(credentials.user, { password });
+    return await syncUserFromFirebaseUser(credentials.user, {
+      password,
+      persistProfile: false,
+    });
   } catch (error) {
     const loginErrors = {
       "auth/invalid-email": "Please enter a valid email address.",
@@ -162,6 +177,52 @@ export const loginUser = async (email, password) => {
     const message =
       loginErrors[error.code] ||
       "Login failed. Check your credentials and try again.";
+
+    throw new Error(message);
+  }
+};
+
+// Login or register user with Google
+export const loginWithGoogleUser = async () => {
+  try {
+    const credentials = await signInWithPopup(auth, googleProvider);
+    const additionalUserInfo = getAdditionalUserInfo(credentials);
+    const syncedUser = await syncUserFromFirebaseUser(credentials.user, {
+      displayName: credentials.user.displayName || "",
+      persistProfile: additionalUserInfo?.isNewUser ?? false,
+    });
+
+    return {
+      user: syncedUser,
+      isNewUser: additionalUserInfo?.isNewUser ?? false,
+    };
+  } catch (error) {
+    const isCoopWindowCheckIssue =
+      typeof error?.message === "string" &&
+      error.message.includes("Cross-Origin-Opener-Policy");
+    const shouldUseRedirectFallback =
+      isCoopWindowCheckIssue ||
+      error?.code === "auth/popup-blocked" ||
+      error?.code === "auth/operation-not-supported-in-this-environment";
+
+    if (shouldUseRedirectFallback) {
+      await signInWithRedirect(auth, googleProvider);
+      return null;
+    }
+
+    const googleLoginErrors = {
+      "auth/popup-closed-by-user": "Google sign-in was canceled.",
+      "auth/popup-blocked": "Popup was blocked. Allow popups and try again.",
+      "auth/cancelled-popup-request": "Google sign-in was canceled.",
+      "auth/account-exists-with-different-credential":
+        "An account already exists with this email using a different sign-in method.",
+      "auth/network-request-failed":
+        "Network error. Check your connection and try again.",
+    };
+
+    const message =
+      googleLoginErrors[error.code] ||
+      "Google sign-in failed. Please try again.";
 
     throw new Error(message);
   }
