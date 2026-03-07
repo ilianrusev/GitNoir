@@ -1,0 +1,64 @@
+{
+  "id": "case-002",
+  "title": "THE BRANCHING CONSPIRACY",
+  "description": "Multiple branches lead to different suspects. Navigate through them to find the truth.",
+  "difficulty": "Beginner",
+  "unlock_cost": 50,
+  "total_points": 120,
+  "story_intro": "The case file landed on my desk with a thud. 'The Branching Conspiracy' - a web of deceit spreading across multiple timelines.\n\n'There are at least three branches of investigation,' my contact whispered. 'Each one leads to a different suspect. But only one holds the truth.'\n\nI lit a cigarette. In this business, you learn to follow every branch until you find the root of the problem.",
+  "steps": [
+    {
+      "instruction": "List all the branches in this investigation.",
+      "narrative": "First rule of detective work - know all your leads. I needed to see every branch of this tangled case.",
+      "expected_commands": [
+        "git branch",
+        "git branch -a",
+        "git branch --list"
+      ],
+      "hint": "List all branches in the repository",
+      "points": 20
+    },
+    {
+      "instruction": "Create a new branch called 'investigation' to work on.",
+      "narrative": "I couldn't contaminate the main evidence. A separate line of investigation was needed.",
+      "expected_commands": [
+        "git branch investigation",
+        "git checkout -b investigation",
+        "git switch -c investigation"
+      ],
+      "hint": "Create a new branch for your investigation",
+      "points": 25
+    },
+    {
+      "instruction": "Switch to the 'investigation' branch.",
+      "narrative": "Time to dive into the shadows. I stepped into the new branch, leaving the main timeline behind.",
+      "expected_commands": [
+        "git checkout investigation",
+        "git switch investigation"
+      ],
+      "hint": "Switch to the investigation branch",
+      "points": 25
+    },
+    {
+      "instruction": "Check which branch you're currently on.",
+      "narrative": "In this labyrinth of branches, I needed to know exactly where I stood.",
+      "expected_commands": [
+        "git branch",
+        "git status",
+        "git branch --show-current"
+      ],
+      "hint": "Show your current branch",
+      "points": 25
+    },
+    {
+      "instruction": "The investigation is complete. Delete the branch 'old-suspect' that led nowhere.",
+      "narrative": "Dead ends happen. The 'old-suspect' branch was a false lead. Time to clean up.",
+      "expected_commands": [
+        "git branch -d old-suspect",
+        "git branch -D old-suspect"
+      ],
+      "hint": "Delete the branch that's no longer needed",
+      "points": 25
+    }
+  ]
+}

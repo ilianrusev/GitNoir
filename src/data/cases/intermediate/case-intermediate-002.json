@@ -1,0 +1,63 @@
+{
+  "id": "case-004",
+  "title": "THE REMOTE SYNDICATE",
+  "description": "A criminal network operates across remote servers. Connect and gather intelligence.",
+  "difficulty": "Intermediate",
+  "unlock_cost": 300,
+  "total_points": 180,
+  "story_intro": "'They call themselves The Remote Syndicate,' the informant said, glancing nervously around the dimly lit bar.\n\n'They operate across multiple servers - origin, upstream, backup. Push and pull information like ghosts in the network.'\n\nI adjusted my hat. To catch a network, you need to think like a network. Time to go remote.",
+  "steps": [
+    {
+      "instruction": "List all remote connections in this repository.",
+      "narrative": "First, I needed to map the network. Every remote connection was a potential lead.",
+      "expected_commands": [
+        "git remote",
+        "git remote -v"
+      ],
+      "hint": "Show all remote repositories",
+      "points": 30
+    },
+    {
+      "instruction": "Fetch the latest intel from the origin remote.",
+      "narrative": "Information flows constantly in this network. Time to intercept the latest transmissions.",
+      "expected_commands": [
+        "git fetch",
+        "git fetch origin"
+      ],
+      "hint": "Download objects and refs from the remote",
+      "points": 35
+    },
+    {
+      "instruction": "Pull the latest changes from origin main.",
+      "narrative": "I needed everything they had. A full download of their latest operations.",
+      "expected_commands": [
+        "git pull",
+        "git pull origin main",
+        "git pull origin master"
+      ],
+      "hint": "Fetch and integrate remote changes",
+      "points": 35
+    },
+    {
+      "instruction": "Push your investigation findings to the remote.",
+      "narrative": "Time to share my findings with headquarters. The evidence needed to be backed up.",
+      "expected_commands": [
+        "git push",
+        "git push origin",
+        "git push origin main",
+        "git push origin master"
+      ],
+      "hint": "Upload your local commits to the remote",
+      "points": 40
+    },
+    {
+      "instruction": "Add a new remote called 'backup' with URL 'https://backup.agency.git'",
+      "narrative": "Never keep all your eggs in one basket. A backup remote for redundancy.",
+      "expected_commands": [
+        "git remote add backup https://backup.agency.git"
+      ],
+      "hint": "Add a new remote repository",
+      "points": 40
+    }
+  ]
+}

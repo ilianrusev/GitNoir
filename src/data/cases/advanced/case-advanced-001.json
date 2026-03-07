@@ -1,0 +1,60 @@
+{
+  "id": "case-005",
+  "title": "THE REBASE REDEMPTION",
+  "description": "History has been rewritten. Use advanced techniques to uncover the original timeline.",
+  "difficulty": "Advanced",
+  "unlock_cost": 500,
+  "total_points": 200,
+  "story_intro": "They said the case was closed. They said the history was clean. But I knew better.\n\nSomeone had rewritten the timeline - a rebase so clean it almost erased the truth. Almost.\n\n'Detective, this goes deep,' my partner warned. 'Rebasing history is dangerous territory.'\n\nI smiled grimly. Danger is my middle name. Time to redeem the past.",
+  "steps": [
+    {
+      "instruction": "View the complete history including all refs.",
+      "narrative": "The official history was sanitized, but ghosts remain. I needed to see everything.",
+      "expected_commands": [
+        "git reflog",
+        "git log --all"
+      ],
+      "hint": "Show reference logs or all commits",
+      "points": 35
+    },
+    {
+      "instruction": "Start an interactive rebase of the last 3 commits.",
+      "narrative": "Time to dive into the timeline and examine each commit closely.",
+      "expected_commands": [
+        "git rebase -i HEAD~3"
+      ],
+      "hint": "Start interactive rebase for last 3 commits",
+      "points": 40
+    },
+    {
+      "instruction": "Stash your current changes before the operation.",
+      "narrative": "Before going deeper, I needed to secure my current findings.",
+      "expected_commands": [
+        "git stash",
+        "git stash push"
+      ],
+      "hint": "Temporarily store modified tracked files",
+      "points": 40
+    },
+    {
+      "instruction": "Apply the stashed changes back.",
+      "narrative": "Operation complete. Time to restore my secured evidence.",
+      "expected_commands": [
+        "git stash pop",
+        "git stash apply"
+      ],
+      "hint": "Restore stashed changes",
+      "points": 40
+    },
+    {
+      "instruction": "Reset the last commit but keep the changes staged.",
+      "narrative": "The final piece. Undo the cover-up while preserving the evidence.",
+      "expected_commands": [
+        "git reset --soft HEAD~1",
+        "git reset --soft HEAD^"
+      ],
+      "hint": "Reset to previous commit, keep changes staged",
+      "points": 45
+    }
+  ]
+}

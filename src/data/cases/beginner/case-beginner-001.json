@@ -1,0 +1,62 @@
+{
+  "id": "case-001",
+  "title": "THE MISSING COMMIT",
+  "description": "A critical commit has vanished from the repository. Track it down before it's too late.",
+  "difficulty": "Beginner",
+  "unlock_cost": 0,
+  "total_points": 100,
+  "story_intro": "The rain pelted against my office window as the phone rang. Another case.\n\n'Detective, we have a situation,' the voice trembled. 'Our repository... someone's tampered with the history. A crucial commit has disappeared.'\n\nI grabbed my coat. Time to investigate the crime scene - a Git repository with secrets buried in its logs.",
+  "steps": [
+    {
+      "instruction": "First, let's check the commit history to see what's been going on.",
+      "narrative": "I walked into the dark server room. The humming machines cast eerie shadows. To find what's missing, I needed to see the full picture.",
+      "expected_commands": [
+        "git log",
+        "git log --oneline",
+        "git log -a"
+      ],
+      "hint": "Use the command to view commit history",
+      "points": 20
+    },
+    {
+      "instruction": "Something looks wrong. Check the status of the working directory.",
+      "narrative": "The logs revealed a gap - commits that should exist were nowhere to be seen. I needed to check the current state of affairs.",
+      "expected_commands": [
+        "git status"
+      ],
+      "hint": "Check the current state of your repository",
+      "points": 20
+    },
+    {
+      "instruction": "Let's see what changes were made but not yet staged.",
+      "narrative": "Clues were scattered everywhere. Unstaged changes might hold the key to this mystery.",
+      "expected_commands": [
+        "git diff",
+        "git diff HEAD"
+      ],
+      "hint": "Show changes between commits, commit and working tree",
+      "points": 20
+    },
+    {
+      "instruction": "Stage all the evidence - add all changes to the staging area.",
+      "narrative": "I gathered all the evidence carefully. Every piece matters in solving this case.",
+      "expected_commands": [
+        "git add .",
+        "git add -A",
+        "git add --all"
+      ],
+      "hint": "Stage all changes for commit",
+      "points": 20
+    },
+    {
+      "instruction": "Seal the evidence with a commit. The message should be 'Case solved'",
+      "narrative": "With all evidence collected, it was time to close this chapter. The missing commit would be replaced with our findings.",
+      "expected_commands": [
+        "git commit -m \"Case solved\"",
+        "git commit -m 'Case solved'"
+      ],
+      "hint": "Commit your staged changes with a message",
+      "points": 20
+    }
+  ]
+}

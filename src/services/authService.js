@@ -25,13 +25,18 @@ export const getCurrentUser = () => {
 const persistUserProfile = async (user) => {
   if (!user?.id) return;
 
+  const availableReputation =
+    user.available_reputation ?? user.reputation ?? 0;
+  const earnedReputation = user.earned_reputation ?? user.reputation ?? 0;
+
   const userDocRef = doc(db, USERS_COLLECTION, user.id);
   await setDoc(
     userDocRef,
     {
       display_name: user.username,
       email: user.email || "",
-      reputation: user.reputation ?? 0,
+      earned_reputation: earnedReputation,
+      available_reputation: availableReputation,
       completed_cases: user.completed_cases ?? [],
       case_progress: user.case_progress ?? {},
       created_at: user.created_at || new Date().toISOString(),
@@ -63,7 +68,24 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   const userDocRef = doc(db, USERS_COLLECTION, firebaseUser.uid);
   const userSnapshot = await getDoc(userDocRef);
   const dbUser = userSnapshot.exists() ? userSnapshot.data() : null;
-  const shouldPersistProfile = persistProfile || !dbUser;
+  const needsReputationMigration =
+    !dbUser ||
+    dbUser.earned_reputation === undefined ||
+    dbUser.available_reputation === undefined;
+  const shouldPersistProfile = persistProfile || needsReputationMigration;
+
+  const availableReputation =
+    dbUser?.available_reputation ??
+    dbUser?.reputation ??
+    storedUser?.available_reputation ??
+    storedUser?.reputation ??
+    0;
+  const earnedReputation =
+    dbUser?.earned_reputation ??
+    dbUser?.reputation ??
+    storedUser?.earned_reputation ??
+    storedUser?.reputation ??
+    0;
 
   const defaultUsername =
     firebaseUser.displayName ||
@@ -79,7 +101,9 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
       defaultUsername,
     email: firebaseUser.email || storedUser?.email || "",
     password: storedUser?.password || password,
-    reputation: dbUser?.reputation ?? storedUser?.reputation ?? 0,
+    earned_reputation: earnedReputation,
+    available_reputation: availableReputation,
+    reputation: availableReputation,
     completed_cases:
       dbUser?.completed_cases ?? storedUser?.completed_cases ?? [],
     case_progress: dbUser?.case_progress ?? storedUser?.case_progress ?? {},

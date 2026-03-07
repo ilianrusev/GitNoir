@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../App";
 import { getCases, getUserProgress, unlockCase } from "../services/gameService";
-import { Lock, Play, ArrowLeft, Filter } from "lucide-react";
+import { ArrowLeft, Filter } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Progress } from "../components/ui/progress";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import {
 } from "../components/ui/dropdown-menu";
 import { toast } from "sonner";
 import Header from "../components/Header";
+import SingleCase from "../components/SingleCase";
 
 export default function CasesPage() {
   const { refreshUser } = useAuth();
@@ -50,7 +50,7 @@ export default function CasesPage() {
   };
 
   const canUnlock = (caseData) => {
-    return (progress?.reputation || 0) >= caseData.unlock_cost;
+    return (progress?.available_reputation || 0) >= caseData.unlock_cost;
   };
 
   const getCaseStatus = (caseData) => {
@@ -74,7 +74,7 @@ export default function CasesPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      <Header reputation={progress?.reputation || 0} />
+      <Header reputation={progress?.available_reputation || 0} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
@@ -155,126 +155,17 @@ export default function CasesPage() {
             const caseProgress = progress?.case_progress?.[caseData.id];
 
             return (
-              <div
+              <SingleCase
                 key={caseData.id}
-                className="case-file animate-fade-in"
-                style={{ animationDelay: `${index * 0.05}s` }}
-                data-testid={`case-file-${caseData.id}`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`badge-difficulty ${
-                        caseData.difficulty === "Beginner"
-                          ? "badge-beginner"
-                          : caseData.difficulty === "Intermediate"
-                            ? "badge-intermediate"
-                            : "badge-advanced"
-                      }`}
-                    >
-                      {caseData.difficulty}
-                    </span>
-                    {status === "completed" && (
-                      <span className="font-mono text-xs text-[#00ff41] px-2 py-1 border border-[#00ff41]">
-                        SOLVED
-                      </span>
-                    )}
-                    {status === "in_progress" && (
-                      <span className="font-mono text-xs text-[#ffb703] px-2 py-1 border border-[#ffb703]">
-                        IN PROGRESS
-                      </span>
-                    )}
-                  </div>
-                  <span className="font-mono text-sm text-[#ffb703]">
-                    {caseData.total_points} PTS
-                  </span>
-                </div>
-
-                <h3
-                  className={`font-typewriter text-2xl text-[#e5e5e5] mb-3 ${status === "completed" ? "line-through opacity-60" : ""}`}
-                >
-                  {caseData.title}
-                </h3>
-                <p
-                  className={`text-[#a3a3a3] mb-6 leading-relaxed ${status === "completed" ? "line-through opacity-60" : ""}`}
-                >
-                  {caseData.description}
-                </p>
-
-                <div className="p-4 bg-[#0c0c0c] border border-[#222] mb-6">
-                  <p className="font-typewriter text-sm text-[#666] italic line-clamp-3">
-                    "{caseData.story_intro.split("\n")[0]}"
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <span className="font-mono text-xs text-[#666]">
-                      {caseData.steps.length} STEPS
-                    </span>
-                    {!unlocked && (
-                      <span className="font-mono text-xs text-[#666] flex items-center gap-1">
-                        <Lock className="w-3 h-3" />
-                        {caseData.unlock_cost} REP
-                      </span>
-                    )}
-                  </div>
-
-                  {unlocked ? (
-                    <Link to={`/game/${caseData.id}`}>
-                      <Button
-                        className={
-                          status === "completed" ? "btn-outline" : "btn-primary"
-                        }
-                        data-testid={`play-case-${caseData.id}`}
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        {status === "completed"
-                          ? "Replay"
-                          : status === "in_progress"
-                            ? "Continue"
-                            : "Start Case"}
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Button
-                      className={
-                        canUnlock(caseData)
-                          ? "btn-primary"
-                          : "btn-outline opacity-50"
-                      }
-                      onClick={() =>
-                        canUnlock(caseData) && handleUnlock(caseData)
-                      }
-                      disabled={!canUnlock(caseData)}
-                      data-testid={`unlock-case-${caseData.id}`}
-                    >
-                      <Lock className="w-4 h-4 mr-2" />
-                      Unlock ({caseData.unlock_cost} REP)
-                    </Button>
-                  )}
-                </div>
-
-                {caseProgress && status === "in_progress" && (
-                  <div className="mt-6 pt-4 border-t border-[#222]">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-mono text-xs text-[#666]">
-                        PROGRESS
-                      </span>
-                      <span className="font-mono text-xs text-[#ffb703]">
-                        {caseProgress.current_step} / {caseData.steps.length}
-                      </span>
-                    </div>
-                    <Progress
-                      value={
-                        (caseProgress.current_step / caseData.steps.length) *
-                        100
-                      }
-                      className="h-1 bg-[#1a1a1a]"
-                    />
-                  </div>
-                )}
-              </div>
+                caseData={caseData}
+                status={status}
+                unlocked={unlocked}
+                caseProgress={caseProgress}
+                animationDelay={`${index * 0.05}s`}
+                variant="cases"
+                canUnlock={canUnlock(caseData)}
+                onUnlock={handleUnlock}
+              />
             );
           })}
         </div>

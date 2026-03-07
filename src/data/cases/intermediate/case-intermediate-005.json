@@ -1,0 +1,50 @@
+{
+  "id": "case-012",
+  "title": "THE BLAME GAME",
+  "description": "Track down who wrote each line of code. Someone introduced a bug - find them.",
+  "difficulty": "Intermediate",
+  "unlock_cost": 200,
+  "total_points": 150,
+  "story_intro": "The system crashed. Millions lost. 'WHO DID THIS?' the chief demanded.\n\nSomewhere in that file, someone wrote a bad line of code. Git remembers everything - every line, every author, every timestamp.\n\nTime to play the blame game.",
+  "steps": [
+    {
+      "instruction": "Use git blame on 'suspect-file.js' to see who wrote each line.",
+      "narrative": "Every line has an author. Let's see who wrote what.",
+      "expected_commands": [
+        "git blame suspect-file.js"
+      ],
+      "hint": "Show who last modified each line",
+      "points": 35
+    },
+    {
+      "instruction": "Show blame for only lines 10 to 20 of the file.",
+      "narrative": "The bug is in that section. Focus the investigation.",
+      "expected_commands": [
+        "git blame -L 10,20 suspect-file.js",
+        "git blame -L10,20 suspect-file.js"
+      ],
+      "hint": "Blame specific line range",
+      "points": 35
+    },
+    {
+      "instruction": "Use git log to see all commits that touched 'suspect-file.js'.",
+      "narrative": "Who has been modifying this file? Show me everyone.",
+      "expected_commands": [
+        "git log -- suspect-file.js",
+        "git log suspect-file.js"
+      ],
+      "hint": "Show commits affecting a specific file",
+      "points": 40
+    },
+    {
+      "instruction": "Show what changed in the file across the last 5 commits.",
+      "narrative": "Trace the recent modifications. The bug is recent.",
+      "expected_commands": [
+        "git log -p -5 -- suspect-file.js",
+        "git log -5 -p suspect-file.js"
+      ],
+      "hint": "Show patches for recent commits on file",
+      "points": 40
+    }
+  ]
+}

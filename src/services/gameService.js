@@ -1,6 +1,17 @@
 // Mock data service - handles all game data locally without backend
-import casesData from "../data/cases.json";
 import { getCurrentUser, saveUser } from "./authService";
+
+const caseModules = import.meta.glob("../data/cases/**/*.json", {
+  eager: true,
+});
+
+const casesData = Object.values(caseModules)
+  .map((module) => module.default)
+  .sort((a, b) => {
+    const first = Number(String(a.id || "").replace(/[^0-9]/g, ""));
+    const second = Number(String(b.id || "").replace(/[^0-9]/g, ""));
+    return first - second;
+  });
 
 const STORAGE_KEYS = {
   LEADERBOARD: "git_quest_leaderboard",
@@ -8,12 +19,12 @@ const STORAGE_KEYS = {
 
 // Get all cases
 export const getCases = () => {
-  return casesData.cases;
+  return casesData;
 };
 
 // Get a single case by ID
 export const getCaseById = (caseId) => {
-  return casesData.cases.find((c) => c.id === caseId);
+  return casesData.find((c) => c.id === caseId);
 };
 
 const saveGameUser = (user, options = {}) => {
@@ -21,14 +32,30 @@ const saveGameUser = (user, options = {}) => {
   updateLeaderboard(user);
 };
 
+const normalizeReputation = (user) => {
+  if (!user) return user;
+
+  const availableReputation =
+    user.available_reputation ?? user.reputation ?? 0;
+  const earnedReputation = user.earned_reputation ?? user.reputation ?? 0;
+
+  user.available_reputation = availableReputation;
+  user.earned_reputation = earnedReputation;
+  user.reputation = availableReputation;
+
+  return user;
+};
+
 // Get user progress
 export const getUserProgress = () => {
-  const user = getCurrentUser();
+  const user = normalizeReputation(getCurrentUser());
   if (!user) return null;
 
   return {
     user_id: user.id,
-    reputation: user.reputation,
+    reputation: user.available_reputation,
+    available_reputation: user.available_reputation,
+    earned_reputation: user.earned_reputation,
     completed_cases: user.completed_cases,
     case_progress: user.case_progress,
   };
@@ -37,7 +64,7 @@ export const getUserProgress = () => {
 // Check if case is unlocked
 export const isCaseUnlocked = (caseId) => {
   const caseData = getCaseById(caseId);
-  const user = getCurrentUser();
+  const user = normalizeReputation(getCurrentUser());
 
   if (!caseData) return false;
   if (caseData.unlock_cost === 0) return true;
@@ -45,13 +72,13 @@ export const isCaseUnlocked = (caseId) => {
   if (user.completed_cases.includes(caseId)) return true;
   if (user.case_progress[caseId]) return true;
 
-  return user.reputation >= caseData.unlock_cost;
+  return user.available_reputation >= caseData.unlock_cost;
 };
 
 // Unlock a case
 export const unlockCase = (caseId) => {
   const caseData = getCaseById(caseId);
-  const user = getCurrentUser();
+  const user = normalizeReputation(getCurrentUser());
 
   if (!caseData) throw new Error("Case not found");
   if (!user) throw new Error("Not authenticated");
@@ -65,14 +92,15 @@ export const unlockCase = (caseId) => {
   }
 
   // Check if can afford
-  if (user.reputation < caseData.unlock_cost) {
+  if (user.available_reputation < caseData.unlock_cost) {
     throw new Error(
-      `Not enough reputation. Need ${caseData.unlock_cost}, have ${user.reputation}`,
+      `Not enough reputation. Need ${caseData.unlock_cost}, have ${user.available_reputation}`,
     );
   }
 
   // Deduct cost and unlock
-  user.reputation -= caseData.unlock_cost;
+  user.available_reputation -= caseData.unlock_cost;
+  user.reputation = user.available_reputation;
   user.case_progress[caseId] = {
     current_step: 0,
     completed_steps: [],
@@ -91,7 +119,7 @@ export const validateCommand = (
   isReplay = false,
 ) => {
   const caseData = getCaseById(caseId);
-  const user = getCurrentUser();
+  const user = normalizeReputation(getCurrentUser());
 
   if (!caseData) throw new Error("Case not found");
   if (!user) throw new Error("Not authenticated");
@@ -137,7 +165,9 @@ export const validateCommand = (
       pointsEarned = step.points;
       caseProgress.completed_steps.push(stepIndex);
       caseProgress.earned_points += pointsEarned;
-      user.reputation += pointsEarned;
+      user.earned_reputation += pointsEarned;
+      user.available_reputation += pointsEarned;
+      user.reputation = user.available_reputation;
     } else {
       // Still track progress for replay but no points
       if (!caseProgress.completed_steps.includes(stepIndex)) {
@@ -192,31 +222,41 @@ export const validateCommand = (
 
 // Update leaderboard
 const updateLeaderboard = (user) => {
+  const normalizedUser = normalizeReputation(user);
   let leaderboard = getLeaderboard();
 
   // Find and update or add user
   const existingIndex = leaderboard.findIndex(
-    (entry) => entry.username === user.username,
+    (entry) => entry.username === normalizedUser.username,
   );
 
   if (existingIndex >= 0) {
     leaderboard[existingIndex] = {
-      username: user.username,
-      reputation: user.reputation,
-      cases_solved: user.completed_cases.length,
+      username: normalizedUser.username,
+      earned_reputation: normalizedUser.earned_reputation,
+      available_reputation: normalizedUser.available_reputation,
+      cases_solved: normalizedUser.completed_cases.length,
     };
   } else {
     leaderboard.push({
-      username: user.username,
-      reputation: user.reputation,
-      cases_solved: user.completed_cases.length,
+      username: normalizedUser.username,
+      earned_reputation: normalizedUser.earned_reputation,
+      available_reputation: normalizedUser.available_reputation,
+      cases_solved: normalizedUser.completed_cases.length,
     });
   }
 
-  // Sort by reputation and assign ranks
-  leaderboard.sort((a, b) => b.reputation - a.reputation);
+  // Sort by earned reputation and assign ranks
+  leaderboard.sort(
+    (a, b) =>
+      (b.earned_reputation ?? b.reputation ?? 0) -
+      (a.earned_reputation ?? a.reputation ?? 0),
+  );
   leaderboard = leaderboard.slice(0, 10).map((entry, index) => ({
     ...entry,
+    earned_reputation: entry.earned_reputation ?? entry.reputation ?? 0,
+    available_reputation:
+      entry.available_reputation ?? entry.reputation ?? 0,
     rank: index + 1,
   }));
 
@@ -226,13 +266,22 @@ const updateLeaderboard = (user) => {
 // Get leaderboard
 export const getLeaderboard = () => {
   const data = localStorage.getItem(STORAGE_KEYS.LEADERBOARD);
-  return data ? JSON.parse(data) : [];
+  if (!data) return [];
+
+  const parsed = JSON.parse(data);
+  return parsed.map((entry) => ({
+    ...entry,
+    earned_reputation: entry.earned_reputation ?? entry.reputation ?? 0,
+    available_reputation: entry.available_reputation ?? entry.reputation ?? 0,
+  }));
 };
 
 // Reset all progress (for testing)
 export const resetProgress = () => {
-  const user = getCurrentUser();
+  const user = normalizeReputation(getCurrentUser());
   if (user) {
+    user.available_reputation = 0;
+    user.earned_reputation = 0;
     user.reputation = 0;
     user.completed_cases = [];
     user.case_progress = {};

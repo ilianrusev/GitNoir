@@ -41,7 +41,7 @@ export default function NotebookPage() {
     if (caseData.unlock_cost === 0) return true;
     if (progress?.completed_cases?.includes(caseData.id)) return true;
     if (progress?.case_progress?.[caseData.id]) return true;
-    return (progress?.reputation || 0) >= caseData.unlock_cost;
+    return (progress?.available_reputation || 0) >= caseData.unlock_cost;
   };
 
   const copyCommand = (command) => {
@@ -151,7 +151,7 @@ export default function NotebookPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      <Header reputation={progress?.reputation || 0} />
+      <Header reputation={progress?.available_reputation || 0} />
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12">

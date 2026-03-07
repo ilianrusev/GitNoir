@@ -1,0 +1,51 @@
+{
+  "id": "case-014",
+  "title": "THE COMPARISON FILES",
+  "description": "Compare different versions of evidence. Spot the differences between branches and commits.",
+  "difficulty": "Intermediate",
+  "unlock_cost": 175,
+  "total_points": 135,
+  "story_intro": "Two versions of the same document. 'They look identical,' the rookie said.\n\nI shook my head. 'Nothing is ever identical. There are always differences. You just need to know how to look.'\n\nGit diff - the detective's magnifying glass.",
+  "steps": [
+    {
+      "instruction": "Show differences between the working directory and staging area.",
+      "narrative": "What changed since we last staged?",
+      "expected_commands": [
+        "git diff"
+      ],
+      "hint": "Show unstaged changes",
+      "points": 25
+    },
+    {
+      "instruction": "Show differences between staging area and last commit.",
+      "narrative": "What's staged but not yet committed?",
+      "expected_commands": [
+        "git diff --staged",
+        "git diff --cached"
+      ],
+      "hint": "Show staged changes",
+      "points": 30
+    },
+    {
+      "instruction": "Compare the current branch with the 'suspect' branch.",
+      "narrative": "How does our investigation differ from theirs?",
+      "expected_commands": [
+        "git diff suspect",
+        "git diff main..suspect",
+        "git diff HEAD..suspect"
+      ],
+      "hint": "Compare branches",
+      "points": 35
+    },
+    {
+      "instruction": "Show differences for only the file 'clue.txt' between two commits.",
+      "narrative": "Focus on one piece of evidence across versions.",
+      "expected_commands": [
+        "git diff HEAD~2 HEAD -- clue.txt",
+        "git diff HEAD~2..HEAD -- clue.txt"
+      ],
+      "hint": "Diff specific file between commits",
+      "points": 45
+    }
+  ]
+}

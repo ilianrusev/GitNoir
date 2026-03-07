@@ -1,0 +1,63 @@
+{
+  "id": "case-003",
+  "title": "THE MERGE MURDER",
+  "description": "Two parallel investigations must become one. But merging them reveals a deadly conflict.",
+  "difficulty": "Intermediate",
+  "unlock_cost": 150,
+  "total_points": 150,
+  "story_intro": "The phone call came at midnight. 'Detective, we have a merge conflict. And this time... it's fatal.'\n\nTwo teams had been investigating the same case from different angles. Now their findings needed to come together. But the merge revealed inconsistencies - someone was lying.\n\nI grabbed my fedora. Resolving conflicts is messy business, but someone's gotta do it.",
+  "steps": [
+    {
+      "instruction": "First, make sure you're on the main branch.",
+      "narrative": "Before any merge, I needed solid ground. The main branch was my anchor.",
+      "expected_commands": [
+        "git checkout main",
+        "git switch main",
+        "git checkout master",
+        "git switch master"
+      ],
+      "hint": "Switch to the main/master branch",
+      "points": 25
+    },
+    {
+      "instruction": "Merge the 'evidence' branch into main.",
+      "narrative": "It was time to combine the evidence. Two stories would become one - or expose a liar.",
+      "expected_commands": [
+        "git merge evidence"
+      ],
+      "hint": "Merge the evidence branch",
+      "points": 30
+    },
+    {
+      "instruction": "Check the status to see the conflict details.",
+      "narrative": "The merge failed. Conflicting testimonies. I needed to see exactly where the stories didn't match.",
+      "expected_commands": [
+        "git status"
+      ],
+      "hint": "Check what files have conflicts",
+      "points": 30
+    },
+    {
+      "instruction": "After resolving conflicts manually, stage the resolved files.",
+      "narrative": "I pieced together the truth from both versions. Now to mark the conflict as resolved.",
+      "expected_commands": [
+        "git add .",
+        "git add -A",
+        "git add --all"
+      ],
+      "hint": "Stage the resolved files",
+      "points": 30
+    },
+    {
+      "instruction": "Complete the merge with a commit.",
+      "narrative": "The truth was finally clear. One story, resolved. Case closed.",
+      "expected_commands": [
+        "git commit",
+        "git commit -m \"Merge resolved\"",
+        "git commit -m 'Merge resolved'"
+      ],
+      "hint": "Commit to complete the merge",
+      "points": 35
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "case-017",
+  "title": "THE WORKTREE PARALLEL",
+  "description": "Work on multiple branches simultaneously without switching. Advanced multitasking.",
+  "difficulty": "Advanced",
+  "unlock_cost": 500,
+  "total_points": 210,
+  "story_intro": "Three cases demanded my attention simultaneously. Switching branches constantly was killing my productivity.\n\nThen I discovered worktrees - multiple working directories, each on a different branch, all from one repository.\n\nTime to work in parallel dimensions.",
+  "steps": [
+    {
+      "instruction": "Create a new worktree for the 'urgent-case' branch in '../urgent' folder.",
+      "narrative": "Create a parallel workspace for the urgent investigation.",
+      "expected_commands": [
+        "git worktree add ../urgent urgent-case"
+      ],
+      "hint": "Add a new worktree for a branch",
+      "points": 45
+    },
+    {
+      "instruction": "List all worktrees associated with this repository.",
+      "narrative": "See all my parallel workspaces.",
+      "expected_commands": [
+        "git worktree list"
+      ],
+      "hint": "Show all worktrees",
+      "points": 35
+    },
+    {
+      "instruction": "Create a new worktree with a new branch 'cold-case' in '../cold' folder.",
+      "narrative": "Start a new investigation in its own space.",
+      "expected_commands": [
+        "git worktree add -b cold-case ../cold",
+        "git worktree add ../cold -b cold-case"
+      ],
+      "hint": "Add worktree with new branch",
+      "points": 45
+    },
+    {
+      "instruction": "Remove the worktree at '../urgent' after the case is closed.",
+      "narrative": "Clean up. The urgent case is solved.",
+      "expected_commands": [
+        "git worktree remove ../urgent"
+      ],
+      "hint": "Remove a worktree",
+      "points": 40
+    },
+    {
+      "instruction": "Prune stale worktree information.",
+      "narrative": "Clean up references to deleted worktrees.",
+      "expected_commands": [
+        "git worktree prune"
+      ],
+      "hint": "Clean up worktree administrative files",
+      "points": 45
+    }
+  ]
+}

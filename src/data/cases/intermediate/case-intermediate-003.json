@@ -1,0 +1,59 @@
+{
+  "id": "case-010",
+  "title": "THE TAG TEAM TAKEDOWN",
+  "description": "Mark important milestones in the investigation. Tags are permanent markers in history.",
+  "difficulty": "Intermediate",
+  "unlock_cost": 200,
+  "total_points": 140,
+  "story_intro": "The case was sprawling across months of commits. 'How do we mark the key moments?' my partner asked.\n\n'Tags,' I replied. 'Permanent markers that never move. When we crack a major lead, we tag it. Future detectives will thank us.'\n\nTime to mark our territory in history.",
+  "steps": [
+    {
+      "instruction": "Create a lightweight tag called 'arrest-v1' on the current commit.",
+      "narrative": "The first arrest was made. Mark this moment.",
+      "expected_commands": [
+        "git tag arrest-v1"
+      ],
+      "hint": "Create a simple tag",
+      "points": 25
+    },
+    {
+      "instruction": "Create an annotated tag 'case-closed-v1' with message 'First case closure'.",
+      "narrative": "For major milestones, annotated tags carry more weight - they have messages.",
+      "expected_commands": [
+        "git tag -a case-closed-v1 -m \"First case closure\"",
+        "git tag -a case-closed-v1 -m 'First case closure'"
+      ],
+      "hint": "Create an annotated tag with a message",
+      "points": 30
+    },
+    {
+      "instruction": "List all tags in the repository.",
+      "narrative": "Let's see all our marked milestones.",
+      "expected_commands": [
+        "git tag",
+        "git tag -l",
+        "git tag --list"
+      ],
+      "hint": "List all tags",
+      "points": 25
+    },
+    {
+      "instruction": "Show details of the 'case-closed-v1' tag.",
+      "narrative": "Examine the annotated tag - who created it and when.",
+      "expected_commands": [
+        "git show case-closed-v1"
+      ],
+      "hint": "Display tag information",
+      "points": 30
+    },
+    {
+      "instruction": "Delete the tag 'arrest-v1' - wrong suspect.",
+      "narrative": "We tagged the wrong moment. Remove that marker.",
+      "expected_commands": [
+        "git tag -d arrest-v1"
+      ],
+      "hint": "Delete a local tag",
+      "points": 30
+    }
+  ]
+}

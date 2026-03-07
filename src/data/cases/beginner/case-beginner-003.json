@@ -1,0 +1,60 @@
+{
+  "id": "case-006",
+  "title": "THE CLONE CONSPIRACY",
+  "description": "A mysterious repository holds the key. Your first mission: obtain a copy without alerting anyone.",
+  "difficulty": "Beginner",
+  "unlock_cost": 0,
+  "total_points": 100,
+  "story_intro": "The informant's message was cryptic: 'The evidence is in repository X. Get it before they delete it.'\n\nI needed to make an exact copy of that repository - every file, every commit, every secret. But I had to be careful. One wrong move and they'd know I was onto them.\n\nTime to clone the evidence.",
+  "steps": [
+    {
+      "instruction": "Clone the repository from 'https://github.com/agency/evidence.git'",
+      "narrative": "The repository URL glowed on my screen. One command to copy everything.",
+      "expected_commands": [
+        "git clone https://github.com/agency/evidence.git"
+      ],
+      "hint": "Create a copy of a remote repository",
+      "points": 25
+    },
+    {
+      "instruction": "Navigate into the cloned repository directory called 'evidence'.",
+      "narrative": "The download completed silently. Now to enter the cloned directory.",
+      "expected_commands": [
+        "cd evidence"
+      ],
+      "hint": "Change directory into the cloned folder",
+      "points": 15
+    },
+    {
+      "instruction": "Check that the remote origin is properly configured.",
+      "narrative": "I needed to verify my connection to the source was intact.",
+      "expected_commands": [
+        "git remote -v",
+        "git remote"
+      ],
+      "hint": "View remote repository connections",
+      "points": 20
+    },
+    {
+      "instruction": "List all files to see what evidence we have.",
+      "narrative": "Time to see what secrets this repository contained.",
+      "expected_commands": [
+        "ls",
+        "ls -la",
+        "dir"
+      ],
+      "hint": "List directory contents",
+      "points": 20
+    },
+    {
+      "instruction": "View the commit history to understand the timeline.",
+      "narrative": "Every commit tells a story. I needed to read them all.",
+      "expected_commands": [
+        "git log",
+        "git log --oneline"
+      ],
+      "hint": "Show commit history",
+      "points": 20
+    }
+  ]
+}

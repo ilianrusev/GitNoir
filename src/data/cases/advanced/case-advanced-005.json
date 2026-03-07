@@ -1,0 +1,60 @@
+{
+  "id": "case-018",
+  "title": "THE REFLOG RESURRECTION",
+  "description": "They thought they erased everything. But reflog remembers. Recover the impossible.",
+  "difficulty": "Advanced",
+  "unlock_cost": 550,
+  "total_points": 230,
+  "story_intro": "'It's gone,' they said. 'We reset --hard and force pushed. The evidence is destroyed.'\n\nI laughed. They didn't know about reflog - Git's secret diary that remembers EVERYTHING. Every checkout, every reset, every move.\n\nNothing is ever truly lost.",
+  "steps": [
+    {
+      "instruction": "View the reflog to see all recent HEAD movements.",
+      "narrative": "The reflog sees all. Every action leaves a trace.",
+      "expected_commands": [
+        "git reflog",
+        "git reflog show"
+      ],
+      "hint": "Show reference log",
+      "points": 40
+    },
+    {
+      "instruction": "Find all actions from the last 2 hours.",
+      "narrative": "Narrow down the timeline of their destruction.",
+      "expected_commands": [
+        "git reflog --since=\"2 hours ago\"",
+        "git reflog --since='2 hours ago'"
+      ],
+      "hint": "Filter reflog by time",
+      "points": 45
+    },
+    {
+      "instruction": "Restore to the state from reflog entry HEAD@{3}.",
+      "narrative": "Go back to exactly that moment in time.",
+      "expected_commands": [
+        "git reset --hard HEAD@{3}"
+      ],
+      "hint": "Reset to a reflog entry",
+      "points": 50
+    },
+    {
+      "instruction": "Create a new branch from a 'lost' commit using reflog.",
+      "narrative": "Resurrect a deleted branch by finding its last commit.",
+      "expected_commands": [
+        "git branch recovered HEAD@{5}",
+        "git checkout -b recovered HEAD@{5}"
+      ],
+      "hint": "Create branch from reflog reference",
+      "points": 50
+    },
+    {
+      "instruction": "View reflog for a specific branch called 'feature'.",
+      "narrative": "See the history of just that branch.",
+      "expected_commands": [
+        "git reflog feature",
+        "git reflog show feature"
+      ],
+      "hint": "Show reflog for specific branch",
+      "points": 45
+    }
+  ]
+}

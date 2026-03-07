@@ -1,0 +1,56 @@
+{
+  "id": "case-015",
+  "title": "THE BISECT MANHUNT",
+  "description": "A bug was introduced somewhere in 100 commits. Use binary search to find it fast.",
+  "difficulty": "Advanced",
+  "unlock_cost": 400,
+  "total_points": 200,
+  "story_intro": "'The bug appeared sometime in the last 100 commits,' the developer said hopelessly. 'It could take days to find.'\n\nI smiled. 'Or minutes. Git bisect uses binary search. We'll find your culprit in about 7 steps.'\n\nThe most efficient manhunt in version control.",
+  "steps": [
+    {
+      "instruction": "Start the bisect process.",
+      "narrative": "Initialize the binary search operation.",
+      "expected_commands": [
+        "git bisect start"
+      ],
+      "hint": "Begin git bisect",
+      "points": 35
+    },
+    {
+      "instruction": "Mark the current commit as bad (it has the bug).",
+      "narrative": "We know the bug exists now. Mark this as bad.",
+      "expected_commands": [
+        "git bisect bad"
+      ],
+      "hint": "Mark current commit as buggy",
+      "points": 35
+    },
+    {
+      "instruction": "Mark commit 'abc1234' as good (before the bug existed).",
+      "narrative": "We know this old commit was working. Mark it good.",
+      "expected_commands": [
+        "git bisect good abc1234"
+      ],
+      "hint": "Mark a known-good commit",
+      "points": 40
+    },
+    {
+      "instruction": "After testing, mark the current commit as good.",
+      "narrative": "This version works. The bug must be later.",
+      "expected_commands": [
+        "git bisect good"
+      ],
+      "hint": "Mark tested commit as good",
+      "points": 40
+    },
+    {
+      "instruction": "Reset and end the bisect session.",
+      "narrative": "Investigation complete. Return to normal operations.",
+      "expected_commands": [
+        "git bisect reset"
+      ],
+      "hint": "End the bisect session",
+      "points": 50
+    }
+  ]
+}
