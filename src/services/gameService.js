@@ -46,10 +46,7 @@ const saveGameUser = (user, options = {}) => {
 const normalizeReputation = (user) => {
   if (!user) return user;
 
-  user.reputation =
-    user.reputation ?? user.available_reputation ?? user.earned_reputation ?? 0;
-  delete user.available_reputation;
-  delete user.earned_reputation;
+  user.reputation = user.reputation ?? 0;
 
   return user;
 };

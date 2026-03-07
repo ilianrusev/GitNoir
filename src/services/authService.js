@@ -8,7 +8,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { deleteField, doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
 const STORAGE_KEYS = {
@@ -16,10 +16,26 @@ const STORAGE_KEYS = {
 };
 const USERS_COLLECTION = "users";
 const googleProvider = new GoogleAuthProvider();
+let runtimeUserSnapshot = null;
+
+export const setRuntimeUserSnapshot = (user) => {
+  runtimeUserSnapshot = user ?? null;
+};
 
 export const getCurrentUser = () => {
   const userData = localStorage.getItem(STORAGE_KEYS.USER);
-  return userData ? JSON.parse(userData) : null;
+
+  if (!userData) {
+    return runtimeUserSnapshot;
+  }
+
+  try {
+    const parsedUser = JSON.parse(userData);
+    runtimeUserSnapshot = parsedUser;
+    return parsedUser;
+  } catch {
+    return runtimeUserSnapshot;
+  }
 };
 
 const persistUserProfile = async (user) => {
@@ -38,8 +54,6 @@ const persistUserProfile = async (user) => {
       case_progress: user.case_progress ?? {},
       created_at: user.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      earned_reputation: deleteField(),
-      available_reputation: deleteField(),
     },
     { merge: true },
   );
@@ -49,13 +63,10 @@ export const saveUser = (user, options = {}) => {
   const { persistProfile = true } = options;
   const normalizedUser = {
     ...user,
-    reputation:
-      user?.reputation ?? user?.available_reputation ?? user?.earned_reputation ?? 0,
+    reputation: user?.reputation ?? 0,
   };
 
-  delete normalizedUser.available_reputation;
-  delete normalizedUser.earned_reputation;
-
+  runtimeUserSnapshot = normalizedUser;
   localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(normalizedUser));
 
   if (persistProfile) {
@@ -65,6 +76,7 @@ export const saveUser = (user, options = {}) => {
 
 export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   if (!firebaseUser) {
+    runtimeUserSnapshot = null;
     localStorage.removeItem(STORAGE_KEYS.USER);
     return null;
   }
@@ -76,20 +88,12 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   const userDocRef = doc(db, USERS_COLLECTION, firebaseUser.uid);
   const userSnapshot = await getDoc(userDocRef);
   const dbUser = userSnapshot.exists() ? userSnapshot.data() : null;
-  const needsReputationMigration =
-    !dbUser ||
-    dbUser.reputation === undefined ||
-    dbUser.earned_reputation !== undefined ||
-    dbUser.available_reputation !== undefined;
+  const needsReputationMigration = !dbUser || dbUser.reputation === undefined;
   const shouldPersistProfile = persistProfile || needsReputationMigration;
 
   const reputation =
     dbUser?.reputation ??
-    dbUser?.available_reputation ??
-    dbUser?.earned_reputation ??
     storedUser?.reputation ??
-    storedUser?.available_reputation ??
-    storedUser?.earned_reputation ??
     0;
 
   const defaultUsername =
@@ -238,6 +242,7 @@ export const logoutUser = async () => {
       logoutErrors[error.code] || "Logout failed. Please try again.";
     throw new Error(message);
   } finally {
+    runtimeUserSnapshot = null;
     localStorage.removeItem(STORAGE_KEYS.USER);
   }
 };

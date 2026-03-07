@@ -10,6 +10,7 @@ import {
   loginWithGoogleUser,
   registerUser,
   logoutUser,
+  setRuntimeUserSnapshot,
   syncUserFromFirebaseUser,
 } from "./services/authService";
 
@@ -66,6 +67,10 @@ const AuthProvider = ({ children }) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    setRuntimeUserSnapshot(user);
+  }, [user]);
 
   const login = async (email, password) => {
     const userData = await loginUser(email, password);
