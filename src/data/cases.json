@@ -1,0 +1,875 @@
+{
+  "cases": [
+    {
+      "id": "case-001",
+      "title": "THE MISSING COMMIT",
+      "description": "A critical commit has vanished from the repository. Track it down before it's too late.",
+      "difficulty": "Beginner",
+      "unlock_cost": 0,
+      "total_points": 100,
+      "story_intro": "The rain pelted against my office window as the phone rang. Another case.\n\n'Detective, we have a situation,' the voice trembled. 'Our repository... someone's tampered with the history. A crucial commit has disappeared.'\n\nI grabbed my coat. Time to investigate the crime scene - a Git repository with secrets buried in its logs.",
+      "steps": [
+        {
+          "instruction": "First, let's check the commit history to see what's been going on.",
+          "narrative": "I walked into the dark server room. The humming machines cast eerie shadows. To find what's missing, I needed to see the full picture.",
+          "expected_commands": ["git log", "git log --oneline", "git log -a"],
+          "hint": "Use the command to view commit history",
+          "points": 20
+        },
+        {
+          "instruction": "Something looks wrong. Check the status of the working directory.",
+          "narrative": "The logs revealed a gap - commits that should exist were nowhere to be seen. I needed to check the current state of affairs.",
+          "expected_commands": ["git status"],
+          "hint": "Check the current state of your repository",
+          "points": 20
+        },
+        {
+          "instruction": "Let's see what changes were made but not yet staged.",
+          "narrative": "Clues were scattered everywhere. Unstaged changes might hold the key to this mystery.",
+          "expected_commands": ["git diff", "git diff HEAD"],
+          "hint": "Show changes between commits, commit and working tree",
+          "points": 20
+        },
+        {
+          "instruction": "Stage all the evidence - add all changes to the staging area.",
+          "narrative": "I gathered all the evidence carefully. Every piece matters in solving this case.",
+          "expected_commands": ["git add .", "git add -A", "git add --all"],
+          "hint": "Stage all changes for commit",
+          "points": 20
+        },
+        {
+          "instruction": "Seal the evidence with a commit. The message should be 'Case solved'",
+          "narrative": "With all evidence collected, it was time to close this chapter. The missing commit would be replaced with our findings.",
+          "expected_commands": ["git commit -m \"Case solved\"", "git commit -m 'Case solved'"],
+          "hint": "Commit your staged changes with a message",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "case-002",
+      "title": "THE BRANCHING CONSPIRACY",
+      "description": "Multiple branches lead to different suspects. Navigate through them to find the truth.",
+      "difficulty": "Beginner",
+      "unlock_cost": 50,
+      "total_points": 120,
+      "story_intro": "The case file landed on my desk with a thud. 'The Branching Conspiracy' - a web of deceit spreading across multiple timelines.\n\n'There are at least three branches of investigation,' my contact whispered. 'Each one leads to a different suspect. But only one holds the truth.'\n\nI lit a cigarette. In this business, you learn to follow every branch until you find the root of the problem.",
+      "steps": [
+        {
+          "instruction": "List all the branches in this investigation.",
+          "narrative": "First rule of detective work - know all your leads. I needed to see every branch of this tangled case.",
+          "expected_commands": ["git branch", "git branch -a", "git branch --list"],
+          "hint": "List all branches in the repository",
+          "points": 20
+        },
+        {
+          "instruction": "Create a new branch called 'investigation' to work on.",
+          "narrative": "I couldn't contaminate the main evidence. A separate line of investigation was needed.",
+          "expected_commands": ["git branch investigation", "git checkout -b investigation", "git switch -c investigation"],
+          "hint": "Create a new branch for your investigation",
+          "points": 25
+        },
+        {
+          "instruction": "Switch to the 'investigation' branch.",
+          "narrative": "Time to dive into the shadows. I stepped into the new branch, leaving the main timeline behind.",
+          "expected_commands": ["git checkout investigation", "git switch investigation"],
+          "hint": "Switch to the investigation branch",
+          "points": 25
+        },
+        {
+          "instruction": "Check which branch you're currently on.",
+          "narrative": "In this labyrinth of branches, I needed to know exactly where I stood.",
+          "expected_commands": ["git branch", "git status", "git branch --show-current"],
+          "hint": "Show your current branch",
+          "points": 25
+        },
+        {
+          "instruction": "The investigation is complete. Delete the branch 'old-suspect' that led nowhere.",
+          "narrative": "Dead ends happen. The 'old-suspect' branch was a false lead. Time to clean up.",
+          "expected_commands": ["git branch -d old-suspect", "git branch -D old-suspect"],
+          "hint": "Delete the branch that's no longer needed",
+          "points": 25
+        }
+      ]
+    },
+    {
+      "id": "case-003",
+      "title": "THE MERGE MURDER",
+      "description": "Two parallel investigations must become one. But merging them reveals a deadly conflict.",
+      "difficulty": "Intermediate",
+      "unlock_cost": 150,
+      "total_points": 150,
+      "story_intro": "The phone call came at midnight. 'Detective, we have a merge conflict. And this time... it's fatal.'\n\nTwo teams had been investigating the same case from different angles. Now their findings needed to come together. But the merge revealed inconsistencies - someone was lying.\n\nI grabbed my fedora. Resolving conflicts is messy business, but someone's gotta do it.",
+      "steps": [
+        {
+          "instruction": "First, make sure you're on the main branch.",
+          "narrative": "Before any merge, I needed solid ground. The main branch was my anchor.",
+          "expected_commands": ["git checkout main", "git switch main", "git checkout master", "git switch master"],
+          "hint": "Switch to the main/master branch",
+          "points": 25
+        },
+        {
+          "instruction": "Merge the 'evidence' branch into main.",
+          "narrative": "It was time to combine the evidence. Two stories would become one - or expose a liar.",
+          "expected_commands": ["git merge evidence"],
+          "hint": "Merge the evidence branch",
+          "points": 30
+        },
+        {
+          "instruction": "Check the status to see the conflict details.",
+          "narrative": "The merge failed. Conflicting testimonies. I needed to see exactly where the stories didn't match.",
+          "expected_commands": ["git status"],
+          "hint": "Check what files have conflicts",
+          "points": 30
+        },
+        {
+          "instruction": "After resolving conflicts manually, stage the resolved files.",
+          "narrative": "I pieced together the truth from both versions. Now to mark the conflict as resolved.",
+          "expected_commands": ["git add .", "git add -A", "git add --all"],
+          "hint": "Stage the resolved files",
+          "points": 30
+        },
+        {
+          "instruction": "Complete the merge with a commit.",
+          "narrative": "The truth was finally clear. One story, resolved. Case closed.",
+          "expected_commands": ["git commit", "git commit -m \"Merge resolved\"", "git commit -m 'Merge resolved'"],
+          "hint": "Commit to complete the merge",
+          "points": 35
+        }
+      ]
+    },
+    {
+      "id": "case-004",
+      "title": "THE REMOTE SYNDICATE",
+      "description": "A criminal network operates across remote servers. Connect and gather intelligence.",
+      "difficulty": "Intermediate",
+      "unlock_cost": 300,
+      "total_points": 180,
+      "story_intro": "'They call themselves The Remote Syndicate,' the informant said, glancing nervously around the dimly lit bar.\n\n'They operate across multiple servers - origin, upstream, backup. Push and pull information like ghosts in the network.'\n\nI adjusted my hat. To catch a network, you need to think like a network. Time to go remote.",
+      "steps": [
+        {
+          "instruction": "List all remote connections in this repository.",
+          "narrative": "First, I needed to map the network. Every remote connection was a potential lead.",
+          "expected_commands": ["git remote", "git remote -v"],
+          "hint": "Show all remote repositories",
+          "points": 30
+        },
+        {
+          "instruction": "Fetch the latest intel from the origin remote.",
+          "narrative": "Information flows constantly in this network. Time to intercept the latest transmissions.",
+          "expected_commands": ["git fetch", "git fetch origin"],
+          "hint": "Download objects and refs from the remote",
+          "points": 35
+        },
+        {
+          "instruction": "Pull the latest changes from origin main.",
+          "narrative": "I needed everything they had. A full download of their latest operations.",
+          "expected_commands": ["git pull", "git pull origin main", "git pull origin master"],
+          "hint": "Fetch and integrate remote changes",
+          "points": 35
+        },
+        {
+          "instruction": "Push your investigation findings to the remote.",
+          "narrative": "Time to share my findings with headquarters. The evidence needed to be backed up.",
+          "expected_commands": ["git push", "git push origin", "git push origin main", "git push origin master"],
+          "hint": "Upload your local commits to the remote",
+          "points": 40
+        },
+        {
+          "instruction": "Add a new remote called 'backup' with URL 'https://backup.agency.git'",
+          "narrative": "Never keep all your eggs in one basket. A backup remote for redundancy.",
+          "expected_commands": ["git remote add backup https://backup.agency.git"],
+          "hint": "Add a new remote repository",
+          "points": 40
+        }
+      ]
+    },
+    {
+      "id": "case-005",
+      "title": "THE REBASE REDEMPTION",
+      "description": "History has been rewritten. Use advanced techniques to uncover the original timeline.",
+      "difficulty": "Advanced",
+      "unlock_cost": 500,
+      "total_points": 200,
+      "story_intro": "They said the case was closed. They said the history was clean. But I knew better.\n\nSomeone had rewritten the timeline - a rebase so clean it almost erased the truth. Almost.\n\n'Detective, this goes deep,' my partner warned. 'Rebasing history is dangerous territory.'\n\nI smiled grimly. Danger is my middle name. Time to redeem the past.",
+      "steps": [
+        {
+          "instruction": "View the complete history including all refs.",
+          "narrative": "The official history was sanitized, but ghosts remain. I needed to see everything.",
+          "expected_commands": ["git reflog", "git log --all"],
+          "hint": "Show reference logs or all commits",
+          "points": 35
+        },
+        {
+          "instruction": "Start an interactive rebase of the last 3 commits.",
+          "narrative": "Time to dive into the timeline and examine each commit closely.",
+          "expected_commands": ["git rebase -i HEAD~3"],
+          "hint": "Start interactive rebase for last 3 commits",
+          "points": 40
+        },
+        {
+          "instruction": "Stash your current changes before the operation.",
+          "narrative": "Before going deeper, I needed to secure my current findings.",
+          "expected_commands": ["git stash", "git stash push"],
+          "hint": "Temporarily store modified tracked files",
+          "points": 40
+        },
+        {
+          "instruction": "Apply the stashed changes back.",
+          "narrative": "Operation complete. Time to restore my secured evidence.",
+          "expected_commands": ["git stash pop", "git stash apply"],
+          "hint": "Restore stashed changes",
+          "points": 40
+        },
+        {
+          "instruction": "Reset the last commit but keep the changes staged.",
+          "narrative": "The final piece. Undo the cover-up while preserving the evidence.",
+          "expected_commands": ["git reset --soft HEAD~1", "git reset --soft HEAD^"],
+          "hint": "Reset to previous commit, keep changes staged",
+          "points": 45
+        }
+      ]
+    },
+    {
+      "id": "case-006",
+      "title": "THE CLONE CONSPIRACY",
+      "description": "A mysterious repository holds the key. Your first mission: obtain a copy without alerting anyone.",
+      "difficulty": "Beginner",
+      "unlock_cost": 0,
+      "total_points": 100,
+      "story_intro": "The informant's message was cryptic: 'The evidence is in repository X. Get it before they delete it.'\n\nI needed to make an exact copy of that repository - every file, every commit, every secret. But I had to be careful. One wrong move and they'd know I was onto them.\n\nTime to clone the evidence.",
+      "steps": [
+        {
+          "instruction": "Clone the repository from 'https://github.com/agency/evidence.git'",
+          "narrative": "The repository URL glowed on my screen. One command to copy everything.",
+          "expected_commands": ["git clone https://github.com/agency/evidence.git"],
+          "hint": "Create a copy of a remote repository",
+          "points": 25
+        },
+        {
+          "instruction": "Navigate into the cloned repository directory called 'evidence'.",
+          "narrative": "The download completed silently. Now to enter the cloned directory.",
+          "expected_commands": ["cd evidence"],
+          "hint": "Change directory into the cloned folder",
+          "points": 15
+        },
+        {
+          "instruction": "Check that the remote origin is properly configured.",
+          "narrative": "I needed to verify my connection to the source was intact.",
+          "expected_commands": ["git remote -v", "git remote"],
+          "hint": "View remote repository connections",
+          "points": 20
+        },
+        {
+          "instruction": "List all files to see what evidence we have.",
+          "narrative": "Time to see what secrets this repository contained.",
+          "expected_commands": ["ls", "ls -la", "dir"],
+          "hint": "List directory contents",
+          "points": 20
+        },
+        {
+          "instruction": "View the commit history to understand the timeline.",
+          "narrative": "Every commit tells a story. I needed to read them all.",
+          "expected_commands": ["git log", "git log --oneline"],
+          "hint": "Show commit history",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "case-007",
+      "title": "THE STAGED DECEPTION",
+      "description": "Learn to selectively stage evidence. Not everything belongs in the case file.",
+      "difficulty": "Beginner",
+      "unlock_cost": 50,
+      "total_points": 110,
+      "story_intro": "'We found multiple pieces of evidence,' the junior detective reported, 'but some of it might be planted.'\n\nIn detective work, you don't submit everything to the court. You carefully select what's relevant. Same with Git - staging is an art.\n\nI would teach them the power of selective staging.",
+      "steps": [
+        {
+          "instruction": "Check what files have been modified.",
+          "narrative": "First, survey all the evidence on the table.",
+          "expected_commands": ["git status"],
+          "hint": "Show the working tree status",
+          "points": 20
+        },
+        {
+          "instruction": "Stage only the file called 'witness.txt'.",
+          "narrative": "The witness testimony was solid. That goes in.",
+          "expected_commands": ["git add witness.txt"],
+          "hint": "Add a specific file to staging",
+          "points": 25
+        },
+        {
+          "instruction": "Verify that only witness.txt is staged.",
+          "narrative": "Double-check. In this business, mistakes cost lives.",
+          "expected_commands": ["git status"],
+          "hint": "Check the staging area",
+          "points": 20
+        },
+        {
+          "instruction": "Unstage witness.txt - we need to review it again.",
+          "narrative": "Wait. Something didn't add up. Better pull it back for review.",
+          "expected_commands": ["git reset witness.txt", "git restore --staged witness.txt", "git reset HEAD witness.txt"],
+          "hint": "Remove a file from staging area",
+          "points": 25
+        },
+        {
+          "instruction": "Now stage all .txt files at once.",
+          "narrative": "After review, all text evidence was verified. Stage them all.",
+          "expected_commands": ["git add *.txt", "git add '*.txt'"],
+          "hint": "Use a pattern to stage multiple files",
+          "points": 20
+        }
+      ]
+    },
+    {
+      "id": "case-008",
+      "title": "THE IDENTITY CRISIS",
+      "description": "Before any investigation, a detective must establish their identity. Configure Git properly.",
+      "difficulty": "Beginner",
+      "unlock_cost": 0,
+      "total_points": 90,
+      "story_intro": "The chief slammed the file on my desk. 'Your reports are coming in anonymous! How am I supposed to know who's solving these cases?'\n\nEvery commit needs an author. Every detective needs a badge. Time to configure my identity in the system.\n\nNo more anonymous work.",
+      "steps": [
+        {
+          "instruction": "Set your Git username to 'Detective Noir'.",
+          "narrative": "First, establish who I am in this system.",
+          "expected_commands": ["git config user.name \"Detective Noir\"", "git config --global user.name \"Detective Noir\"", "git config user.name 'Detective Noir'"],
+          "hint": "Configure your Git username",
+          "points": 20
+        },
+        {
+          "instruction": "Set your Git email to 'noir@detective.agency'.",
+          "narrative": "Every badge needs a contact. My agency email would do.",
+          "expected_commands": ["git config user.email \"noir@detective.agency\"", "git config --global user.email \"noir@detective.agency\"", "git config user.email 'noir@detective.agency'"],
+          "hint": "Configure your Git email",
+          "points": 20
+        },
+        {
+          "instruction": "Verify your configuration by listing all settings.",
+          "narrative": "Trust but verify. Let's see if the identity stuck.",
+          "expected_commands": ["git config --list", "git config -l"],
+          "hint": "List all Git configuration",
+          "points": 25
+        },
+        {
+          "instruction": "Check just the username configuration.",
+          "narrative": "Focus on the name - that's what shows on every case file.",
+          "expected_commands": ["git config user.name"],
+          "hint": "Get a specific config value",
+          "points": 25
+        }
+      ]
+    },
+    {
+      "id": "case-009",
+      "title": "THE DELETED EVIDENCE",
+      "description": "Critical files were removed. Learn to restore what was lost.",
+      "difficulty": "Beginner",
+      "unlock_cost": 75,
+      "total_points": 120,
+      "story_intro": "The witness panicked. 'I deleted the evidence by accident! It's gone forever!'\n\nI smiled. In Git, nothing is ever truly gone. The history remembers everything. Time to restore what they thought was lost.\n\n'Relax,' I said. 'I know a few tricks.'",
+      "steps": [
+        {
+          "instruction": "Check the status to see what files are deleted.",
+          "narrative": "First, assess the damage. What exactly was removed?",
+          "expected_commands": ["git status"],
+          "hint": "Show working tree status",
+          "points": 20
+        },
+        {
+          "instruction": "Restore the deleted file 'evidence.txt' from the last commit.",
+          "narrative": "The file exists in history. We just need to pull it back.",
+          "expected_commands": ["git restore evidence.txt", "git checkout -- evidence.txt", "git checkout evidence.txt"],
+          "hint": "Restore a file from the last commit",
+          "points": 30
+        },
+        {
+          "instruction": "Discard all local changes and restore the working directory.",
+          "narrative": "Too much was tampered with. Reset everything to the last known good state.",
+          "expected_commands": ["git restore .", "git checkout -- .", "git checkout ."],
+          "hint": "Restore all files to last commit state",
+          "points": 30
+        },
+        {
+          "instruction": "View what a file looked like 2 commits ago using show.",
+          "narrative": "I needed to see the file as it was before the tampering began.",
+          "expected_commands": ["git show HEAD~2:evidence.txt", "git show HEAD^^:evidence.txt"],
+          "hint": "Show file content from a specific commit",
+          "points": 40
+        }
+      ]
+    },
+    {
+      "id": "case-010",
+      "title": "THE TAG TEAM TAKEDOWN",
+      "description": "Mark important milestones in the investigation. Tags are permanent markers in history.",
+      "difficulty": "Intermediate",
+      "unlock_cost": 200,
+      "total_points": 140,
+      "story_intro": "The case was sprawling across months of commits. 'How do we mark the key moments?' my partner asked.\n\n'Tags,' I replied. 'Permanent markers that never move. When we crack a major lead, we tag it. Future detectives will thank us.'\n\nTime to mark our territory in history.",
+      "steps": [
+        {
+          "instruction": "Create a lightweight tag called 'arrest-v1' on the current commit.",
+          "narrative": "The first arrest was made. Mark this moment.",
+          "expected_commands": ["git tag arrest-v1"],
+          "hint": "Create a simple tag",
+          "points": 25
+        },
+        {
+          "instruction": "Create an annotated tag 'case-closed-v1' with message 'First case closure'.",
+          "narrative": "For major milestones, annotated tags carry more weight - they have messages.",
+          "expected_commands": ["git tag -a case-closed-v1 -m \"First case closure\"", "git tag -a case-closed-v1 -m 'First case closure'"],
+          "hint": "Create an annotated tag with a message",
+          "points": 30
+        },
+        {
+          "instruction": "List all tags in the repository.",
+          "narrative": "Let's see all our marked milestones.",
+          "expected_commands": ["git tag", "git tag -l", "git tag --list"],
+          "hint": "List all tags",
+          "points": 25
+        },
+        {
+          "instruction": "Show details of the 'case-closed-v1' tag.",
+          "narrative": "Examine the annotated tag - who created it and when.",
+          "expected_commands": ["git show case-closed-v1"],
+          "hint": "Display tag information",
+          "points": 30
+        },
+        {
+          "instruction": "Delete the tag 'arrest-v1' - wrong suspect.",
+          "narrative": "We tagged the wrong moment. Remove that marker.",
+          "expected_commands": ["git tag -d arrest-v1"],
+          "hint": "Delete a local tag",
+          "points": 30
+        }
+      ]
+    },
+    {
+      "id": "case-011",
+      "title": "THE CHERRY PICKER",
+      "description": "Extract specific commits from one branch to another. Surgical precision required.",
+      "difficulty": "Intermediate",
+      "unlock_cost": 250,
+      "total_points": 160,
+      "story_intro": "Two separate investigations had been running in parallel. One team found crucial evidence, but their branch was a mess.\n\n'I only need that ONE commit,' I muttered. 'Not the whole chaotic branch.'\n\nCherry-pick. Take exactly what you need, leave the rest behind.",
+      "steps": [
+        {
+          "instruction": "View the log of the 'chaotic-investigation' branch to find the good commit.",
+          "narrative": "First, identify exactly which commit contains the evidence I need.",
+          "expected_commands": ["git log chaotic-investigation", "git log chaotic-investigation --oneline"],
+          "hint": "View commits on another branch",
+          "points": 30
+        },
+        {
+          "instruction": "Make sure you're on the main branch.",
+          "narrative": "Cherry-picking brings commits TO your current branch. Get positioned.",
+          "expected_commands": ["git checkout main", "git switch main"],
+          "hint": "Switch to main branch",
+          "points": 25
+        },
+        {
+          "instruction": "Cherry-pick the commit with hash 'abc1234'.",
+          "narrative": "Extract that single commit. Surgical precision.",
+          "expected_commands": ["git cherry-pick abc1234"],
+          "hint": "Apply a specific commit to current branch",
+          "points": 40
+        },
+        {
+          "instruction": "If there's a conflict, abort the cherry-pick operation.",
+          "narrative": "Something went wrong. Abort and reassess.",
+          "expected_commands": ["git cherry-pick --abort"],
+          "hint": "Cancel an in-progress cherry-pick",
+          "points": 30
+        },
+        {
+          "instruction": "View the log to confirm the commit was applied.",
+          "narrative": "Verify the evidence is now part of our clean investigation.",
+          "expected_commands": ["git log", "git log --oneline"],
+          "hint": "Check commit history",
+          "points": 35
+        }
+      ]
+    },
+    {
+      "id": "case-012",
+      "title": "THE BLAME GAME",
+      "description": "Track down who wrote each line of code. Someone introduced a bug - find them.",
+      "difficulty": "Intermediate",
+      "unlock_cost": 200,
+      "total_points": 150,
+      "story_intro": "The system crashed. Millions lost. 'WHO DID THIS?' the chief demanded.\n\nSomewhere in that file, someone wrote a bad line of code. Git remembers everything - every line, every author, every timestamp.\n\nTime to play the blame game.",
+      "steps": [
+        {
+          "instruction": "Use git blame on 'suspect-file.js' to see who wrote each line.",
+          "narrative": "Every line has an author. Let's see who wrote what.",
+          "expected_commands": ["git blame suspect-file.js"],
+          "hint": "Show who last modified each line",
+          "points": 35
+        },
+        {
+          "instruction": "Show blame for only lines 10 to 20 of the file.",
+          "narrative": "The bug is in that section. Focus the investigation.",
+          "expected_commands": ["git blame -L 10,20 suspect-file.js", "git blame -L10,20 suspect-file.js"],
+          "hint": "Blame specific line range",
+          "points": 35
+        },
+        {
+          "instruction": "Use git log to see all commits that touched 'suspect-file.js'.",
+          "narrative": "Who has been modifying this file? Show me everyone.",
+          "expected_commands": ["git log -- suspect-file.js", "git log suspect-file.js"],
+          "hint": "Show commits affecting a specific file",
+          "points": 40
+        },
+        {
+          "instruction": "Show what changed in the file across the last 5 commits.",
+          "narrative": "Trace the recent modifications. The bug is recent.",
+          "expected_commands": ["git log -p -5 -- suspect-file.js", "git log -5 -p suspect-file.js"],
+          "hint": "Show patches for recent commits on file",
+          "points": 40
+        }
+      ]
+    },
+    {
+      "id": "case-013",
+      "title": "THE REVERT OPERATION",
+      "description": "A bad commit went to production. Undo the damage without erasing history.",
+      "difficulty": "Intermediate",
+      "unlock_cost": 225,
+      "total_points": 145,
+      "story_intro": "'The deployment broke everything!' The panicked call came at 3 AM.\n\nSomeone pushed bad code. We couldn't just delete the commit - that would destroy the audit trail. We needed to REVERT - create a new commit that undoes the damage.\n\nClean, traceable, professional.",
+      "steps": [
+        {
+          "instruction": "View the recent commits to find the bad one.",
+          "narrative": "First, identify the criminal commit.",
+          "expected_commands": ["git log --oneline", "git log"],
+          "hint": "View commit history",
+          "points": 25
+        },
+        {
+          "instruction": "Revert the commit with hash 'bad1234'.",
+          "narrative": "Create a new commit that undoes the bad one. History preserved.",
+          "expected_commands": ["git revert bad1234"],
+          "hint": "Create a commit that undoes another commit",
+          "points": 40
+        },
+        {
+          "instruction": "Revert the last commit using HEAD.",
+          "narrative": "The most recent commit was the problem. Undo it.",
+          "expected_commands": ["git revert HEAD"],
+          "hint": "Revert the most recent commit",
+          "points": 35
+        },
+        {
+          "instruction": "Revert a commit but don't auto-commit - just stage the changes.",
+          "narrative": "I want to review the revert before committing.",
+          "expected_commands": ["git revert --no-commit HEAD", "git revert -n HEAD"],
+          "hint": "Revert without automatic commit",
+          "points": 45
+        }
+      ]
+    },
+    {
+      "id": "case-014",
+      "title": "THE COMPARISON FILES",
+      "description": "Compare different versions of evidence. Spot the differences between branches and commits.",
+      "difficulty": "Intermediate",
+      "unlock_cost": 175,
+      "total_points": 135,
+      "story_intro": "Two versions of the same document. 'They look identical,' the rookie said.\n\nI shook my head. 'Nothing is ever identical. There are always differences. You just need to know how to look.'\n\nGit diff - the detective's magnifying glass.",
+      "steps": [
+        {
+          "instruction": "Show differences between the working directory and staging area.",
+          "narrative": "What changed since we last staged?",
+          "expected_commands": ["git diff"],
+          "hint": "Show unstaged changes",
+          "points": 25
+        },
+        {
+          "instruction": "Show differences between staging area and last commit.",
+          "narrative": "What's staged but not yet committed?",
+          "expected_commands": ["git diff --staged", "git diff --cached"],
+          "hint": "Show staged changes",
+          "points": 30
+        },
+        {
+          "instruction": "Compare the current branch with the 'suspect' branch.",
+          "narrative": "How does our investigation differ from theirs?",
+          "expected_commands": ["git diff suspect", "git diff main..suspect", "git diff HEAD..suspect"],
+          "hint": "Compare branches",
+          "points": 35
+        },
+        {
+          "instruction": "Show differences for only the file 'clue.txt' between two commits.",
+          "narrative": "Focus on one piece of evidence across versions.",
+          "expected_commands": ["git diff HEAD~2 HEAD -- clue.txt", "git diff HEAD~2..HEAD -- clue.txt"],
+          "hint": "Diff specific file between commits",
+          "points": 45
+        }
+      ]
+    },
+    {
+      "id": "case-015",
+      "title": "THE BISECT MANHUNT",
+      "description": "A bug was introduced somewhere in 100 commits. Use binary search to find it fast.",
+      "difficulty": "Advanced",
+      "unlock_cost": 400,
+      "total_points": 200,
+      "story_intro": "'The bug appeared sometime in the last 100 commits,' the developer said hopelessly. 'It could take days to find.'\n\nI smiled. 'Or minutes. Git bisect uses binary search. We'll find your culprit in about 7 steps.'\n\nThe most efficient manhunt in version control.",
+      "steps": [
+        {
+          "instruction": "Start the bisect process.",
+          "narrative": "Initialize the binary search operation.",
+          "expected_commands": ["git bisect start"],
+          "hint": "Begin git bisect",
+          "points": 35
+        },
+        {
+          "instruction": "Mark the current commit as bad (it has the bug).",
+          "narrative": "We know the bug exists now. Mark this as bad.",
+          "expected_commands": ["git bisect bad"],
+          "hint": "Mark current commit as buggy",
+          "points": 35
+        },
+        {
+          "instruction": "Mark commit 'abc1234' as good (before the bug existed).",
+          "narrative": "We know this old commit was working. Mark it good.",
+          "expected_commands": ["git bisect good abc1234"],
+          "hint": "Mark a known-good commit",
+          "points": 40
+        },
+        {
+          "instruction": "After testing, mark the current commit as good.",
+          "narrative": "This version works. The bug must be later.",
+          "expected_commands": ["git bisect good"],
+          "hint": "Mark tested commit as good",
+          "points": 40
+        },
+        {
+          "instruction": "Reset and end the bisect session.",
+          "narrative": "Investigation complete. Return to normal operations.",
+          "expected_commands": ["git bisect reset"],
+          "hint": "End the bisect session",
+          "points": 50
+        }
+      ]
+    },
+    {
+      "id": "case-016",
+      "title": "THE SUBMODULE SYNDICATE",
+      "description": "The evidence spans multiple repositories. Navigate the web of submodules.",
+      "difficulty": "Advanced",
+      "unlock_cost": 450,
+      "total_points": 220,
+      "story_intro": "The criminal organization was clever. They split their operations across multiple repositories, linked together as submodules.\n\n'It's like a hydra,' my partner said. 'Cut one head, two more appear.'\n\nTime to master the art of submodules - repositories within repositories.",
+      "steps": [
+        {
+          "instruction": "Add a submodule from 'https://github.com/syndicate/tools.git' into 'tools' folder.",
+          "narrative": "Link their tools repository into our investigation.",
+          "expected_commands": ["git submodule add https://github.com/syndicate/tools.git tools"],
+          "hint": "Add a repository as a submodule",
+          "points": 45
+        },
+        {
+          "instruction": "Initialize all submodules in the repository.",
+          "narrative": "Activate all the linked repositories.",
+          "expected_commands": ["git submodule init"],
+          "hint": "Initialize submodules",
+          "points": 40
+        },
+        {
+          "instruction": "Update all submodules to their latest commits.",
+          "narrative": "Pull the latest evidence from all linked repos.",
+          "expected_commands": ["git submodule update", "git submodule update --remote"],
+          "hint": "Update submodule contents",
+          "points": 45
+        },
+        {
+          "instruction": "Clone a repository and all its submodules in one command.",
+          "narrative": "Get everything at once - the parent and all children.",
+          "expected_commands": ["git clone --recurse-submodules https://github.com/case/main.git", "git clone --recursive https://github.com/case/main.git"],
+          "hint": "Clone with all submodules",
+          "points": 45
+        },
+        {
+          "instruction": "Check the status of all submodules.",
+          "narrative": "Survey all linked repositories at once.",
+          "expected_commands": ["git submodule status"],
+          "hint": "Show submodule status",
+          "points": 45
+        }
+      ]
+    },
+    {
+      "id": "case-017",
+      "title": "THE WORKTREE PARALLEL",
+      "description": "Work on multiple branches simultaneously without switching. Advanced multitasking.",
+      "difficulty": "Advanced",
+      "unlock_cost": 500,
+      "total_points": 210,
+      "story_intro": "Three cases demanded my attention simultaneously. Switching branches constantly was killing my productivity.\n\nThen I discovered worktrees - multiple working directories, each on a different branch, all from one repository.\n\nTime to work in parallel dimensions.",
+      "steps": [
+        {
+          "instruction": "Create a new worktree for the 'urgent-case' branch in '../urgent' folder.",
+          "narrative": "Create a parallel workspace for the urgent investigation.",
+          "expected_commands": ["git worktree add ../urgent urgent-case"],
+          "hint": "Add a new worktree for a branch",
+          "points": 45
+        },
+        {
+          "instruction": "List all worktrees associated with this repository.",
+          "narrative": "See all my parallel workspaces.",
+          "expected_commands": ["git worktree list"],
+          "hint": "Show all worktrees",
+          "points": 35
+        },
+        {
+          "instruction": "Create a new worktree with a new branch 'cold-case' in '../cold' folder.",
+          "narrative": "Start a new investigation in its own space.",
+          "expected_commands": ["git worktree add -b cold-case ../cold", "git worktree add ../cold -b cold-case"],
+          "hint": "Add worktree with new branch",
+          "points": 45
+        },
+        {
+          "instruction": "Remove the worktree at '../urgent' after the case is closed.",
+          "narrative": "Clean up. The urgent case is solved.",
+          "expected_commands": ["git worktree remove ../urgent"],
+          "hint": "Remove a worktree",
+          "points": 40
+        },
+        {
+          "instruction": "Prune stale worktree information.",
+          "narrative": "Clean up references to deleted worktrees.",
+          "expected_commands": ["git worktree prune"],
+          "hint": "Clean up worktree administrative files",
+          "points": 45
+        }
+      ]
+    },
+    {
+      "id": "case-018",
+      "title": "THE REFLOG RESURRECTION",
+      "description": "They thought they erased everything. But reflog remembers. Recover the impossible.",
+      "difficulty": "Advanced",
+      "unlock_cost": 550,
+      "total_points": 230,
+      "story_intro": "'It's gone,' they said. 'We reset --hard and force pushed. The evidence is destroyed.'\n\nI laughed. They didn't know about reflog - Git's secret diary that remembers EVERYTHING. Every checkout, every reset, every move.\n\nNothing is ever truly lost.",
+      "steps": [
+        {
+          "instruction": "View the reflog to see all recent HEAD movements.",
+          "narrative": "The reflog sees all. Every action leaves a trace.",
+          "expected_commands": ["git reflog", "git reflog show"],
+          "hint": "Show reference log",
+          "points": 40
+        },
+        {
+          "instruction": "Find all actions from the last 2 hours.",
+          "narrative": "Narrow down the timeline of their destruction.",
+          "expected_commands": ["git reflog --since=\"2 hours ago\"", "git reflog --since='2 hours ago'"],
+          "hint": "Filter reflog by time",
+          "points": 45
+        },
+        {
+          "instruction": "Restore to the state from reflog entry HEAD@{3}.",
+          "narrative": "Go back to exactly that moment in time.",
+          "expected_commands": ["git reset --hard HEAD@{3}"],
+          "hint": "Reset to a reflog entry",
+          "points": 50
+        },
+        {
+          "instruction": "Create a new branch from a 'lost' commit using reflog.",
+          "narrative": "Resurrect a deleted branch by finding its last commit.",
+          "expected_commands": ["git branch recovered HEAD@{5}", "git checkout -b recovered HEAD@{5}"],
+          "hint": "Create branch from reflog reference",
+          "points": 50
+        },
+        {
+          "instruction": "View reflog for a specific branch called 'feature'.",
+          "narrative": "See the history of just that branch.",
+          "expected_commands": ["git reflog feature", "git reflog show feature"],
+          "hint": "Show reflog for specific branch",
+          "points": 45
+        }
+      ]
+    },
+    {
+      "id": "case-019",
+      "title": "THE CLEAN SWEEP",
+      "description": "The repository is cluttered with untracked files. Time for a deep clean.",
+      "difficulty": "Advanced",
+      "unlock_cost": 350,
+      "total_points": 180,
+      "story_intro": "The crime scene was contaminated. Hundreds of untracked files - logs, temp files, build artifacts - cluttered everything.\n\n'We need a clean sweep,' I said. 'Remove everything that doesn't belong. Git clean is our broom.'\n\nTime to take out the trash.",
+      "steps": [
+        {
+          "instruction": "Show what untracked files would be removed (dry run).",
+          "narrative": "First, see what would be swept away without actually doing it.",
+          "expected_commands": ["git clean -n", "git clean --dry-run"],
+          "hint": "Preview clean operation",
+          "points": 35
+        },
+        {
+          "instruction": "Remove all untracked files forcefully.",
+          "narrative": "Execute the clean sweep. Remove all untracked files.",
+          "expected_commands": ["git clean -f"],
+          "hint": "Force remove untracked files",
+          "points": 40
+        },
+        {
+          "instruction": "Remove untracked files AND directories.",
+          "narrative": "Go deeper. Remove untracked directories too.",
+          "expected_commands": ["git clean -fd", "git clean -f -d"],
+          "hint": "Remove untracked files and directories",
+          "points": 45
+        },
+        {
+          "instruction": "Remove untracked files including those ignored by .gitignore.",
+          "narrative": "The nuclear option. Remove EVERYTHING untracked.",
+          "expected_commands": ["git clean -fx", "git clean -f -x"],
+          "hint": "Remove all untracked, including ignored",
+          "points": 60
+        }
+      ]
+    },
+    {
+      "id": "case-020",
+      "title": "THE ARCHIVE EXTRACTION",
+      "description": "Export the repository without Git history. Create clean archives for evidence handoff.",
+      "difficulty": "Advanced",
+      "unlock_cost": 400,
+      "total_points": 190,
+      "story_intro": "The prosecution needed the code, but not the Git history. 'Give us the files, not the secrets in the commits.'\n\nGit archive creates clean exports - just the files, no .git folder, no history. Perfect for evidence handoff.\n\nTime to package and deliver.",
+      "steps": [
+        {
+          "instruction": "Create a tar archive of the current HEAD.",
+          "narrative": "Package the current state into a tar file.",
+          "expected_commands": ["git archive -o latest.tar HEAD", "git archive --output=latest.tar HEAD"],
+          "hint": "Create tar archive of HEAD",
+          "points": 40
+        },
+        {
+          "instruction": "Create a zip archive of the 'main' branch.",
+          "narrative": "Package for Windows users - they prefer zip.",
+          "expected_commands": ["git archive -o main.zip main", "git archive --format=zip -o main.zip main"],
+          "hint": "Create zip archive of a branch",
+          "points": 45
+        },
+        {
+          "instruction": "Create an archive of only the 'src' directory.",
+          "narrative": "They only need the source code, not everything.",
+          "expected_commands": ["git archive -o src.tar HEAD src", "git archive -o src.tar HEAD -- src"],
+          "hint": "Archive specific directory",
+          "points": 50
+        },
+        {
+          "instruction": "Create an archive with a prefix directory 'evidence/'.",
+          "narrative": "Add a wrapper folder to the archive contents.",
+          "expected_commands": ["git archive --prefix=evidence/ -o evidence.tar HEAD"],
+          "hint": "Archive with prefix directory",
+          "points": 55
+        }
+      ]
+    }
+  ]
+}

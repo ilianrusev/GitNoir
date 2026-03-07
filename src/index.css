@@ -1,0 +1,397 @@
+@import url("https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --background-paper: #1a1a1a;
+  --background-terminal: #0c0c0c;
+  --foreground: #e5e5e5;
+  --foreground-muted: #a3a3a3;
+  --foreground-terminal: #00ff41;
+  --primary: #ffb703;
+  --primary-foreground: #000000;
+  --primary-hover: #fb8500;
+  --secondary: #2a2a2a;
+  --accent: #d00000;
+  --border: #333333;
+  --border-active: #ffb703;
+}
+
+* {
+  /* margin: 0; */
+  /* padding: 0; */
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Typography */
+.font-typewriter {
+  font-family: "Special Elite", "Courier Prime", monospace;
+}
+
+.font-mono {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* Animations */
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--foreground-terminal);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  75% {
+    opacity: 0.98;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 2s steps(40, end);
+}
+
+.animate-blink {
+  animation: blink-caret 0.75s step-end infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-flicker {
+  animation: flicker 0.15s infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out forwards;
+}
+
+/* Terminal Styles */
+.terminal-container {
+  background: var(--background-terminal);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.terminal-text {
+  color: var(--foreground-terminal);
+  font-family: "JetBrains Mono", monospace;
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  color: var(--foreground-terminal);
+  font-family: "JetBrains Mono", monospace;
+  outline: none;
+  caret-color: var(--foreground-terminal);
+}
+
+.terminal-input::placeholder {
+  color: #333;
+}
+
+/* Card Styles */
+.case-card {
+  background: var(--background-paper);
+  border: 1px solid var(--border);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.case-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(255, 183, 3, 0.15);
+}
+
+.case-card.locked {
+  opacity: 0.7;
+}
+
+.case-card.locked:hover {
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-family: "JetBrains Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 0 15px rgba(255, 183, 3, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--foreground);
+  font-family: "JetBrains Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Input Styles */
+.input-terminal {
+  background: var(--background-terminal);
+  border: 1px solid var(--border);
+  color: var(--foreground-terminal);
+  font-family: "JetBrains Mono", monospace;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.input-terminal:focus {
+  border-color: var(--foreground-terminal);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+}
+
+.input-terminal::placeholder {
+  color: #444;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Progress Bar */
+.progress-bar {
+  background: var(--secondary);
+  height: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background: var(--primary);
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+/* Grain Texture Overlay */
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Badge Styles */
+.badge-difficulty {
+  font-family: "JetBrains Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.625rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.badge-beginner {
+  background: rgba(0, 255, 65, 0.2);
+  color: var(--foreground-terminal);
+  border: 1px solid var(--foreground-terminal);
+}
+
+.badge-intermediate {
+  background: rgba(255, 183, 3, 0.2);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+.badge-advanced {
+  background: rgba(208, 0, 0, 0.2);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+/* Shadcn overrides */
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 90%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 90%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 90%;
+    --primary: 43 100% 51%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 0 100% 41%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 43 100% 51%;
+    --radius: 0px;
+  }
+}
+
+@layer base {
+  * {
+    border: 1px solid hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+/* Remove default focus rings */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
