@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# 🕵️ Git Noir
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Git Noir** is a detective-themed game where you learn Git by solving mysteries inside real repositories.
 
-Currently, two official plugins are available:
+Instead of memorizing commands, players investigate suspicious commits, lost branches, broken merges, and missing files. Each case presents a Git problem that must be solved using real Git commands.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+You are the detective.  
+The repository is the crime scene.
 
-## React Compiler
+---
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## 🎮 How the Game Works
 
-## Expanding the ESLint configuration
+Each **case** is a mystery scenario where something has gone wrong inside a Git repository.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Your job is to investigate the situation and fix it using Git commands.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Every case contains:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- A detective-style story introduction
+- Step-by-step investigation tasks
+- Real Git commands that solve the problem
+- Points for completing steps
+- Increasing difficulty as you progress
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The goal is to learn Git through **problem solving and exploration**, just like real development situations.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚧 Project Goals
+
+Git Noir aims to make learning Git:
+
+- 🎮 **Interactive**
+- 🧠 **Memorable**
+- 🕵️ **Fun**
+
+Instead of tutorials, players learn by **investigating problems and fixing repositories**.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+If you'd like to:
+
+- add new cases
+- improve existing scenarios
+- fix bugs
+- suggest features
+
+Feel free to **open an issue** or submit a **pull request**.
+
+Anyone is welcome to help improve Git Noir and expand the detective universe.
