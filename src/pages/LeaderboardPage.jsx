@@ -92,71 +92,75 @@ export default function LeaderboardPage() {
           </div>
         ) : (
           <div className="case-card overflow-hidden">
-            {/* Table Header */}
-            <div className="grid grid-cols-4 gap-4 px-6 py-4 bg-[#0c0c0c] border-b border-[#333]">
-              <span className="font-mono text-xs text-[#666] tracking-wider">
-                RANK
-              </span>
-              <span className="font-mono text-xs text-[#666] tracking-wider">
-                DETECTIVE
-              </span>
-              <span className="font-mono text-xs text-[#666] tracking-wider text-right">
-                CASES
-              </span>
-              <span className="font-mono text-xs text-[#666] tracking-wider text-right">
-                REPUTATION
-              </span>
-            </div>
+            <div className="overflow-x-auto">
+              <div className="min-w-140">
+                {/* Table Header */}
+                <div className="grid grid-cols-[60px_1fr_100px_100px] gap-4 px-6 py-4 bg-[#0c0c0c] border-b border-[#333]">
+                  <span className="font-mono text-xs text-[#666] tracking-wider">
+                    RANK
+                  </span>
+                  <span className="font-mono text-xs text-[#666] tracking-wider">
+                    DETECTIVE
+                  </span>
+                  <span className="font-mono text-xs text-[#666] tracking-wider text-right">
+                    CASES
+                  </span>
+                  <span className="font-mono text-xs text-[#666] tracking-wider text-right">
+                    REPUTATION
+                  </span>
+                </div>
 
-            {/* Table Rows */}
-            {leaderboard.map((entry, index) => (
-              <div
-                key={entry.username}
-                className={`leaderboard-row animate-fade-in ${
-                  user?.username === entry.username ? "bg-[#1a1a1a]" : ""
-                }`}
-                style={{ animationDelay: `${index * 0.05}s` }}
-                data-testid={`leaderboard-row-${index + 1}`}
-              >
-                <div className="flex items-center justify-center">
-                  {getRankIcon(entry.rank)}
-                </div>
-                <div className="flex items-center gap-3">
+                {/* Table Rows */}
+                {leaderboard.map((entry, index) => (
                   <div
-                    className={`w-8 h-8 flex items-center justify-center border ${
-                      entry.rank <= 3 ? "border-[#ffb703]" : "border-[#333]"
+                    key={entry.username}
+                    className={`leaderboard-row animate-fade-in ${
+                      user?.username === entry.username ? "bg-[#1a1a1a]" : ""
                     }`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                    data-testid={`leaderboard-row-${index + 1}`}
                   >
-                    <span className="font-typewriter text-xs text-[#e5e5e5]">
-                      {entry.username.charAt(0).toUpperCase()}
-                    </span>
+                    <div className="flex items-center justify-center">
+                      {getRankIcon(entry.rank)}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-8 h-8 flex items-center justify-center border ${
+                          entry.rank <= 3 ? "border-[#ffb703]" : "border-[#333]"
+                        }`}
+                      >
+                        <span className="font-typewriter text-xs text-[#e5e5e5]">
+                          {entry.username.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <span
+                        className={`font-mono ${
+                          user?.username === entry.username
+                            ? "text-[#ffb703]"
+                            : "text-[#e5e5e5]"
+                        }`}
+                      >
+                        {entry.username}
+                        {user?.username === entry.username && (
+                          <span className="ml-2 text-xs text-[#666]">(you)</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-mono text-[#a3a3a3]">
+                        {entry.cases_solved}
+                      </span>
+                    </div>
+                    <div className="text-right flex items-center justify-end gap-2">
+                      <Award className="w-4 h-4 text-[#ffb703]" />
+                      <span className="font-mono text-[#ffb703]">
+                        {entry.reputation}
+                      </span>
+                    </div>
                   </div>
-                  <span
-                    className={`font-mono ${
-                      user?.username === entry.username
-                        ? "text-[#ffb703]"
-                        : "text-[#e5e5e5]"
-                    }`}
-                  >
-                    {entry.username}
-                    {user?.username === entry.username && (
-                      <span className="ml-2 text-xs text-[#666]">(you)</span>
-                    )}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="font-mono text-[#a3a3a3]">
-                    {entry.cases_solved}
-                  </span>
-                </div>
-                <div className="text-right flex items-center justify-end gap-2">
-                  <Award className="w-4 h-4 text-[#ffb703]" />
-                  <span className="font-mono text-[#ffb703]">
-                    {entry.reputation}
-                  </span>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         )}
 

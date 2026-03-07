@@ -180,7 +180,8 @@
 .leaderboard-row {
     display: grid;
     grid-template-columns: 60px 1fr 100px 100px;
-    padding: 1rem;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
     border-bottom: 1px solid #222;
     align-items: center;
     transition: background-color 0.3s ease;
