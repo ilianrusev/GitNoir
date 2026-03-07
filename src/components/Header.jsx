@@ -141,7 +141,7 @@ export default function Header({ variant = "default", reputation }) {
                 GitHub
               </a>
               <a
-                href="https://buymeacoffee.com"
+                href="https://buymeacoffee.com/ilianrusev"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 py-3 px-4 text-[#ffdd00] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
