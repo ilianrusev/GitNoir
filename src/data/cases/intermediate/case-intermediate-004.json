@@ -5,6 +5,7 @@
   "difficulty": "Intermediate",
   "unlock_cost": 250,
   "total_points": 160,
+  "created_at": "2026-01-01",
   "story_intro": "Two separate investigations had been running in parallel. One team found crucial evidence, but their branch was a mess.\n\n'I only need that ONE commit,' I muttered. 'Not the whole chaotic branch.'\n\nCherry-pick. Take exactly what you need, leave the rest behind.",
   "steps": [
     {

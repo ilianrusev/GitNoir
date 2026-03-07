@@ -5,6 +5,7 @@
   "difficulty": "Advanced",
   "unlock_cost": 400,
   "total_points": 190,
+  "created_at": "2026-01-01",
   "story_intro": "The prosecution needed the code, but not the Git history. 'Give us the files, not the secrets in the commits.'\n\nGit archive creates clean exports - just the files, no .git folder, no history. Perfect for evidence handoff.\n\nTime to package and deliver.",
   "steps": [
     {

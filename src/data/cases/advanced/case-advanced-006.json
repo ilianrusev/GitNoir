@@ -5,6 +5,7 @@
   "difficulty": "Advanced",
   "unlock_cost": 350,
   "total_points": 180,
+  "created_at": "2026-01-01",
   "story_intro": "The crime scene was contaminated. Hundreds of untracked files - logs, temp files, build artifacts - cluttered everything.\n\n'We need a clean sweep,' I said. 'Remove everything that doesn't belong. Git clean is our broom.'\n\nTime to take out the trash.",
   "steps": [
     {

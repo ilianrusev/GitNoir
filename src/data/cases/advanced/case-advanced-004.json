@@ -5,6 +5,7 @@
   "difficulty": "Advanced",
   "unlock_cost": 500,
   "total_points": 210,
+  "created_at": "2026-01-01",
   "story_intro": "Three cases demanded my attention simultaneously. Switching branches constantly was killing my productivity.\n\nThen I discovered worktrees - multiple working directories, each on a different branch, all from one repository.\n\nTime to work in parallel dimensions.",
   "steps": [
     {

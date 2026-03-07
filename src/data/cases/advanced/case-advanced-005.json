@@ -5,6 +5,7 @@
   "difficulty": "Advanced",
   "unlock_cost": 550,
   "total_points": 230,
+  "created_at": "2026-01-01",
   "story_intro": "'It's gone,' they said. 'We reset --hard and force pushed. The evidence is destroyed.'\n\nI laughed. They didn't know about reflog - Git's secret diary that remembers EVERYTHING. Every checkout, every reset, every move.\n\nNothing is ever truly lost.",
   "steps": [
     {

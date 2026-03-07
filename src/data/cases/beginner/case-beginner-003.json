@@ -5,6 +5,7 @@
   "difficulty": "Beginner",
   "unlock_cost": 0,
   "total_points": 100,
+  "created_at": "2026-01-01",
   "story_intro": "The informant's message was cryptic: 'The evidence is in repository X. Get it before they delete it.'\n\nI needed to make an exact copy of that repository - every file, every commit, every secret. But I had to be careful. One wrong move and they'd know I was onto them.\n\nTime to clone the evidence.",
   "steps": [
     {

@@ -5,6 +5,7 @@
   "difficulty": "Beginner",
   "unlock_cost": 75,
   "total_points": 120,
+  "created_at": "2026-01-01",
   "story_intro": "The witness panicked. 'I deleted the evidence by accident! It's gone forever!'\n\nI smiled. In Git, nothing is ever truly gone. The history remembers everything. Time to restore what they thought was lost.\n\n'Relax,' I said. 'I know a few tricks.'",
   "steps": [
     {

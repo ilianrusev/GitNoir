@@ -5,6 +5,7 @@
   "difficulty": "Beginner",
   "unlock_cost": 50,
   "total_points": 110,
+  "created_at": "2026-01-01",
   "story_intro": "'We found multiple pieces of evidence,' the junior detective reported, 'but some of it might be planted.'\n\nIn detective work, you don't submit everything to the court. You carefully select what's relevant. Same with Git - staging is an art.\n\nI would teach them the power of selective staging.",
   "steps": [
     {

@@ -5,6 +5,7 @@
   "difficulty": "Intermediate",
   "unlock_cost": 300,
   "total_points": 180,
+  "created_at": "2026-01-01",
   "story_intro": "'They call themselves The Remote Syndicate,' the informant said, glancing nervously around the dimly lit bar.\n\n'They operate across multiple servers - origin, upstream, backup. Push and pull information like ghosts in the network.'\n\nI adjusted my hat. To catch a network, you need to think like a network. Time to go remote.",
   "steps": [
     {

@@ -3,6 +3,8 @@ import { Lock, Play } from "lucide-react";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
 
+const NEW_CASE_WINDOW_DAYS = 14;
+
 export default function SingleCase({
   caseData,
   status,
@@ -13,6 +15,15 @@ export default function SingleCase({
 }) {
   const isCasesVariant = variant === "cases";
   const shouldSoftLockBlur = isCasesVariant && !unlocked;
+  const isNewCase = (() => {
+    if (!caseData.created_at) return false;
+    const createdAt = new Date(caseData.created_at);
+    if (Number.isNaN(createdAt.getTime())) return false;
+
+    const createdAtDiff = Date.now() - createdAt.getTime();
+    const maxNewWindow = NEW_CASE_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+    return createdAtDiff >= 0 && createdAtDiff <= maxNewWindow;
+  })();
 
   return (
     <div
@@ -24,6 +35,14 @@ export default function SingleCase({
       style={{ animationDelay }}
       data-testid={`case-card-${caseData.id}`}
     >
+      {isNewCase && (
+        <div className="absolute top-0 left-0 z-20 w-24 h-24 pointer-events-none overflow-hidden">
+          <span className="absolute top-3 -left-7 w-28 rotate-[-45deg] bg-[#d00000] text-[#fff] font-mono text-[10px] tracking-widest text-center py-1 shadow-sm">
+            NEW
+          </span>
+        </div>
+      )}
+
       {shouldSoftLockBlur && (
         <div className="absolute inset-0 bg-[#0a0a0a]/25 backdrop-blur-[1px] pointer-events-none z-10" />
       )}
@@ -49,12 +68,14 @@ export default function SingleCase({
         >
           {caseData.difficulty}
         </span>
-        {status === "completed" && (
-          <span className="font-mono text-xs text-[#00ff41]">SOLVED</span>
-        )}
-        {status === "in_progress" && (
-          <span className="font-mono text-xs text-[#ffb703]">IN PROGRESS</span>
-        )}
+        <div className="flex items-center gap-2">
+          {status === "completed" && (
+            <span className="font-mono text-xs text-[#00ff41]">SOLVED</span>
+          )}
+          {status === "in_progress" && (
+            <span className="font-mono text-xs text-[#ffb703]">IN PROGRESS</span>
+          )}
+        </div>
       </div>
 
       <h3

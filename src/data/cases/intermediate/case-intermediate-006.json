@@ -5,6 +5,7 @@
   "difficulty": "Intermediate",
   "unlock_cost": 225,
   "total_points": 145,
+  "created_at": "2026-01-01",
   "story_intro": "'The deployment broke everything!' The panicked call came at 3 AM.\n\nSomeone pushed bad code. We couldn't just delete the commit - that would destroy the audit trail. We needed to REVERT - create a new commit that undoes the damage.\n\nClean, traceable, professional.",
   "steps": [
     {

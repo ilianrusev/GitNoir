@@ -78,6 +78,7 @@ Follow these steps to add a case that works with the current data structure and 
 	"unlock_cost": 0,
 	"total_points": 100,
 	"story_intro": "A short detective-style intro to the scenario.",
+	"created_at": "2026-03-07",
 	"steps": [
 		{
 			"instruction": "Check all local branches.",
@@ -102,6 +103,7 @@ Follow these steps to add a case that works with the current data structure and 
 	 - `difficulty` must be exactly `Beginner`, `Intermediate`, or `Advanced`
 	 - `unlock_cost` must be `0` or higher
 	 - `total_points` must be at least `1`
+	 - `created_at` is optional, but when present (`YYYY-MM-DD`), recent cases get a `NEW` badge in the UI
 	 - each step needs: `instruction`, `narrative`, `expected_commands`, `hint`, `points`
 
 5. Validate before committing:

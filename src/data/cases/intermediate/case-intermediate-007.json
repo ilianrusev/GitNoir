@@ -5,6 +5,7 @@
   "difficulty": "Intermediate",
   "unlock_cost": 175,
   "total_points": 135,
+  "created_at": "2026-01-01",
   "story_intro": "Two versions of the same document. 'They look identical,' the rookie said.\n\nI shook my head. 'Nothing is ever identical. There are always differences. You just need to know how to look.'\n\nGit diff - the detective's magnifying glass.",
   "steps": [
     {
