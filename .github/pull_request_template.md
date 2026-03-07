@@ -20,9 +20,4 @@ Describe what changed and why.
 
 - [ ] My case JSON follows the schema in `src/data/schemas`
 - [ ] I ran `npm run validate:cases` locally
-- [ ] The **Validate Cases** GitHub Action check passed
 - [ ] I used the correct file naming pattern: `case-<difficulty>-XXX.json`
-
-## Testing / Notes
-
-Add any extra context for reviewers.
