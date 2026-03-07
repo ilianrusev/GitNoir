@@ -5,6 +5,19 @@ import { Progress } from "./ui/progress";
 
 const NEW_CASE_WINDOW_DAYS = 14;
 
+function parseCaseDate(dateValue) {
+  if (!dateValue) return null;
+
+  const dateOnlyMatch = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (dateOnlyMatch) {
+    const [, year, month, day] = dateOnlyMatch;
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  }
+
+  const parsed = new Date(dateValue);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 export default function SingleCase({
   caseData,
   status,
@@ -16,13 +29,21 @@ export default function SingleCase({
   const isCasesVariant = variant === "cases";
   const shouldSoftLockBlur = isCasesVariant && !unlocked;
   const isNewCase = (() => {
-    if (!caseData.created_at) return false;
-    const createdAt = new Date(caseData.created_at);
-    if (Number.isNaN(createdAt.getTime())) return false;
+    const createdAt = parseCaseDate(caseData.created_at);
+    if (!createdAt) return false;
 
-    const createdAtDiff = Date.now() - createdAt.getTime();
-    const maxNewWindow = NEW_CASE_WINDOW_DAYS * 24 * 60 * 60 * 1000;
-    return createdAtDiff >= 0 && createdAtDiff <= maxNewWindow;
+    const now = new Date();
+    const createdDay = new Date(
+      createdAt.getFullYear(),
+      createdAt.getMonth(),
+      createdAt.getDate(),
+    );
+    const currentDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dayDiff = Math.floor(
+      (currentDay.getTime() - createdDay.getTime()) / (24 * 60 * 60 * 1000),
+    );
+
+    return dayDiff >= 0 && dayDiff <= NEW_CASE_WINDOW_DAYS;
   })();
 
   return (
@@ -37,7 +58,7 @@ export default function SingleCase({
     >
       {isNewCase && (
         <div className="absolute top-0 left-0 z-20 w-24 h-24 pointer-events-none overflow-hidden">
-          <span className="absolute top-3 -left-7 w-28 rotate-[-45deg] bg-[#d00000] text-[#fff] font-mono text-[10px] tracking-widest text-center py-1 shadow-sm">
+          <span className="absolute top-3 -left-7 w-28 -rotate-45 bg-[#d00000] text-white font-mono text-[10px] tracking-widest text-center py-1 shadow-sm">
             NEW
           </span>
         </div>
