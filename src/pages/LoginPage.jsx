@@ -19,7 +19,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      login(email, password);
+      await login(email, password);
       toast.success("Welcome back, Detective!");
       navigate("/dashboard");
     } catch (error) {

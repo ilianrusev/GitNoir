@@ -32,7 +32,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      register(username, email, password);
+      await register(username, email, password);
       toast.success("Badge created! Welcome to the agency, Detective.");
       navigate("/dashboard");
     } catch (error) {
