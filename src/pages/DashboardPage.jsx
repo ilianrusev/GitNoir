@@ -39,6 +39,18 @@ export default function DashboardPage() {
     return "locked";
   };
 
+  const recentCases = [...cases]
+    .sort((firstCase, secondCase) => {
+      const firstCreatedAt = firstCase.created_at
+        ? new Date(firstCase.created_at).getTime()
+        : 0;
+      const secondCreatedAt = secondCase.created_at
+        ? new Date(secondCase.created_at).getTime()
+        : 0;
+      return secondCreatedAt - firstCreatedAt;
+    })
+    .slice(0, 9);
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <Header reputation={reputation} />
@@ -108,12 +120,12 @@ export default function DashboardPage() {
             YOUR CASES
           </p>
           <h2 className="font-typewriter text-2xl text-[#e5e5e5] mb-6">
-            ACTIVE INVESTIGATIONS
+            RECENT INVESTIGATIONS
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cases.slice(0, 9).map((caseData, index) => {
+          {recentCases.map((caseData, index) => {
             const status = getCaseStatus(caseData);
             const unlocked = checkUnlocked(caseData);
             const caseProgress = progress?.case_progress?.[caseData.id];
