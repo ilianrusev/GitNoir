@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../App";
 import { getCases, getUserProgress } from "../services/gameService";
 import { Button } from "../components/ui/button";
-import { Progress } from "../components/ui/progress";
 import Header from "../components/Header";
 import SingleCase from "../components/SingleCase";
 
@@ -98,23 +97,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="case-card p-6 mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <span className="font-mono text-xs text-[#a3a3a3] tracking-wider">
-              CAREER PROGRESS
-            </span>
-            <span className="font-mono text-xs text-[#ffb703]">
-              {completedCount} / {cases.length} CASES
-            </span>
-          </div>
-          <Progress
-            value={cases.length > 0 ? (completedCount / cases.length) * 100 : 0}
-            className="h-2 bg-[#1a1a1a]"
-          />
-        </div>
-
-        {/* Active Cases */}
+        {/* Recent Cases */}
         <div className="mb-8">
           <p className="font-mono text-xs text-[#ffb703] tracking-[0.3em] mb-4">
             YOUR CASES
