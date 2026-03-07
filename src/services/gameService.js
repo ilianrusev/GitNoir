@@ -6,13 +6,15 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 
 const STORAGE_KEYS = {
   USER: "git_quest_user",
   PROGRESS: "git_quest_progress",
   LEADERBOARD: "git_quest_leaderboard",
 };
+const USERS_COLLECTION = "users";
 
 // Generate a simple UUID
 const generateId = () => {
@@ -39,57 +41,70 @@ export const getCurrentUser = () => {
   return userData ? JSON.parse(userData) : null;
 };
 
+const persistUserProfile = async (user) => {
+  if (!user?.id) return;
+
+  const userDocRef = doc(db, USERS_COLLECTION, user.id);
+  await setDoc(
+    userDocRef,
+    {
+      display_name: user.username,
+      email: user.email || "",
+      reputation: user.reputation ?? 0,
+      completed_cases: user.completed_cases ?? [],
+      case_progress: user.case_progress ?? {},
+      created_at: user.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    { merge: true },
+  );
+};
+
 // Save user to localStorage
 export const saveUser = (user) => {
   localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
   updateLeaderboard(user);
+  void persistUserProfile(user);
 };
 
 // Sync Firebase auth user with local game profile
-export const syncUserFromFirebaseUser = (firebaseUser, options = {}) => {
+export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   if (!firebaseUser) {
     localStorage.removeItem(STORAGE_KEYS.USER);
     return null;
   }
 
-  const { password = "" } = options;
+  const { password = "", displayName = "" } = options;
+  const normalizedDisplayName = displayName.trim();
   const storedUser = getCurrentUser();
-  const isSameUser =
-    storedUser &&
-    (storedUser.id === firebaseUser.uid ||
-      storedUser.email === firebaseUser.email);
+  const userDocRef = doc(db, USERS_COLLECTION, firebaseUser.uid);
+  const userSnapshot = await getDoc(userDocRef);
+  const dbUser = userSnapshot.exists() ? userSnapshot.data() : null;
 
-  if (isSameUser) {
-    const syncedUser = {
-      ...storedUser,
-      id: firebaseUser.uid,
-      email: firebaseUser.email || storedUser.email,
-      username:
-        storedUser.username ||
-        firebaseUser.displayName ||
-        (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Detective"),
-      password: storedUser.password || password,
-    };
+  const defaultUsername =
+    firebaseUser.displayName ||
+    (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Detective");
 
-    saveUser(syncedUser);
-    return syncedUser;
-  }
-
-  const newLocalUser = {
+  const syncedUser = {
+    ...storedUser,
     id: firebaseUser.uid,
     username:
-      firebaseUser.displayName ||
-      (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Detective"),
-    email: firebaseUser.email || "",
-    password,
-    reputation: 0,
-    completed_cases: [],
-    case_progress: {},
-    created_at: new Date().toISOString(),
+      normalizedDisplayName ||
+      dbUser?.display_name ||
+      storedUser?.username ||
+      defaultUsername,
+    email: firebaseUser.email || storedUser?.email || "",
+    password: storedUser?.password || password,
+    reputation: dbUser?.reputation ?? storedUser?.reputation ?? 0,
+    completed_cases:
+      dbUser?.completed_cases ?? storedUser?.completed_cases ?? [],
+    case_progress: dbUser?.case_progress ?? storedUser?.case_progress ?? {},
+    created_at:
+      dbUser?.created_at || storedUser?.created_at || new Date().toISOString(),
   };
 
-  saveUser(newLocalUser);
-  return newLocalUser;
+  saveUser(syncedUser);
+  return syncedUser;
 };
 
 // Register a new user
@@ -107,7 +122,10 @@ export const registerUser = async (username, email, password) => {
       });
     }
 
-    return syncUserFromFirebaseUser(credentials.user, { password });
+    return await syncUserFromFirebaseUser(credentials.user, {
+      password,
+      displayName: username,
+    });
   } catch (error) {
     const registrationErrors = {
       "auth/email-already-in-use": "An account with this email already exists.",
@@ -129,8 +147,7 @@ export const registerUser = async (username, email, password) => {
 export const loginUser = async (email, password) => {
   try {
     const credentials = await signInWithEmailAndPassword(auth, email, password);
-    console.log(credentials.user);
-    return syncUserFromFirebaseUser(credentials.user, { password });
+    return await syncUserFromFirebaseUser(credentials.user, { password });
   } catch (error) {
     const loginErrors = {
       "auth/invalid-email": "Please enter a valid email address.",
@@ -138,7 +155,8 @@ export const loginUser = async (email, password) => {
       "auth/user-not-found": "No account found with this email.",
       "auth/wrong-password": "Invalid email or password.",
       "auth/too-many-requests": "Too many attempts. Please try again later.",
-      "auth/network-request-failed": "Network error. Check your connection and try again.",
+      "auth/network-request-failed":
+        "Network error. Check your connection and try again.",
     };
 
     const message =
@@ -159,7 +177,8 @@ export const logoutUser = async () => {
         "Network error while logging out. Please try again.",
     };
 
-    const message = logoutErrors[error.code] || "Logout failed. Please try again.";
+    const message =
+      logoutErrors[error.code] || "Logout failed. Please try again.";
     throw new Error(message);
   } finally {
     localStorage.removeItem(STORAGE_KEYS.USER);

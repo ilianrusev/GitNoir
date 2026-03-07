@@ -42,16 +42,20 @@ const AuthProvider = ({ children }) => {
     const authCheckStartedAt = Date.now();
     let loadingTimeout;
 
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      const syncedUser = syncUserFromFirebaseUser(firebaseUser);
-      setUser(syncedUser);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      try {
+        const syncedUser = await syncUserFromFirebaseUser(firebaseUser);
+        setUser(syncedUser);
+      } catch {
+        setUser(getCurrentUser());
+      } finally {
+        const elapsed = Date.now() - authCheckStartedAt;
+        const remaining = Math.max(MIN_AUTH_LOADING_MS - elapsed, 0);
 
-      const elapsed = Date.now() - authCheckStartedAt;
-      const remaining = Math.max(MIN_AUTH_LOADING_MS - elapsed, 0);
-
-      loadingTimeout = setTimeout(() => {
-        setLoading(false);
-      }, remaining);
+        loadingTimeout = setTimeout(() => {
+          setLoading(false);
+        }, remaining);
+      }
     });
 
     return () => {
