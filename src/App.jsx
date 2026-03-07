@@ -11,7 +11,7 @@ import {
   registerUser,
   logoutUser,
   syncUserFromFirebaseUser,
-} from "./services/gameService";
+} from "./services/authService";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
