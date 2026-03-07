@@ -219,6 +219,13 @@ export default function Header({ variant = "default", reputation }) {
             Notebook
           </Link>
           <Link
+            to="/cheatsheet"
+            className="nav-link"
+            data-testid="nav-cheatsheet"
+          >
+            Cheat Sheet
+          </Link>
+          <Link
             to="/leaderboard"
             className="nav-link"
             data-testid="nav-leaderboard"
@@ -298,6 +305,14 @@ export default function Header({ variant = "default", reputation }) {
               data-testid="mobile-nav-notebook"
             >
               Notebook
+            </Link>
+            <Link
+              to="/cheatsheet"
+              className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+              onClick={closeMobileMenu}
+              data-testid="mobile-nav-cheatsheet"
+            >
+              Cheat Sheet
             </Link>
             <Link
               to="/leaderboard"

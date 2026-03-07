@@ -24,6 +24,7 @@ import CasesPage from "./pages/CasesPage";
 import GamePage from "./pages/GamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import NotebookPage from "./pages/NotebookPage";
+import CheatSheetPage from "./pages/CheatSheetPage";
 
 // Auth Context
 const AuthContext = createContext(null);
@@ -216,6 +217,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <NotebookPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cheatsheet"
+            element={
+              <ProtectedRoute>
+                <CheatSheetPage />
               </ProtectedRoute>
             }
           />
