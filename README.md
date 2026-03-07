@@ -51,6 +51,9 @@ npm run validate:cases
 This validates all JSON files in `src/data/cases` against the schemas in `src/data/schemas`.
 If any file is invalid, the command exits with an error and prints the validation details.
 
+When you open a pull request, the **Validate Cases** GitHub Action runs automatically.
+For case-related PRs, the PR should only be merged after this check passes.
+
 ---
 
 ## 🧩 Tutorial: Add a New Case
@@ -114,6 +117,13 @@ npm run validate:cases
 
 If validation passes, your case is ready for PR review.
 
+6. Open your pull request:
+	- describe what case you added or changed
+	- mention difficulty and case ID(s)
+	- make sure the **Validate Cases** GitHub Action is green
+
+If the GitHub Action fails, update your case JSON to match the schema and push again.
+
 ---
 
 ## 🤝 Contributing
@@ -127,6 +137,19 @@ If you'd like to:
 - fix bugs
 - suggest features
 
-Feel free to **open an issue** or submit a **pull request**.
+### Contribution flow
+
+1. Fork the repository and create a branch.
+2. Make your changes.
+3. If you changed case files, run:
+
+```bash
+npm run validate:cases
+```
+
+4. Open a pull request with a clear summary.
+5. Wait for required checks to pass (especially **Validate Cases** for case updates).
+
+Feel free to **open an issue** first if you want feedback before implementing.
 
 Anyone is welcome to help improve Git Noir and expand the detective universe.

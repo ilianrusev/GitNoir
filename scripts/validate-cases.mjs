@@ -50,6 +50,10 @@ function formatErrors(errors = []) {
     .join("\n");
 }
 
+function normalizeFileName(filePath) {
+  return path.basename(filePath).trim().toLocaleLowerCase();
+}
+
 async function main() {
   const stepSchemaPath = path.join(schemasDir, "step.schema.json");
   const caseSchemaPath = path.join(schemasDir, "case.schema.json");
@@ -77,6 +81,7 @@ async function main() {
   }
 
   let hasFailures = false;
+  const fileNames = new Map();
 
   for (const filePath of caseFiles.sort()) {
     let parsed;
@@ -98,6 +103,23 @@ async function main() {
       console.error(formatErrors(validateCase.errors));
       continue;
     }
+
+    const normalizedFileName = normalizeFileName(filePath);
+    const firstSeen = fileNames.get(normalizedFileName);
+
+    if (firstSeen) {
+      hasFailures = true;
+      console.error(
+        `\n✖ ${toRelative(filePath)} has a duplicate file name`,
+      );
+      console.error(`  - file name: "${path.basename(filePath)}"`);
+      console.error(`  - already used by: ${toRelative(firstSeen.filePath)}`);
+      continue;
+    }
+
+    fileNames.set(normalizedFileName, {
+      filePath,
+    });
   }
 
   if (hasFailures) {
