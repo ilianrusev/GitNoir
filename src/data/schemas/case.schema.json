@@ -17,7 +17,7 @@
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^case-[0-9]{3}$"
+      "pattern": "^(beginner|intermediate|advanced)-case-[0-9]{3}$"
     },
     "title": {
       "type": "string",

@@ -17,6 +17,12 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../components/ui/accordion";
 import { toast } from "sonner";
 
 export default function GamePage() {
@@ -38,6 +44,26 @@ export default function GamePage() {
   const inputRef = useRef(null);
   const terminalRef = useRef(null);
 
+  const focusCommandInput = () => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const isMobileViewport = window.matchMedia("(max-width: 1023px)").matches;
+
+    setTimeout(() => {
+      input.focus({ preventScroll: true });
+
+      if (isMobileViewport) {
+        const rect = input.getBoundingClientRect();
+        const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+
+        if (!isVisible) {
+          input.scrollIntoView({ behavior: "auto", block: "nearest" });
+        }
+      }
+    }, 60);
+  };
+
   useEffect(() => {
     loadCase();
   }, [caseId]);
@@ -56,7 +82,7 @@ export default function GamePage() {
       return;
     }
 
-    inputRef.current?.focus();
+    focusCommandInput();
   }, [currentStep, history.length]);
 
   const loadCase = () => {
@@ -147,8 +173,15 @@ export default function GamePage() {
           setTimeout(() => {
             setHistory(prev => [...prev, { 
               type: "narrative", 
-              text: caseData.steps[result.next_step].narrative 
+              text:
+                result.next_step_narrative ||
+                caseData.steps[result.next_step].narrative,
+              instruction:
+                result.next_step_instruction ||
+                caseData.steps[result.next_step].instruction,
             }]);
+
+            focusCommandInput();
           }, 500);
         }
       } else {
@@ -287,48 +320,55 @@ export default function GamePage() {
                   </div>
                 </div>
 
-                {/* Commands Learned - Cheatsheet */}
+                {/* Commands Learned + Quick Reference */}
                 <div className="case-file">
-                  <h3 className="font-mono text-xs text-[#ffb703] tracking-wider mb-4">
-                    COMMANDS LEARNED
-                  </h3>
-                  <div className="space-y-3">
-                    {caseData.steps.map((step, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-[#0c0c0c] border border-[#222]">
-                        <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-[#00ff41]/20 border border-[#00ff41]">
-                          <span className="font-mono text-xs text-[#00ff41]">{index + 1}</span>
+                  <Accordion type="multiple" className="w-full">
+                    <AccordionItem value="commands-learned" className="border-[#333]">
+                      <AccordionTrigger className="font-mono text-xs text-[#ffb703] tracking-wider hover:no-underline">
+                        COMMANDS LEARNED
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-3">
+                          {caseData.steps.map((step, index) => (
+                            <div key={index} className="flex items-start gap-3 p-3 bg-[#0c0c0c] border border-[#222]">
+                              <div className="shrink-0 w-6 h-6 flex items-center justify-center bg-[#00ff41]/20 border border-[#00ff41]">
+                                <span className="font-mono text-xs text-[#00ff41]">{index + 1}</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <code className="font-mono text-sm text-[#00ff41] block mb-1">
+                                  {step.expected_commands[0]}
+                                </code>
+                                <p className="text-xs text-[#666]">{step.hint}</p>
+                              </div>
+                              <div className="shrink-0">
+                                <span className="font-mono text-xs text-[#ffb703]">+{step.points}</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <code className="font-mono text-sm text-[#00ff41] block mb-1">
-                            {step.expected_commands[0]}
-                          </code>
-                          <p className="text-xs text-[#666]">{step.hint}</p>
-                        </div>
-                        <div className="flex-shrink-0">
-                          <span className="font-mono text-xs text-[#ffb703]">+{step.points}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                {/* Quick Reference */}
-                <div className="case-file">
-                  <h3 className="font-mono text-xs text-[#ffb703] tracking-wider mb-3">
-                    QUICK REFERENCE
-                  </h3>
-                  <div className="terminal-container p-4">
-                    <div className="font-mono text-sm space-y-1">
-                      {caseData.steps.map((step, index) => (
-                        <p key={index} className="text-[#00ff41]">
-                          <span className="text-[#666]">$</span> {step.expected_commands[0]}
+                    <AccordionItem value="quick-reference" className="border-[#333]">
+                      <AccordionTrigger className="font-mono text-xs text-[#ffb703] tracking-wider hover:no-underline">
+                        QUICK REFERENCE
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="terminal-container p-4">
+                          <div className="font-mono text-sm space-y-1">
+                            {caseData.steps.map((step, index) => (
+                              <p key={index} className="text-[#00ff41]">
+                                <span className="text-[#666]">$</span> {step.expected_commands[0]}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-xs text-[#666] mt-3">
+                          Copy these commands to practice in a real terminal!
                         </p>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-xs text-[#666] mt-3">
-                    Copy these commands to practice in a real terminal!
-                  </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
 
                 {/* Action Buttons */}
@@ -451,6 +491,14 @@ export default function GamePage() {
                 {item.type === "narrative" && (
                   <div className="pl-2 border-l-2 border-[#333] my-4">
                     <p className="text-[#666] italic">{item.text}</p>
+                    {item.instruction && (
+                      <div className="mt-3">
+                        <p className="font-mono text-xs text-[#ffb703] tracking-wider mb-1">
+                          OBJECTIVE
+                        </p>
+                        <p className="text-[#e5e5e5]">{item.instruction}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

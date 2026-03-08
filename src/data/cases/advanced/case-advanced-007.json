@@ -1,5 +1,5 @@
 {
-  "id": "case-020",
+  "id": "advanced-case-007",
   "title": "THE ARCHIVE EXTRACTION",
   "description": "Export the repository without Git history. Create clean archives for evidence handoff.",
   "difficulty": "Advanced",

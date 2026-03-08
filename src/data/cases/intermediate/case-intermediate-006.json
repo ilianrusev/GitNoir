@@ -1,5 +1,5 @@
 {
-  "id": "case-013",
+  "id": "intermediate-case-006",
   "title": "THE REVERT OPERATION",
   "description": "A bad commit went to production. Undo the damage without erasing history.",
   "difficulty": "Intermediate",

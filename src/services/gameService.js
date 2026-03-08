@@ -172,6 +172,12 @@ export const validateCommand = (
       feedback,
       points_earned: pointsEarned,
       next_step: caseCompleted ? null : nextStep,
+      next_step_narrative: caseCompleted
+        ? null
+        : caseData.steps[nextStep]?.narrative ?? null,
+      next_step_instruction: caseCompleted
+        ? null
+        : caseData.steps[nextStep]?.instruction ?? null,
       case_completed: caseCompleted,
     };
   } else {
@@ -180,6 +186,8 @@ export const validateCommand = (
       feedback: `That's not quite right. Hint: ${step.hint}`,
       points_earned: 0,
       next_step: null,
+      next_step_narrative: null,
+      next_step_instruction: null,
       case_completed: false,
     };
   }
@@ -233,7 +241,11 @@ const writeLeaderboardCache = (data, fetchedAt = Date.now()) => {
 
 const fetchLeaderboardFromUsersTable = async () => {
   const usersRef = collection(db, USERS_COLLECTION);
-  const leaderboardQuery = query(usersRef, orderBy("reputation", "desc"), limit(10));
+  const leaderboardQuery = query(
+    usersRef,
+    orderBy("reputation", "desc"),
+    limit(10),
+  );
   const snapshot = await getDocs(leaderboardQuery);
 
   const entries = snapshot.docs.map((userDoc) => {

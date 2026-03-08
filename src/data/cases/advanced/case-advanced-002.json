@@ -1,5 +1,5 @@
 {
-  "id": "case-015",
+  "id": "advanced-case-002",
   "title": "THE BISECT MANHUNT",
   "description": "A bug was introduced somewhere in 100 commits. Use binary search to find it fast.",
   "difficulty": "Advanced",
