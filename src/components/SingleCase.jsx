@@ -118,10 +118,10 @@ export default function SingleCase({
         </div>
       )}
 
-      <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#222]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-auto pt-4 border-t border-[#222]">
         {isCasesVariant ? (
           <>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 min-w-0">
               <span className="font-mono text-xs text-[#666]">
                 {caseData.steps.length} STEPS
               </span>
@@ -134,7 +134,7 @@ export default function SingleCase({
             </div>
 
             {unlocked ? (
-              <Link to={`/game/${caseData.id}`}>
+              <Link to={`/game/${caseData.id}`} className="self-center sm:self-auto">
                 <Button
                   className={status === "completed" ? "btn-outline" : "btn-primary"}
                   data-testid={`play-case-${caseData.id}`}
@@ -151,8 +151,8 @@ export default function SingleCase({
               <Button
                 className={
                   shouldSoftLockBlur
-                    ? "btn-outline opacity-75 relative z-20"
-                    : "btn-outline opacity-50"
+                    ? "btn-outline opacity-75 relative z-20 max-w-full self-center sm:self-auto"
+                    : "btn-outline opacity-50 max-w-full self-center sm:self-auto"
                 }
                 disabled
                 data-testid={`unlock-case-${caseData.id}`}
@@ -168,7 +168,7 @@ export default function SingleCase({
               {caseData.total_points} PTS
             </span>
             {unlocked && status !== "completed" && (
-              <Link to={`/game/${caseData.id}`}>
+              <Link to={`/game/${caseData.id}`} className="self-center sm:self-auto">
                 <Button
                   className="btn-primary py-2 px-4 text-xs"
                   data-testid={`start-case-${caseData.id}`}
@@ -179,7 +179,7 @@ export default function SingleCase({
               </Link>
             )}
             {status === "completed" && (
-              <Link to={`/game/${caseData.id}`}>
+              <Link to={`/game/${caseData.id}`} className="self-center sm:self-auto">
                 <Button
                   className="btn-outline py-2 px-4 text-xs"
                   data-testid={`replay-case-${caseData.id}`}

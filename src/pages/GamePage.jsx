@@ -29,6 +29,10 @@ export default function GamePage() {
   const { caseId } = useParams();
   const { refreshUser } = useAuth();
   const navigate = useNavigate();
+
+  const scrollToCaseTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  };
   
   const [caseData, setCaseData] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
@@ -65,8 +69,15 @@ export default function GamePage() {
   };
 
   useEffect(() => {
+    scrollToCaseTop();
     loadCase();
   }, [caseId]);
+
+  useEffect(() => {
+    if (!loading && caseData) {
+      scrollToCaseTop();
+    }
+  }, [loading, caseData]);
 
   useEffect(() => {
     if (terminalRef.current) {
