@@ -1,17 +1,29 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../App";
-import { Terminal, ArrowLeft } from "lucide-react";
+import { Terminal, ArrowLeft, Info, Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../components/ui/tooltip";
 import { toast } from "sonner";
+import {
+  isPasswordPolicyValid,
+  PASSWORD_POLICY_MESSAGE,
+} from "../services/authService";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
@@ -26,6 +38,11 @@ export default function RegisterPage() {
 
     if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    if (!isPasswordPolicyValid(password)) {
+      toast.error(PASSWORD_POLICY_MESSAGE);
       return;
     }
 
@@ -177,23 +194,57 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label
-                htmlFor="password"
-                className="font-mono text-xs text-[#a3a3a3] tracking-wider"
-              >
-                PASSWORD
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-terminal w-full"
-                placeholder="••••••••"
-                minLength={6}
-                required
-                data-testid="register-password-input"
-              />
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="password"
+                  className="font-mono text-xs text-[#a3a3a3] tracking-wider"
+                >
+                  PASSWORD
+                </Label>
+                <TooltipProvider delayDuration={0} skipDelayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Password policy"
+                        className="text-[#a3a3a3] hover:text-[#ffb703] transition-colors"
+                      >
+                        <Info className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-65">
+                      {PASSWORD_POLICY_MESSAGE}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-terminal w-full pr-10"
+                  placeholder="••••••••"
+                  minLength={6}
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$"
+                  required
+                  data-testid="register-password-input"
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-[#a3a3a3] hover:text-[#ffb703] transition-colors"
+                  data-testid="register-password-visibility-btn"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -203,17 +254,36 @@ export default function RegisterPage() {
               >
                 CONFIRM PASSWORD
               </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="input-terminal w-full"
-                placeholder="••••••••"
-                minLength={6}
-                required
-                data-testid="register-confirm-password-input"
-              />
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="input-terminal w-full pr-10"
+                  placeholder="••••••••"
+                  minLength={6}
+                  required
+                  data-testid="register-confirm-password-input"
+                />
+                <button
+                  type="button"
+                  aria-label={
+                    showConfirmPassword
+                      ? "Hide confirm password"
+                      : "Show confirm password"
+                  }
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-[#a3a3a3] hover:text-[#ffb703] transition-colors"
+                  data-testid="register-confirm-password-visibility-btn"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <Button

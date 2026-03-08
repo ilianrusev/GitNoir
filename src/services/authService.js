@@ -17,6 +17,13 @@ const STORAGE_KEYS = {
 const USERS_COLLECTION = "users";
 const googleProvider = new GoogleAuthProvider();
 let runtimeUserSnapshot = null;
+const PASSWORD_POLICY_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+
+export const PASSWORD_POLICY_MESSAGE =
+  "Password must include at least one uppercase letter, one lowercase letter, and one number.";
+
+export const isPasswordPolicyValid = (password = "") =>
+  PASSWORD_POLICY_REGEX.test(password);
 
 export const setRuntimeUserSnapshot = (user) => {
   runtimeUserSnapshot = user ?? null;
@@ -123,6 +130,10 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
 };
 
 export const registerUser = async (username, email, password) => {
+  if (!isPasswordPolicyValid(password)) {
+    throw new Error(PASSWORD_POLICY_MESSAGE);
+  }
+
   try {
     const credentials = await createUserWithEmailAndPassword(
       auth,
