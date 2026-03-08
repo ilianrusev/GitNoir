@@ -123,9 +123,9 @@ export default function LeaderboardPage() {
                 {/* Table Rows */}
                 {leaderboard.map((entry, index) => (
                   <div
-                    key={entry.username}
+                    key={entry.user_id || `${entry.username}-${index}`}
                     className={`leaderboard-row animate-fade-in ${
-                      user?.username === entry.username ? "bg-[#1a1a1a]" : ""
+                      user?.id === entry.user_id ? "bg-[#1a1a1a]" : ""
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                     data-testid={`leaderboard-row-${index + 1}`}
@@ -145,13 +145,13 @@ export default function LeaderboardPage() {
                       </div>
                       <span
                         className={`font-mono ${
-                          user?.username === entry.username
+                          user?.id === entry.user_id
                             ? "text-[#ffb703]"
                             : "text-[#e5e5e5]"
                         }`}
                       >
                         {entry.username}
-                        {user?.username === entry.username && (
+                        {user?.id === entry.user_id && (
                           <span className="ml-2 text-xs text-[#666]">(you)</span>
                         )}
                       </span>

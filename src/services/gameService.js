@@ -196,11 +196,12 @@ export const validateCommand = (
 const normalizeLeaderboard = (entries = []) => {
   const sorted = [...entries]
     .map((entry) => ({
+      user_id: entry.user_id || null,
       username: entry.username,
       reputation: Number(entry.reputation ?? 0),
       cases_solved: Number(entry.cases_solved ?? 0),
     }))
-    .filter((entry) => entry.reputation !== 10)
+    .filter((entry) => entry.reputation > 0)
     .sort((a, b) => b.reputation - a.reputation)
     .slice(0, 10);
 
@@ -256,6 +257,7 @@ const fetchLeaderboardFromUsersTable = async () => {
       : "Detective";
 
     return {
+      user_id: userDoc.id,
       username: userData.display_name || fallbackName,
       reputation: Number(userData.reputation ?? 0),
       cases_solved: Array.isArray(userData.completed_cases)
@@ -269,23 +271,29 @@ const fetchLeaderboardFromUsersTable = async () => {
 
 const updateLeaderboardCacheFromUser = (user) => {
   const normalizedUser = normalizeReputation(user);
+  if (!normalizedUser?.id) return;
+
   const cached =
     leaderboardMemoryCache.data || readLeaderboardCache()?.data || [];
   let leaderboard = [...cached];
 
   // Find and update or add user
   const existingIndex = leaderboard.findIndex(
-    (entry) => entry.username === normalizedUser.username,
+    (entry) =>
+      entry.user_id === normalizedUser.id ||
+      (!entry.user_id && entry.username === normalizedUser.username),
   );
 
   if (existingIndex >= 0) {
     leaderboard[existingIndex] = {
+      user_id: normalizedUser.id,
       username: normalizedUser.username,
       reputation: normalizedUser.reputation,
       cases_solved: normalizedUser.completed_cases.length,
     };
   } else {
     leaderboard.push({
+      user_id: normalizedUser.id,
       username: normalizedUser.username,
       reputation: normalizedUser.reputation,
       cases_solved: normalizedUser.completed_cases.length,
