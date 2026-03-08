@@ -33,8 +33,8 @@ export default function Header({ variant = "default", reputation }) {
 
   const handleLogout = async () => {
     try {
+      navigate("/", { replace: true });
       await logout();
-      navigate("/");
       toast.success("Logged out successfully");
       closeMobileMenu();
     } catch (error) {
