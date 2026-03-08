@@ -6,11 +6,10 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
 import { toast } from "sonner";
 import {
   isPasswordPolicyValid,
@@ -36,8 +35,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
@@ -201,22 +200,24 @@ export default function RegisterPage() {
                 >
                   PASSWORD
                 </Label>
-                <TooltipProvider delayDuration={0} skipDelayDuration={0}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        aria-label="Password policy"
-                        className="text-[#a3a3a3] hover:text-[#ffb703] transition-colors"
-                      >
-                        <Info className="w-3.5 h-3.5" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-65">
-                      {PASSWORD_POLICY_MESSAGE}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Password policy"
+                      className="text-[#a3a3a3] hover:text-[#ffb703] transition-colors"
+                    >
+                      <Info className="w-3.5 h-3.5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    side="right"
+                    align="start"
+                    className="max-w-72 border-[#333] bg-[#1a1a1a] p-3 text-[#e5e5e5]"
+                  >
+                    <p className="text-sm leading-relaxed">{PASSWORD_POLICY_MESSAGE}</p>
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className="relative">
                 <Input

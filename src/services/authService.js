@@ -20,7 +20,7 @@ let runtimeUserSnapshot = null;
 const PASSWORD_POLICY_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
 export const PASSWORD_POLICY_MESSAGE =
-  "Password must include at least one uppercase letter, one lowercase letter, and one number.";
+  "Password must be at least 8 symbols long and include at least one uppercase letter, one lowercase letter, and one number.";
 
 export const isPasswordPolicyValid = (password = "") =>
   PASSWORD_POLICY_REGEX.test(password);
@@ -88,8 +88,7 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
     return null;
   }
 
-  const { password = "", displayName = "", persistProfile = false } =
-    options;
+  const { password = "", displayName = "", persistProfile = false } = options;
   const normalizedDisplayName = displayName.trim();
   const storedUser = getCurrentUser();
   const userDocRef = doc(db, USERS_COLLECTION, firebaseUser.uid);
@@ -98,10 +97,7 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   const needsReputationMigration = !dbUser || dbUser.reputation === undefined;
   const shouldPersistProfile = persistProfile || needsReputationMigration;
 
-  const reputation =
-    dbUser?.reputation ??
-    storedUser?.reputation ??
-    0;
+  const reputation = dbUser?.reputation ?? storedUser?.reputation ?? 0;
 
   const defaultUsername =
     firebaseUser.displayName ||
@@ -156,7 +152,7 @@ export const registerUser = async (username, email, password) => {
     const registrationErrors = {
       "auth/email-already-in-use": "An account with this email already exists.",
       "auth/invalid-email": "Please enter a valid email address.",
-      "auth/weak-password": "Password must be at least 6 characters.",
+      "auth/weak-password": "Password must be at least 8 characters.",
       "auth/network-request-failed":
         "Network error. Check your connection and try again.",
     };
