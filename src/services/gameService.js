@@ -153,7 +153,7 @@ export const validateCommand = (
       caseProgress.current_step = nextStep;
     }
 
-    saveGameUser(user);
+    saveGameUser(user, { persistProfile: !isAlreadyCompleted });
 
     // Different feedback for replay
     let feedback;
