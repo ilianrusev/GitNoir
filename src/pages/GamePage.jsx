@@ -49,8 +49,15 @@ export default function GamePage() {
   }, [history]);
 
   useEffect(() => {
+    const isMobileViewport = window.matchMedia("(max-width: 1023px)").matches;
+    const isInitialStep = currentStep === 0 && history.length === 0;
+
+    if (isMobileViewport && isInitialStep) {
+      return;
+    }
+
     inputRef.current?.focus();
-  }, [currentStep]);
+  }, [currentStep, history.length]);
 
   const loadCase = () => {
     try {
