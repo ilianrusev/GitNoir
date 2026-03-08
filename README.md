@@ -40,6 +40,36 @@ Instead of tutorials, players learn by **investigating problems and fixing repos
 
 ---
 
+## 🤝 Contributing
+
+Contributions are welcome!
+
+If you'd like to:
+
+- add new cases
+- improve existing scenarios
+- fix bugs
+- suggest features
+
+### Contribution flow
+
+1. Fork the repository and create a branch.
+2. Make your changes.
+3. If you changed case files, run:
+
+```bash
+npm run validate:cases
+```
+
+4. Open a pull request with a clear summary.
+5. Wait for required checks to pass (especially **Validate Cases** for case updates).
+
+Feel free to **open an issue** first if you want feedback before implementing.
+
+Anyone is welcome to help improve Git Noir and expand the detective universe.
+
+---
+
 ## ✅ Case Validation
 
 Before opening a pull request that changes case files, run local schema validation:
@@ -128,30 +158,4 @@ If the GitHub Action fails, update your case JSON to match the schema and push a
 
 ---
 
-## 🤝 Contributing
 
-Contributions are welcome!
-
-If you'd like to:
-
-- add new cases
-- improve existing scenarios
-- fix bugs
-- suggest features
-
-### Contribution flow
-
-1. Fork the repository and create a branch.
-2. Make your changes.
-3. If you changed case files, run:
-
-```bash
-npm run validate:cases
-```
-
-4. Open a pull request with a clear summary.
-5. Wait for required checks to pass (especially **Validate Cases** for case updates).
-
-Feel free to **open an issue** first if you want feedback before implementing.
-
-Anyone is welcome to help improve Git Noir and expand the detective universe.
