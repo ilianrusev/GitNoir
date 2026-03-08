@@ -61,7 +61,7 @@ export default function CasesPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="flex items-start justify-between mb-12">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between mb-12">
           <div>
             <Link
               to="/dashboard"
@@ -81,7 +81,7 @@ export default function CasesPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                className="btn-outline flex items-center gap-2"
+                className="btn-outline flex items-center gap-2 w-fit"
                 data-testid="filter-dropdown"
               >
                 <Filter className="w-4 h-4" />
