@@ -227,7 +227,6 @@ export default function RegisterPage() {
                   className="input-terminal w-full pr-10"
                   placeholder="••••••••"
                   minLength={6}
-                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$"
                   required
                   data-testid="register-password-input"
                 />
