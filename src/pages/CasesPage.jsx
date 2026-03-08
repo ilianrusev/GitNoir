@@ -11,6 +11,7 @@ import {
 } from "../components/ui/dropdown-menu";
 import Header from "../components/Header";
 import SingleCase from "../components/SingleCase";
+import CasesGrid from "../components/CasesGrid";
 
 export default function CasesPage() {
   const [cases, setCases] = useState([]);
@@ -130,25 +131,12 @@ export default function CasesPage() {
         </div>
 
         {/* Cases Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {filteredCases.map((caseData, index) => {
-            const status = getCaseStatus(caseData);
-            const unlocked = isCaseUnlocked(caseData);
-            const caseProgress = progress?.case_progress?.[caseData.id];
-
-            return (
-              <SingleCase
-                key={caseData.id}
-                caseData={caseData}
-                status={status}
-                unlocked={unlocked}
-                caseProgress={caseProgress}
-                animationDelay={`${index * 0.05}s`}
-                variant="cases"
-              />
-            );
-          })}
-        </div>
+        <CasesGrid
+          cases={filteredCases}
+          getCaseStatus={getCaseStatus}
+          progress={progress}
+          variant="cases"
+        />
 
         {filteredCases.length === 0 && (
           <div className="text-center py-16">

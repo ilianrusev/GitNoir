@@ -4,9 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import { getCases, getUserProgress } from "../services/gameService";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
+import DashboardWelcome from "../components/DashboardWelcome";
 import DashboardStats from "../components/DashboardStats";
-import DashboardRecentCases from "../components/DashboardRecentCases";
-
+import CasesGrid from "../components/CasesGrid";
 export default function DashboardPage() {
   const { user } = useAuth();
   const [cases, setCases] = useState([]);
@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const getCaseStatus = (caseData) => {
     if (progress?.completed_cases?.includes(caseData.id)) return "completed";
     if (progress?.case_progress?.[caseData.id]) return "in_progress";
+    if (checkUnlocked(caseData)) return "unlocked";
     return "locked";
   };
 
@@ -57,21 +58,7 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* Welcome Section */}
-        <div className="mb-12">
-          <p className="font-mono text-xs text-[#ffb703] tracking-[0.3em] mb-2">
-            DETECTIVE PROFILE
-          </p>
-          <h1 className="font-typewriter text-4xl text-[#e5e5e5] mb-2">
-            WELCOME,{" "}
-            <span className="text-[#ffb703]">
-              {user?.username?.toUpperCase()}
-            </span>
-          </h1>
-          <p className="text-[#a3a3a3]">
-            Your reputation speaks for itself. What case will you crack today?
-          </p>
-        </div>
+        <DashboardWelcome username={user?.username?.toUpperCase()} />
 
         {/* Stats Grid */}
         <DashboardStats
@@ -80,10 +67,18 @@ export default function DashboardPage() {
           totalCases={cases.length}
         />
 
-        <DashboardRecentCases
-          recentCases={recentCases}
+        <div className="mb-8">
+          <p className="font-mono text-xs text-[#ffb703] tracking-[0.3em] mb-4">
+            YOUR CASES
+          </p>
+          <h2 className="font-typewriter text-2xl text-[#e5e5e5] mb-6">
+            RECENT INVESTIGATIONS
+          </h2>
+        </div>
+
+        <CasesGrid
+          cases={recentCases}
           getCaseStatus={getCaseStatus}
-          checkUnlocked={checkUnlocked}
           progress={progress}
         />
 

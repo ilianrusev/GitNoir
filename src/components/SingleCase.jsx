@@ -21,13 +21,13 @@ function parseCaseDate(dateValue) {
 export default function SingleCase({
   caseData,
   status,
-  unlocked,
   caseProgress,
   animationDelay,
   variant = "dashboard",
 }) {
+  const isUnlocked = status !== "locked";
   const isCasesVariant = variant === "cases";
-  const shouldSoftLockBlur = isCasesVariant && !unlocked;
+  const shouldSoftLockBlur = isCasesVariant && !isUnlocked;
   const isNewCase = (() => {
     const createdAt = parseCaseDate(caseData.created_at);
     if (!createdAt) return false;
@@ -38,7 +38,11 @@ export default function SingleCase({
       createdAt.getMonth(),
       createdAt.getDate(),
     );
-    const currentDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const currentDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
     const dayDiff = Math.floor(
       (currentDay.getTime() - createdDay.getTime()) / (24 * 60 * 60 * 1000),
     );
@@ -51,7 +55,7 @@ export default function SingleCase({
       className={
         isCasesVariant
           ? "case-file animate-fade-in"
-          : `case-card p-6 relative ${!unlocked ? "locked" : ""}`
+          : `case-card p-6 relative ${!isUnlocked ? "locked" : ""}`
       }
       style={{ animationDelay }}
       data-testid={`case-card-${caseData.id}`}
@@ -68,7 +72,7 @@ export default function SingleCase({
         <div className="absolute inset-0 bg-[#0a0a0a]/25 backdrop-blur-[1px] pointer-events-none z-10" />
       )}
 
-      {!isCasesVariant && !unlocked && (
+      {!isCasesVariant && !isUnlocked && (
         <div className="locked-overlay">
           <Lock className="w-8 h-8 text-[#666]" />
           <span className="font-mono text-xs text-[#666]">
@@ -94,7 +98,9 @@ export default function SingleCase({
             <span className="font-mono text-xs text-[#00ff41]">SOLVED</span>
           )}
           {status === "in_progress" && (
-            <span className="font-mono text-xs text-[#ffb703]">IN PROGRESS</span>
+            <span className="font-mono text-xs text-[#ffb703]">
+              IN PROGRESS
+            </span>
           )}
         </div>
       </div>
@@ -125,7 +131,7 @@ export default function SingleCase({
               <span className="font-mono text-xs text-[#666]">
                 {caseData.steps.length} STEPS
               </span>
-              {!unlocked && (
+              {!isUnlocked && (
                 <span className="font-mono text-xs text-[#666] flex items-center gap-1">
                   <Lock className="w-3 h-3" />
                   REQUIRES {caseData.unlock_cost} REP
@@ -133,10 +139,15 @@ export default function SingleCase({
               )}
             </div>
 
-            {unlocked ? (
-              <Link to={`/game/${caseData.id}`} className="self-center sm:self-auto">
+            {isUnlocked ? (
+              <Link
+                to={`/game/${caseData.id}`}
+                className="self-center sm:self-auto"
+              >
                 <Button
-                  className={status === "completed" ? "btn-outline" : "btn-primary"}
+                  className={
+                    status === "completed" ? "btn-outline" : "btn-primary"
+                  }
                   data-testid={`play-case-${caseData.id}`}
                 >
                   <Play className="w-4 h-4 mr-2" />
@@ -167,8 +178,11 @@ export default function SingleCase({
             <span className="font-mono text-xs text-[#666]">
               {caseData.total_points} PTS
             </span>
-            {unlocked && status !== "completed" && (
-              <Link to={`/game/${caseData.id}`} className="self-center sm:self-auto">
+            {isUnlocked && status !== "completed" && (
+              <Link
+                to={`/game/${caseData.id}`}
+                className="self-center sm:self-auto"
+              >
                 <Button
                   className="btn-primary py-2 px-4 text-xs"
                   data-testid={`start-case-${caseData.id}`}
@@ -179,7 +193,10 @@ export default function SingleCase({
               </Link>
             )}
             {status === "completed" && (
-              <Link to={`/game/${caseData.id}`} className="self-center sm:self-auto">
+              <Link
+                to={`/game/${caseData.id}`}
+                className="self-center sm:self-auto"
+              >
                 <Button
                   className="btn-outline py-2 px-4 text-xs"
                   data-testid={`replay-case-${caseData.id}`}
