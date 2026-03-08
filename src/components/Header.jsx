@@ -192,7 +192,7 @@ export default function Header({ variant = "default", reputation }) {
     );
   }
 
-  // Default variant (for authenticated pages - Dashboard, Cases, Notebook, etc.)
+  // Default variant (for authenticated pages - Dashboard, Cases, etc.)
   return (
     <nav className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-[#333]">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
@@ -214,9 +214,6 @@ export default function Header({ variant = "default", reputation }) {
           </Link>
           <Link to="/cases" className="nav-link" data-testid="nav-cases">
             Cases
-          </Link>
-          <Link to="/notebook" className="nav-link" data-testid="nav-notebook">
-            Notebook
           </Link>
           <Link
             to="/cheatsheet"
@@ -297,14 +294,6 @@ export default function Header({ variant = "default", reputation }) {
               data-testid="mobile-nav-cases"
             >
               Cases
-            </Link>
-            <Link
-              to="/notebook"
-              className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
-              onClick={closeMobileMenu}
-              data-testid="mobile-nav-notebook"
-            >
-              Notebook
             </Link>
             <Link
               to="/cheatsheet"

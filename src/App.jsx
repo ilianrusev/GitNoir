@@ -23,7 +23,6 @@ import DashboardPage from "./pages/DashboardPage";
 import CasesPage from "./pages/CasesPage";
 import GamePage from "./pages/GamePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
-import NotebookPage from "./pages/NotebookPage";
 import CheatSheetPage from "./pages/CheatSheetPage";
 
 // Auth Context
@@ -212,14 +211,6 @@ function App() {
             }
           />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
-          <Route
-            path="/notebook"
-            element={
-              <ProtectedRoute>
-                <NotebookPage />
-              </ProtectedRoute>
-            }
-          />
           <Route
             path="/cheatsheet"
             element={
