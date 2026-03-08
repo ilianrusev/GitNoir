@@ -93,7 +93,7 @@ export default function RegisterPage() {
             backgroundImage: `url('https://images.unsplash.com/photo-1635931225069-4968458f04f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAxODF8MHwxfHNlYXJjaHwxfHxkZXRlY3RpdmUlMjBub2lyJTIwY2l0eSUyMG5pZ2h0fGVufDB8fHx8MTc3MjgzMzY2OXww&ixlib=rb-4.1.0&q=85')`,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0c0c0c]" />
+        <div className="absolute inset-0 bg-linear-to-r from-transparent to-[#0c0c0c]" />
 
         <div className="relative z-10 p-12 max-w-lg">
           <h2 className="font-typewriter text-4xl text-[#e5e5e5] mb-6">

@@ -156,7 +156,7 @@ export default function LoginPage() {
             backgroundImage: `url('https://images.unsplash.com/photo-1608742213509-815b97c30b36?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwxfHxoYWNrZXIlMjBjb21wdXRlciUyMHRlcm1pbmFsJTIwY29kZXxlbnwwfHx8fDE3NzI4MzM2NzV8MA&ixlib=rb-4.1.0&q=85')`
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c0c] to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0c0c0c] to-transparent" />
         
         <div className="relative z-10 p-12 max-w-md">
           <div className="terminal-container p-6">
