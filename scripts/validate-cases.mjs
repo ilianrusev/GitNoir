@@ -104,6 +104,21 @@ async function main() {
       continue;
     }
 
+    const stepsPointsTotal = parsed.steps.reduce(
+      (sum, step) => sum + step.points,
+      0,
+    );
+
+    if (parsed.total_points !== stepsPointsTotal) {
+      hasFailures = true;
+      console.error(
+        `\n✖ ${toRelative(filePath)} has inconsistent total_points`,
+      );
+      console.error(`  - total_points: ${parsed.total_points}`);
+      console.error(`  - sum of steps[].points: ${stepsPointsTotal}`);
+      continue;
+    }
+
     const normalizedFileName = normalizeFileName(filePath);
     const firstSeen = fileNames.get(normalizedFileName);
 

@@ -66,9 +66,9 @@ Follow these steps to add a case that works with the current data structure and 
 	 - `src/data/cases/advanced`
 
 2. Create a new file using this naming pattern:
-	 - `case-beginner-00X.json`
-	 - `case-intermediate-00X.json`
-	 - `case-advanced-00X.json`
+	 - `case-beginner-XXX.json`
+	 - `case-intermediate-XXX.json`
+	 - `case-advanced-XXX.json`
 
 3. Use this JSON structure (all fields are required):
 
@@ -106,7 +106,9 @@ Follow these steps to add a case that works with the current data structure and 
 	 - `difficulty` must be exactly `Beginner`, `Intermediate`, or `Advanced`
 	 - `unlock_cost` must be `0` or higher
 	 - `total_points` must be at least `1`
+	 - `total_points` must exactly equal the sum of all `steps[].points`
 	 - `created_at` is optional, but when present (`YYYY-MM-DD`), recent cases get a `NEW` badge in the UI
+	 - `story_intro` should be engaging, clear, and fit the detective-noir tone of the game
 	 - each step needs: `instruction`, `narrative`, `expected_commands`, `hint`, `points`
 
 5. Validate before committing:
