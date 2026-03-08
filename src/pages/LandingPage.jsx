@@ -143,13 +143,15 @@ export default function LandingPage() {
                 </div>
               )}
             </div>
-            <Link
-              to="/leaderboard"
-              className="nav-link"
-              data-testid="nav-leaderboard"
-            >
-              Leaderboard
-            </Link>
+            {user && (
+              <Link
+                to="/leaderboard"
+                className="nav-link"
+                data-testid="nav-leaderboard"
+              >
+                Leaderboard
+              </Link>
+            )}
             {user ? (
               <>
                 <Link to="/dashboard">
@@ -261,14 +263,16 @@ export default function LandingPage() {
                   </Link>
                 </div>
               )}
-              <Link
-                to="/leaderboard"
-                className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
-                onClick={closeMobileMenu}
-                data-testid="mobile-nav-leaderboard"
-              >
-                Leaderboard
-              </Link>
+              {user && (
+                <Link
+                  to="/leaderboard"
+                  className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+                  onClick={closeMobileMenu}
+                  data-testid="mobile-nav-leaderboard"
+                >
+                  Leaderboard
+                </Link>
+              )}
               <div className="border-t border-[#333] pt-4 mt-4">
                 {user ? (
                   <>
@@ -355,14 +359,16 @@ export default function LandingPage() {
                 Begin Investigation
               </Button>
             </Link>
-            <Link to="/leaderboard">
-              <Button
-                className="btn-outline text-base px-8 py-4"
-                data-testid="hero-leaderboard-btn"
-              >
-                View Detectives
-              </Button>
-            </Link>
+            {user && (
+              <Link to="/leaderboard">
+                <Button
+                  className="btn-outline text-base px-8 py-4"
+                  data-testid="hero-leaderboard-btn"
+                >
+                  View Detectives
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </section>

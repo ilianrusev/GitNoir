@@ -76,13 +76,6 @@ export default function Header({ variant = "default", reputation }) {
             >
               <CoffeeIcon className="w-5 h-5" />
             </Link>
-            <Link
-              to="/leaderboard"
-              className="nav-link"
-              data-testid="nav-leaderboard"
-            >
-              Leaderboard
-            </Link>
             {user ? (
               <Link to="/dashboard">
                 <Button className="btn-primary" data-testid="nav-dashboard-btn">
@@ -145,14 +138,6 @@ export default function Header({ variant = "default", reputation }) {
               >
                 <CoffeeIcon className="w-5 h-5" />
                 Buy Me a Coffee
-              </Link>
-              <Link
-                to="/leaderboard"
-                className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
-                onClick={closeMobileMenu}
-                data-testid="mobile-nav-leaderboard"
-              >
-                Leaderboard
               </Link>
               <div className="border-t border-[#333] pt-4 mt-4">
                 {user ? (
