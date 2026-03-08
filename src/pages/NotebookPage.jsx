@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../App";
+import { useAuth } from "../context/AuthContext";
 import { getCases, getUserProgress } from "../services/gameService";
 import { BookOpen, ArrowLeft, Lock, Search, Copy, Check } from "lucide-react";
 import { Button } from "../components/ui/button";

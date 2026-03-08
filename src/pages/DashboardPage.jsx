@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../App";
+import { useAuth } from "../context/AuthContext";
 import { getCases, getUserProgress } from "../services/gameService";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
-import SingleCase from "../components/SingleCase";
+import DashboardStats from "../components/DashboardStats";
+import DashboardRecentCases from "../components/DashboardRecentCases";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -73,58 +74,18 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div className="stat-card" data-testid="stat-reputation">
-            <div className="stat-value">{reputation}</div>
-            <div className="stat-label">Reputation</div>
-          </div>
-          <div className="stat-card" data-testid="stat-cases-solved">
-            <div className="stat-value">{completedCount}</div>
-            <div className="stat-label">Cases Solved</div>
-          </div>
-          <div className="stat-card" data-testid="stat-total-cases">
-            <div className="stat-value">{cases.length}</div>
-            <div className="stat-label">Total Cases</div>
-          </div>
-          <div className="stat-card" data-testid="stat-progress">
-            <div className="stat-value">
-              {cases.length > 0
-                ? Math.round((completedCount / cases.length) * 100)
-                : 0}
-              %
-            </div>
-            <div className="stat-label">Completion</div>
-          </div>
-        </div>
+        <DashboardStats
+          reputation={reputation}
+          completedCount={completedCount}
+          totalCases={cases.length}
+        />
 
-        {/* Recent Cases */}
-        <div className="mb-8">
-          <p className="font-mono text-xs text-[#ffb703] tracking-[0.3em] mb-4">
-            YOUR CASES
-          </p>
-          <h2 className="font-typewriter text-2xl text-[#e5e5e5] mb-6">
-            RECENT INVESTIGATIONS
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recentCases.map((caseData, index) => {
-            const status = getCaseStatus(caseData);
-            const unlocked = checkUnlocked(caseData);
-            const caseProgress = progress?.case_progress?.[caseData.id];
-
-            return (
-              <SingleCase
-                key={caseData.id}
-                caseData={caseData}
-                status={status}
-                unlocked={unlocked}
-                caseProgress={caseProgress}
-                animationDelay={`${index * 0.1}s`}
-              />
-            );
-          })}
-        </div>
+        <DashboardRecentCases
+          recentCases={recentCases}
+          getCaseStatus={getCaseStatus}
+          checkUnlocked={checkUnlocked}
+          progress={progress}
+        />
 
         {cases.length > 9 && (
           <div className="mt-8 text-center">

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Terminal } from "lucide-react";
 import Header from "../components/Header";
-import { useAuth } from "../App";
+import { useAuth } from "../context/AuthContext";
 
 const sections = [
   {

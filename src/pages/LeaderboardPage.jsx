@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../App";
+import { useAuth } from "../context/AuthContext";
 import { getLeaderboard, getUserProgress } from "../services/gameService";
 import { Award, Trophy, ArrowLeft, Medal, Users } from "lucide-react";
 import { Button } from "../components/ui/button";

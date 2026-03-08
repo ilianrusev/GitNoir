@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../App";
+import { useAuth } from "../context/AuthContext";
 import { Terminal, Menu, X, Award, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
