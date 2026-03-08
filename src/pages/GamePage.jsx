@@ -75,6 +75,10 @@ export default function GamePage() {
   }, [history]);
 
   useEffect(() => {
+    if (caseCompleted) {
+      return;
+    }
+
     const isMobileViewport = window.matchMedia("(max-width: 1023px)").matches;
     const isInitialStep = currentStep === 0 && history.length === 0;
 
@@ -83,7 +87,15 @@ export default function GamePage() {
     }
 
     focusCommandInput();
-  }, [currentStep, history.length]);
+  }, [currentStep, history.length, caseCompleted]);
+
+  useEffect(() => {
+    if (!caseCompleted) {
+      return;
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [caseCompleted]);
 
   const loadCase = () => {
     try {
