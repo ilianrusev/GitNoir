@@ -153,7 +153,7 @@ export default function LoginPage() {
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1608742213509-815b97c30b36?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwxfHxoYWNrZXIlMjBjb21wdXRlciUyMHRlcm1pbmFsJTIwY29kZXxlbnwwfHx8fDE3NzI4MzM2NzV8MA&ixlib=rb-4.1.0&q=85')`
+            backgroundImage: `url('/matrix-code.jpeg')`
           }}
         />
         <div className="absolute inset-0 bg-linear-to-t from-[#0c0c0c] to-transparent" />

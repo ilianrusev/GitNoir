@@ -323,7 +323,7 @@ export default function LandingPage() {
         <div
           className="hero-bg"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1635931225069-4968458f04f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAxODF8MHwxfHNlYXJjaHwxfHxkZXRlY3RpdmUlMjBub2lyJTIwY2l0eSUyMG5pZ2h0fGVufDB8fHx8MTc3MjgzMzY2OXww&ixlib=rb-4.1.0&q=85')`,
+            backgroundImage: `url('/night-town.jpeg')`,
           }}
         />
         <div className="hero-overlay" />
