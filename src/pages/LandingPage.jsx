@@ -69,12 +69,10 @@ export default function LandingPage() {
       }
     };
 
-    document.addEventListener("mousedown", handleOutsideClick);
-    document.addEventListener("touchstart", handleOutsideClick);
+    document.addEventListener("click", handleOutsideClick);
 
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-      document.removeEventListener("touchstart", handleOutsideClick);
+      document.removeEventListener("click", handleOutsideClick);
     };
   }, [navSupportMenuOpen, supportMenuOpen]);
 
@@ -734,7 +732,7 @@ export default function LandingPage() {
             </div>
 
             {/* Support */}
-            <div>
+            <div ref={footerSupportRef}>
               <h4 className="font-mono text-xs text-[#ffb703] tracking-wider mb-4">
                 SUPPORT THE PROJECT
               </h4>
@@ -746,7 +744,10 @@ export default function LandingPage() {
               </p>
               <button
                 type="button"
-                onClick={() => setSupportMenuOpen((previous) => !previous)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setSupportMenuOpen((previous) => !previous);
+                }}
                 className="inline-flex items-center gap-2 px-4 py-2 border border-[#333] text-[#e5e5e5] font-mono text-sm hover:border-[#ffb703] hover:text-[#ffb703] transition-colors"
                 data-testid="support-toggle-btn"
               >
@@ -755,7 +756,11 @@ export default function LandingPage() {
               </button>
 
               {supportMenuOpen && (
-                <div className="mt-3 space-y-2" data-testid="support-options">
+                <div
+                  className="mt-3 space-y-2"
+                  data-testid="support-options"
+                  onClick={(event) => event.stopPropagation()}
+                >
                   <Link
                     to="https://buymeacoffee.com/ilianrusev"
                     target="_blank"
