@@ -229,7 +229,6 @@ export default function GamePage() {
               <span className="font-mono text-sm">Exit Case</span>
             </Link>
             <span className="text-[#333]">|</span>
-            <span className="font-typewriter text-[#ffb703]">{caseData.title}</span>
           </div>
           <div className="flex items-center gap-6">
             {isReplay && (
