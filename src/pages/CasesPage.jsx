@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { getCases, getUserProgress } from "../services/gameService";
-import { ArrowLeft, Filter } from "lucide-react";
+import { isCaseUnlocked } from "../services/caseStatusService";
+import { Filter } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
   DropdownMenu,
@@ -10,8 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import Header from "../components/Header";
-import SingleCase from "../components/SingleCase";
-import CasesGrid from "../components/CasesGrid";
+import SecondaryHeader from "../components/SecondaryHeader";
+import CasesGrid from "../components/cases/CasesGrid";
 
 export default function CasesPage() {
   const [cases, setCases] = useState([]);
@@ -29,20 +29,6 @@ export default function CasesPage() {
     setProgress(userProgress);
   };
 
-  const isCaseUnlocked = (caseData) => {
-    if (caseData.unlock_cost === 0) return true;
-    if (progress?.completed_cases?.includes(caseData.id)) return true;
-    if (progress?.case_progress?.[caseData.id]) return true;
-    return (progress?.reputation || 0) >= caseData.unlock_cost;
-  };
-
-  const getCaseStatus = (caseData) => {
-    if (progress?.completed_cases?.includes(caseData.id)) return "completed";
-    if (progress?.case_progress?.[caseData.id]) return "in_progress";
-    if (isCaseUnlocked(caseData)) return "unlocked";
-    return "locked";
-  };
-
   const filteredCases = cases.filter((c) => {
     if (filter === "all") return true;
     if (filter === "beginner") return c.difficulty === "Beginner";
@@ -51,7 +37,10 @@ export default function CasesPage() {
     if (filter === "completed")
       return progress?.completed_cases?.includes(c.id);
     if (filter === "available")
-      return isCaseUnlocked(c) && !progress?.completed_cases?.includes(c.id);
+      return (
+        isCaseUnlocked(c, progress) &&
+        !progress?.completed_cases?.includes(c.id)
+      );
     return true;
   });
 
@@ -61,23 +50,13 @@ export default function CasesPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between mb-12">
-          <div>
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-2 text-[#a3a3a3] mb-4 hover:text-[#ffb703] transition-colors w-fit"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span className="font-mono text-sm">Back to Dashboard</span>
-            </Link>
-            <p className="font-mono text-xs text-[#ffb703] tracking-[0.3em] mb-2">
-              CASE FILES
-            </p>
-            <h1 className="font-typewriter text-4xl text-[#e5e5e5]">
-              ALL INVESTIGATIONS
-            </h1>
-          </div>
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between ">
+          <SecondaryHeader
+            backTo="/dashboard"
+            backLabel="Back to Dashboard"
+            eyebrow="CASE FILES"
+            title="ALL INVESTIGATIONS"
+          />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -129,14 +108,8 @@ export default function CasesPage() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
         {/* Cases Grid */}
-        <CasesGrid
-          cases={filteredCases}
-          getCaseStatus={getCaseStatus}
-          progress={progress}
-          variant="cases"
-        />
+        <CasesGrid cases={filteredCases} progress={progress} variant="cases" />
 
         {filteredCases.length === 0 && (
           <div className="text-center py-16">

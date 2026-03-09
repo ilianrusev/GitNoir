@@ -4,9 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import { getCases, getUserProgress } from "../services/gameService";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
-import DashboardWelcome from "../components/DashboardWelcome";
-import DashboardStats from "../components/DashboardStats";
-import CasesGrid from "../components/CasesGrid";
+import DashboardStats from "../components/dashboard/DashboardStats";
+import CasesGrid from "../components/cases/CasesGrid";
+import SecondaryHeader from "../components/SecondaryHeader";
 export default function DashboardPage() {
   const { user } = useAuth();
   const [cases, setCases] = useState([]);
@@ -26,20 +26,6 @@ export default function DashboardPage() {
   const reputation = progress?.reputation || 0;
   const completedCount = progress?.completed_cases?.length || 0;
 
-  const checkUnlocked = (caseData) => {
-    if (caseData.unlock_cost === 0) return true;
-    if (progress?.completed_cases?.includes(caseData.id)) return true;
-    if (progress?.case_progress?.[caseData.id]) return true;
-    return reputation >= caseData.unlock_cost;
-  };
-
-  const getCaseStatus = (caseData) => {
-    if (progress?.completed_cases?.includes(caseData.id)) return "completed";
-    if (progress?.case_progress?.[caseData.id]) return "in_progress";
-    if (checkUnlocked(caseData)) return "unlocked";
-    return "locked";
-  };
-
   const recentCases = [...cases]
     .sort((firstCase, secondCase) => {
       const firstCreatedAt = firstCase.created_at
@@ -58,7 +44,18 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-12">
-        <DashboardWelcome username={user?.username?.toUpperCase()} />
+        <SecondaryHeader
+          eyebrow="DETECTIVE PROFILE"
+          title={
+            <>
+              WELCOME,{" "}
+              <span className="text-[#ffb703]">
+                {user?.username?.toUpperCase()}
+              </span>
+            </>
+          }
+          description="Your reputation speaks for itself. What case will you crack today?"
+        />
 
         {/* Stats Grid */}
         <DashboardStats
@@ -76,11 +73,7 @@ export default function DashboardPage() {
           </h2>
         </div>
 
-        <CasesGrid
-          cases={recentCases}
-          getCaseStatus={getCaseStatus}
-          progress={progress}
-        />
+        <CasesGrid cases={recentCases} progress={progress} />
 
         {cases.length > 9 && (
           <div className="mt-8 text-center">

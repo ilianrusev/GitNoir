@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Lock, Play } from "lucide-react";
-import { Button } from "./ui/button";
-import { Progress } from "./ui/progress";
+import { Button } from "../ui/button";
+import { Progress } from "../ui/progress";
 
 const NEW_CASE_WINDOW_DAYS = 14;
 

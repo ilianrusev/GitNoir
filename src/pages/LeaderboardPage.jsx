@@ -6,6 +6,7 @@ import { Award, Trophy, ArrowLeft, Medal, Users } from "lucide-react";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
 import { toast } from "sonner";
+import SecondaryHeader from "../components/SecondaryHeader";
 
 export default function LeaderboardPage() {
   const { user } = useAuth();
@@ -49,34 +50,19 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      {user ? (
-        <Header reputation={progress?.reputation || 0} />
-      ) : (
-        <Header variant="landing" />
-      )}
+      <Header reputation={progress?.reputation || 0} />
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="mb-12">
-          <Link
-            to={user ? "/dashboard" : "/"}
-            className="flex items-center gap-2 text-[#a3a3a3] mb-4 hover:text-[#ffb703] transition-colors w-fit"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-mono text-sm">Back</span>
-          </Link>
-          <p className="font-mono text-xs text-[#ffb703] tracking-[0.3em] mb-2">
-            HALL OF FAME
-          </p>
-          <h1 className="font-typewriter text-4xl text-[#e5e5e5] mb-4">
-            TOP DETECTIVES
-          </h1>
-          <p className="text-[#a3a3a3]">
-            The most skilled investigators in the agency. Will your name be
-            here?
-          </p>
-        </div>
+        <SecondaryHeader
+          backTo="/dashboard"
+          backLabel="Back to Dashboard"
+          eyebrow="HALL OF FAME"
+          title="TOP DETECTIVES"
+          description="The most skilled investigators in the agency. Will your name be
+            here?"
+        />
 
         {/* Leaderboard */}
         {loading ? (
@@ -152,7 +138,9 @@ export default function LeaderboardPage() {
                       >
                         {entry.username}
                         {user?.id === entry.user_id && (
-                          <span className="ml-2 text-xs text-[#666]">(you)</span>
+                          <span className="ml-2 text-xs text-[#666]">
+                            (you)
+                          </span>
                         )}
                       </span>
                     </div>
@@ -174,17 +162,6 @@ export default function LeaderboardPage() {
           </div>
         )}
 
-        {/* CTA for non-logged users */}
-        {!user && leaderboard.length > 0 && (
-          <div className="mt-12 text-center">
-            <p className="text-[#a3a3a3] mb-4">Ready to prove yourself?</p>
-            <Link to="/register">
-              <Button className="btn-primary" data-testid="cta-join-btn">
-                Join The Agency
-              </Button>
-            </Link>
-          </div>
-        )}
       </main>
     </div>
   );

@@ -1,6 +1,7 @@
 import SingleCase from "./SingleCase";
+import { getCaseStatus } from "../../services/caseStatusService";
 
-export default function CasesGrid({ cases, getCaseStatus, progress, variant }) {
+export default function CasesGrid({ cases, progress, variant }) {
   const gridClassName =
     variant === "cases"
       ? "grid grid-cols-1 lg:grid-cols-2 gap-8"
@@ -9,7 +10,7 @@ export default function CasesGrid({ cases, getCaseStatus, progress, variant }) {
   return (
     <div className={gridClassName}>
       {cases.map((caseData, index) => {
-        const status = getCaseStatus(caseData);
+        const status = getCaseStatus(caseData, progress);
         const caseProgress = progress?.case_progress?.[caseData.id];
 
         return (
