@@ -29,20 +29,35 @@ export default function CasesPage() {
     setProgress(userProgress);
   };
 
-  const filteredCases = cases.filter((c) => {
-    if (filter === "all") return true;
-    if (filter === "beginner") return c.difficulty === "Beginner";
-    if (filter === "intermediate") return c.difficulty === "Intermediate";
-    if (filter === "advanced") return c.difficulty === "Advanced";
-    if (filter === "completed")
-      return progress?.completed_cases?.includes(c.id);
-    if (filter === "available")
-      return (
-        isCaseUnlocked(c, progress) &&
-        !progress?.completed_cases?.includes(c.id)
-      );
-    return true;
-  });
+  const difficultyOrder = {
+    beginner: 0,
+    intermediate: 1,
+    advanced: 2,
+  };
+
+  const sortByDifficulty = (casesList) =>
+    [...casesList].sort((a, b) => {
+      const aOrder = difficultyOrder[a.difficulty?.toLowerCase()] ?? 999;
+      const bOrder = difficultyOrder[b.difficulty?.toLowerCase()] ?? 999;
+      return aOrder - bOrder;
+    });
+
+  const filteredCases =
+    filter === "all"
+      ? sortByDifficulty(cases)
+      : cases.filter((c) => {
+          if (filter === "beginner") return c.difficulty === "Beginner";
+          if (filter === "intermediate") return c.difficulty === "Intermediate";
+          if (filter === "advanced") return c.difficulty === "Advanced";
+          if (filter === "completed")
+            return progress?.completed_cases?.includes(c.id);
+          if (filter === "available")
+            return (
+              isCaseUnlocked(c, progress) &&
+              !progress?.completed_cases?.includes(c.id)
+            );
+          return true;
+        });
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
