@@ -15,7 +15,7 @@ import {
   isPasswordPolicyValid,
   PASSWORD_POLICY_MESSAGE,
 } from "../services/authService";
-import GoogleAuthButton from "../components/auth/GoogleAuthButton";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");

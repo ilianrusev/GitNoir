@@ -6,7 +6,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { toast } from "sonner";
-import GoogleAuthButton from "../components/auth/GoogleAuthButton";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
