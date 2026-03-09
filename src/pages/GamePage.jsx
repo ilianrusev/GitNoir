@@ -247,7 +247,7 @@ export default function GamePage() {
       <div className="sticky top-0 z-50 bg-[#0a0a0a] border-b border-[#333] px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="flex items-center gap-2 text-[#a3a3a3] hover:text-[#ffb703] transition-colors">
+            <Link to="/cases" className="flex items-center gap-2 text-[#a3a3a3] hover:text-[#ffb703] transition-colors">
               <ArrowLeft className="w-4 h-4" />
               <span className="font-mono text-sm">Exit Case</span>
             </Link>
