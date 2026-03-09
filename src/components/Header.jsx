@@ -45,11 +45,11 @@ export default function Header({ variant = "default", reputation }) {
   // Landing page variant (for non-authenticated pages)
   if (variant === "landing") {
     return (
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-[#333]">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-(--background)/90 backdrop-blur-sm border-b border-(--border)">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 md:gap-3">
-            <Terminal className="w-5 h-5 md:w-6 md:h-6 text-[#00ff41]" />
-            <span className="font-typewriter text-lg md:text-xl text-[#ffb703] tracking-wider">
+            <Terminal className="w-5 h-5 md:w-6 md:h-6 text-(--foreground-terminal)" />
+            <span className="font-typewriter text-lg md:text-xl text-(--primary) tracking-wider">
               GIT NOIR
             </span>
           </Link>
@@ -60,7 +60,7 @@ export default function Header({ variant = "default", reputation }) {
               to="https://github.com/ilianrusev/GitNoir/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center text-[#a3a3a3] hover:text-[#e5e5e5] transition-colors"
+              className="flex items-center text-(--foreground-muted) hover:text-(--foreground) transition-colors"
               title="View on GitHub"
               data-testid="nav-github-btn"
             >
@@ -70,7 +70,7 @@ export default function Header({ variant = "default", reputation }) {
               to="https://buymeacoffee.com/ilianrusev"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#ffdd00] hover:text-[#ffb703] transition-colors"
+              className="flex items-center gap-2 text-[#ffdd00] hover:text-(--primary) transition-colors"
               title="Support the project"
               data-testid="nav-coffee-btn"
             >
@@ -101,7 +101,7 @@ export default function Header({ variant = "default", reputation }) {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-[#e5e5e5] hover:text-[#ffb703] transition-colors"
+            className="md:hidden p-2 text-(--foreground) hover:text-(--primary) transition-colors"
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             data-testid="mobile-menu-btn"
@@ -116,13 +116,13 @@ export default function Header({ variant = "default", reputation }) {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#0a0a0a] border-t border-[#333] animate-fade-in">
+          <div className="md:hidden bg-(--background) border-t border-(--border) animate-fade-in">
             <div className="px-4 py-6 space-y-4">
               <Link
                 to="https://github.com/ilianrusev/GitNoir/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 py-3 px-4 text-[#a3a3a3] hover:text-[#e5e5e5] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+                className="flex items-center gap-3 py-3 px-4 text-(--foreground-muted) hover:text-(--foreground) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
                 onClick={closeMobileMenu}
                 data-testid="mobile-nav-github"
               >
@@ -133,13 +133,13 @@ export default function Header({ variant = "default", reputation }) {
                 to="https://buymeacoffee.com/ilianrusev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 py-3 px-4 text-[#ffdd00] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+                className="flex items-center gap-3 py-3 px-4 text-[#ffdd00] hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
                 onClick={closeMobileMenu}
               >
                 <CoffeeIcon className="w-5 h-5" />
                 Buy Me a Coffee
               </Link>
-              <div className="border-t border-[#333] pt-4 mt-4">
+              <div className="border-t border-(--border) pt-4 mt-4">
                 {user ? (
                   <Link to="/dashboard" onClick={closeMobileMenu}>
                     <Button
@@ -153,7 +153,7 @@ export default function Header({ variant = "default", reputation }) {
                   <div className="space-y-3">
                     <Link
                       to="/login"
-                      className="block py-3 px-4 text-center text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider border border-[#333] transition-colors"
+                      className="block py-3 px-4 text-center text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider border border-(--border) transition-colors"
                       onClick={closeMobileMenu}
                       data-testid="mobile-nav-login"
                     >
@@ -179,11 +179,11 @@ export default function Header({ variant = "default", reputation }) {
 
   // Default variant (for authenticated pages - Dashboard, Cases, etc.)
   return (
-    <nav className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-[#333]">
+    <nav className="sticky top-0 z-50 bg-(--background)/90 backdrop-blur-sm border-b border-(--border)">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 md:gap-3">
-          <Terminal className="w-5 h-5 md:w-6 md:h-6 text-[#00ff41]" />
-          <span className="font-typewriter text-lg md:text-xl text-[#ffb703] tracking-wider">
+          <Terminal className="w-5 h-5 md:w-6 md:h-6 text-(--foreground-terminal)" />
+          <span className="font-typewriter text-lg md:text-xl text-(--primary) tracking-wider">
             GIT NOIR
           </span>
         </Link>
@@ -214,12 +214,12 @@ export default function Header({ variant = "default", reputation }) {
           >
             Leaderboard
           </Link>
-          <div className="flex items-center gap-4 pl-6 border-l border-[#333]">
+          <div className="flex items-center gap-4 pl-6 border-l border-(--border)">
             {reputation === null || reputation === undefined ? null : (
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-[#ffb703]" />
+                <Award className="w-4 h-4 text-(--primary)" />
                 <span
-                  className="font-mono text-sm text-[#ffb703]"
+                  className="font-mono text-sm text-(--primary)"
                   data-testid="user-reputation"
                 >
                   {reputation} REP
@@ -229,17 +229,17 @@ export default function Header({ variant = "default", reputation }) {
             <Button
               onClick={handleLogout}
               variant="ghost"
-              className="p-2 hover:bg-[#1a1a1a]"
+              className="p-2 hover:bg-(--background-paper)"
               data-testid="logout-btn"
             >
-              <LogOut className="w-4 h-4 text-[#a3a3a3]" />
+              <LogOut className="w-4 h-4 text-(--foreground-muted)" />
             </Button>
           </div>
         </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2 text-[#e5e5e5] hover:text-[#ffb703] transition-colors"
+          className="md:hidden p-2 text-(--foreground) hover:text-(--primary) transition-colors"
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
           data-testid="mobile-menu-btn"
@@ -254,19 +254,19 @@ export default function Header({ variant = "default", reputation }) {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0a0a0a] border-t border-[#333] animate-fade-in">
+        <div className="md:hidden bg-(--background) border-t border-(--border) animate-fade-in">
           <div className="px-4 py-6 space-y-4">
             {/* Reputation Badge */}
-            <div className="flex items-center gap-2 py-3 px-4 bg-[#1a1a1a] border border-[#333]">
-              <Award className="w-5 h-5 text-[#ffb703]" />
-              <span className="font-mono text-sm text-[#ffb703]">
+            <div className="flex items-center gap-2 py-3 px-4 bg-(--background-paper) border border-(--border)">
+              <Award className="w-5 h-5 text-(--primary)" />
+              <span className="font-mono text-sm text-(--primary)">
                 {reputation} REP
               </span>
             </div>
 
             <Link
               to="/dashboard"
-              className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
               onClick={closeMobileMenu}
               data-testid="mobile-nav-dashboard"
             >
@@ -274,7 +274,7 @@ export default function Header({ variant = "default", reputation }) {
             </Link>
             <Link
               to="/cases"
-              className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
               onClick={closeMobileMenu}
               data-testid="mobile-nav-cases"
             >
@@ -282,7 +282,7 @@ export default function Header({ variant = "default", reputation }) {
             </Link>
             <Link
               to="/cheatsheet"
-              className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
               onClick={closeMobileMenu}
               data-testid="mobile-nav-cheatsheet"
             >
@@ -290,14 +290,14 @@ export default function Header({ variant = "default", reputation }) {
             </Link>
             <Link
               to="/leaderboard"
-              className="block py-3 px-4 text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
               onClick={closeMobileMenu}
               data-testid="mobile-nav-leaderboard"
             >
               Leaderboard
             </Link>
 
-            <div className="border-t border-[#333] pt-4 mt-4">
+            <div className="border-t border-(--border) pt-4 mt-4">
               <Button
                 onClick={handleLogout}
                 className="btn-outline w-full flex items-center justify-center gap-2"
