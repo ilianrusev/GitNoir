@@ -170,7 +170,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="hero-section pt-20">
+      <section className="hero-section">
         <div
           className="hero-bg"
           style={{
