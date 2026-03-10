@@ -178,7 +178,7 @@ export default function LandingPage() {
           }}
         />
         <div className="hero-overlay" />
-        <div className="hero-content">
+        <div className="hero-content -translate-y-10 md:-translate-y-10">
           <p className="font-mono text-xs text-(--primary) tracking-[0.3em] mb-4 animate-fade-in">
             CASE FILE #001 - ACTIVE
           </p>
