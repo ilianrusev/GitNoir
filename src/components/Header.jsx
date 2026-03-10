@@ -1,7 +1,15 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Terminal, Menu, X, Award, LogOut } from "lucide-react";
+import {
+  Terminal,
+  Menu,
+  X,
+  Award,
+  LogOut,
+  HandHeart,
+  ChevronDown,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 
@@ -23,13 +31,47 @@ const CoffeeIcon = ({ className }) => (
   </svg>
 );
 
+const RevolutIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none">
+    <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor" />
+    <text
+      x="12"
+      y="16"
+      textAnchor="middle"
+      fontSize="11"
+      fontWeight="700"
+      fill="black"
+    >
+      R
+    </text>
+  </svg>
+);
+
 export default function Header({ variant = "default", reputation }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSupportMenuOpen, setMobileSupportMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setMobileSupportMenuOpen(false);
+  };
+
+  useEffect(() => {
+    closeMobileMenu();
+  }, [location.pathname, location.search, location.hash]);
+
+  const getDropdownLinkClass = (path) => {
+    const baseClass =
+      "block py-3 px-4 hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors";
+
+    return location.pathname === path
+      ? `${baseClass} text-(--primary) bg-(--background-paper)`
+      : `${baseClass} text-(--foreground-muted)`;
+  };
 
   const handleLogout = async () => {
     try {
@@ -54,54 +96,9 @@ export default function Header({ variant = "default", reputation }) {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link
-              to="https://github.com/ilianrusev/GitNoir/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center text-(--foreground-muted) hover:text-(--foreground) transition-colors"
-              title="View on GitHub"
-              data-testid="nav-github-btn"
-            >
-              <GitHubIcon className="w-5 h-5" />
-            </Link>
-            <Link
-              to="https://buymeacoffee.com/ilianrusev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#ffdd00] hover:text-(--primary) transition-colors"
-              title="Support the project"
-              data-testid="nav-coffee-btn"
-            >
-              <CoffeeIcon className="w-5 h-5" />
-            </Link>
-            {user ? (
-              <Link to="/dashboard">
-                <Button className="btn-primary" data-testid="nav-dashboard-btn">
-                  Dashboard
-                </Button>
-              </Link>
-            ) : (
-              <div className="flex items-center gap-4">
-                <Link to="/login" className="nav-link" data-testid="nav-login">
-                  Login
-                </Link>
-                <Link to="/register">
-                  <Button
-                    className="btn-primary"
-                    data-testid="nav-register-btn"
-                  >
-                    Start Investigation
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
-
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-(--foreground) hover:text-(--primary) transition-colors"
+            className="p-2 text-(--foreground) hover:text-(--primary) transition-colors"
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             data-testid="mobile-menu-btn"
@@ -114,10 +111,12 @@ export default function Header({ variant = "default", reputation }) {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-(--background) border-t border-(--border) animate-fade-in">
-            <div className="px-4 py-6 space-y-4">
+          <div className="bg-(--background) border-t border-(--border) animate-fade-in md:absolute md:top-full md:inset-x-0 md:bg-transparent md:border-t-0">
+            <div className="md:max-w-7xl md:mx-auto md:px-4 lg:px-6">
+              <div className="md:ml-auto md:w-full md:max-w-sm md:bg-(--background) md:border md:border-(--border)">
+                <div className="px-4 py-6 space-y-4">
               <Link
                 to="https://github.com/ilianrusev/GitNoir/"
                 target="_blank"
@@ -153,9 +152,10 @@ export default function Header({ variant = "default", reputation }) {
                   <div className="space-y-3">
                     <Link
                       to="/login"
-                      className="block py-3 px-4 text-center text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider border border-(--border) transition-colors"
+                      className={`${getDropdownLinkClass("/login")} text-center border border-(--border)`}
                       onClick={closeMobileMenu}
                       data-testid="mobile-nav-login"
+                      aria-current={location.pathname === "/login" ? "page" : undefined}
                     >
                       Login
                     </Link>
@@ -169,6 +169,8 @@ export default function Header({ variant = "default", reputation }) {
                     </Link>
                   </div>
                 )}
+              </div>
+            </div>
               </div>
             </div>
           </div>
@@ -188,114 +190,116 @@ export default function Header({ variant = "default", reputation }) {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link
-            to="/dashboard"
-            className="nav-link"
-            data-testid="nav-dashboard"
-          >
-            Dashboard
-          </Link>
-          <Link to="/cases" className="nav-link" data-testid="nav-cases">
-            Cases
-          </Link>
-          <Link
-            to="/cheatsheet"
-            className="nav-link"
-            data-testid="nav-cheatsheet"
-          >
-            Cheat Sheet
-          </Link>
-          <Link
-            to="/leaderboard"
-            className="nav-link"
-            data-testid="nav-leaderboard"
-          >
-            Leaderboard
-          </Link>
-          <div className="flex items-center gap-4 pl-6 border-l border-(--border)">
-            {reputation === null || reputation === undefined ? null : (
-              <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-(--primary)" />
-                <span
-                  className="font-mono text-sm text-(--primary)"
-                  data-testid="user-reputation"
-                >
-                  {reputation} REP
-                </span>
-              </div>
-            )}
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              className="p-2 hover:bg-(--background-paper)"
-              data-testid="logout-btn"
+        <div className="flex items-center gap-3">
+          {reputation === null || reputation === undefined ? null : (
+            <div
+              className="flex items-center gap-2 py-1.5 px-3 bg-(--background-paper) border border-(--border)"
+              data-testid="user-reputation"
             >
-              <LogOut className="w-4 h-4 text-(--foreground-muted)" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden p-2 text-(--foreground) hover:text-(--primary) transition-colors"
-          onClick={toggleMobileMenu}
-          aria-label="Toggle menu"
-          data-testid="mobile-menu-btn"
-        >
-          {mobileMenuOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Menu className="w-6 h-6" />
-          )}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-(--background) border-t border-(--border) animate-fade-in">
-          <div className="px-4 py-6 space-y-4">
-            {/* Reputation Badge */}
-            <div className="flex items-center gap-2 py-3 px-4 bg-(--background-paper) border border-(--border)">
-              <Award className="w-5 h-5 text-(--primary)" />
-              <span className="font-mono text-sm text-(--primary)">
+              <Award className="w-4 h-4 text-(--primary)" />
+              <span className="font-mono text-xs md:text-sm text-(--primary)">
                 {reputation} REP
               </span>
             </div>
+          )}
 
+          {/* Mobile Menu Button */}
+          <button
+            className="p-2 text-(--foreground) hover:text-(--primary) transition-colors"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+            data-testid="mobile-menu-btn"
+          >
+            {mobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Menu */}
+      {mobileMenuOpen && (
+        <div className="bg-(--background) border-t border-(--border) animate-fade-in md:absolute md:top-full md:inset-x-0 md:bg-transparent md:border-t-0">
+          <div className="md:max-w-7xl md:mx-auto md:px-4 lg:px-6">
+            <div className="md:ml-auto md:w-full md:max-w-sm md:bg-(--background) md:border md:border-(--border)">
+              <div className="px-4 py-6 space-y-4">
             <Link
               to="/dashboard"
-              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
+              className={getDropdownLinkClass("/dashboard")}
               onClick={closeMobileMenu}
               data-testid="mobile-nav-dashboard"
+              aria-current={location.pathname === "/dashboard" ? "page" : undefined}
             >
               Dashboard
             </Link>
             <Link
               to="/cases"
-              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
+              className={getDropdownLinkClass("/cases")}
               onClick={closeMobileMenu}
               data-testid="mobile-nav-cases"
+              aria-current={location.pathname === "/cases" ? "page" : undefined}
             >
               Cases
             </Link>
             <Link
               to="/cheatsheet"
-              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
+              className={getDropdownLinkClass("/cheatsheet")}
               onClick={closeMobileMenu}
               data-testid="mobile-nav-cheatsheet"
+              aria-current={location.pathname === "/cheatsheet" ? "page" : undefined}
             >
               Cheat Sheet
             </Link>
             <Link
               to="/leaderboard"
-              className="block py-3 px-4 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
+              className={getDropdownLinkClass("/leaderboard")}
               onClick={closeMobileMenu}
               data-testid="mobile-nav-leaderboard"
+              aria-current={location.pathname === "/leaderboard" ? "page" : undefined}
             >
               Leaderboard
             </Link>
+
+            <button
+              type="button"
+              className="w-full flex items-center gap-3 py-3 px-4 text-[#ffdd00] hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors"
+              onClick={() => setMobileSupportMenuOpen((previous) => !previous)}
+              data-testid="mobile-nav-support-btn"
+            >
+              <HandHeart className="w-5 h-5" />
+              <span>Support</span>
+              <ChevronDown
+                className={`w-4 h-4 ml-auto transition-transform ${mobileSupportMenuOpen ? "rotate-180" : "rotate-0"}`}
+              />
+            </button>
+            {mobileSupportMenuOpen && (
+              <div className="space-y-2" data-testid="mobile-support-options">
+                <Link
+                  to="https://buymeacoffee.com/ilianrusev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 py-2 px-10 text-[#ffdd00] hover:text-(--primary) hover:bg-(--background-paper) font-mono text-xs uppercase tracking-wider transition-colors"
+                  onClick={closeMobileMenu}
+                  data-testid="mobile-support-coffee"
+                >
+                  <CoffeeIcon className="w-4 h-4" />
+                  Buy Me a Coffee
+                </Link>
+                <Link
+                  to="https://revolut.me/iliyanecoe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 py-2 px-10 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-xs uppercase tracking-wider transition-colors"
+                  onClick={closeMobileMenu}
+                  data-testid="mobile-support-revolut"
+                >
+                  <RevolutIcon className="w-4 h-4" />
+                  Revolut
+                </Link>
+              </div>
+            )}
 
             <div className="border-t border-(--border) pt-4 mt-4">
               <Button
@@ -306,6 +310,8 @@ export default function Header({ variant = "default", reputation }) {
                 <LogOut className="w-4 h-4" />
                 Logout
               </Button>
+            </div>
+              </div>
             </div>
           </div>
         </div>
