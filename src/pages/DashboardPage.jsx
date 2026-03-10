@@ -39,7 +39,7 @@ export default function DashboardPage() {
     .slice(0, 9);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-(--background)">
       <Header reputation={reputation} />
 
       {/* Main Content */}
@@ -49,7 +49,7 @@ export default function DashboardPage() {
           title={
             <>
               WELCOME,{" "}
-              <span className="text-[#ffb703]">
+              <span className="text-(--primary)">
                 {user?.username?.toUpperCase()}
               </span>
             </>
@@ -65,10 +65,10 @@ export default function DashboardPage() {
         />
 
         <div className="mb-8">
-          <p className="font-mono text-xs text-[#ffb703] tracking-[0.3em] mb-4">
+          <p className="font-mono text-xs text-(--primary) tracking-[0.3em] mb-4">
             YOUR CASES
           </p>
-          <h2 className="font-typewriter text-2xl text-[#e5e5e5] mb-6">
+          <h2 className="font-typewriter text-2xl text-(--foreground) mb-6">
             RECENT INVESTIGATIONS
           </h2>
         </div>

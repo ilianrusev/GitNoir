@@ -60,7 +60,7 @@ export default function CasesPage() {
         });
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-(--background)">
       <Header reputation={progress?.reputation || 0} />
 
       {/* Main Content */}
@@ -83,40 +83,40 @@ export default function CasesPage() {
                 Filter
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-[#1a1a1a] border-[#333]">
+            <DropdownMenuContent className="bg-(--background-paper) border-(--border)">
               <DropdownMenuItem
                 onClick={() => setFilter("all")}
-                className="text-[#e5e5e5] focus:bg-[#2a2a2a]"
+                className="text-(--foreground) focus:bg-(--secondary)"
               >
                 All Cases
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setFilter("available")}
-                className="text-[#e5e5e5] focus:bg-[#2a2a2a]"
+                className="text-(--foreground) focus:bg-(--secondary)"
               >
                 Available
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setFilter("completed")}
-                className="text-[#e5e5e5] focus:bg-[#2a2a2a]"
+                className="text-(--foreground) focus:bg-(--secondary)"
               >
                 Completed
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setFilter("beginner")}
-                className="text-[#e5e5e5] focus:bg-[#2a2a2a]"
+                className="text-(--foreground) focus:bg-(--secondary)"
               >
                 Beginner
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setFilter("intermediate")}
-                className="text-[#e5e5e5] focus:bg-[#2a2a2a]"
+                className="text-(--foreground) focus:bg-(--secondary)"
               >
                 Intermediate
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setFilter("advanced")}
-                className="text-[#e5e5e5] focus:bg-[#2a2a2a]"
+                className="text-(--foreground) focus:bg-(--secondary)"
               >
                 Advanced
               </DropdownMenuItem>

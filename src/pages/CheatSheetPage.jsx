@@ -205,7 +205,7 @@ export default function CheatSheetPage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-(--background)">
       <Header reputation={user?.reputation ?? 0} />
 
       <main className="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -220,10 +220,10 @@ export default function CheatSheetPage() {
         <div className="space-y-6">
           {sections.map((section) => (
             <section key={section.title} className="case-card p-5 md:p-6">
-              <h2 className="font-typewriter text-xl text-[#ffb703] mb-4">
+              <h2 className="font-typewriter text-xl text-(--primary) mb-4">
                 {section.title}
               </h2>
-              <p className="text-sm text-[#a3a3a3] mb-4">
+              <p className="text-sm text-(--foreground-muted) mb-4">
                 {section.description}
               </p>
 
@@ -231,12 +231,12 @@ export default function CheatSheetPage() {
                 {section.commands.map((item) => (
                   <div
                     key={`${section.title}-${item.cmd}`}
-                    className="grid grid-cols-1 md:grid-cols-[minmax(280px,360px)_1fr] gap-2 md:gap-4 p-3 bg-[#0c0c0c] border border-[#222]"
+                    className="grid grid-cols-1 md:grid-cols-[minmax(280px,360px)_1fr] gap-2 md:gap-4 p-3 bg-(--background-terminal) border border-[#222]"
                   >
-                    <code className="font-mono text-sm text-[#00ff41] break-all">
+                    <code className="font-mono text-sm text-(--foreground-terminal) break-all">
                       {item.cmd}
                     </code>
-                    <p className="text-sm text-[#a3a3a3] self-center">
+                    <p className="text-sm text-(--foreground-muted) self-center">
                       {item.desc}
                     </p>
                   </div>

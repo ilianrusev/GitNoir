@@ -38,7 +38,7 @@ export default function LeaderboardPage() {
   const getRankIcon = (rank) => {
     switch (rank) {
       case 1:
-        return <Trophy className="w-5 h-5 text-[#ffb703]" />;
+        return <Trophy className="w-5 h-5 text-(--primary)" />;
       case 2:
         return <Medal className="w-5 h-5 text-[#a8a8a8]" />;
       case 3:
@@ -49,7 +49,7 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-(--background)">
       <Header reputation={progress?.reputation || 0} />
 
       {/* Main Content */}
@@ -91,7 +91,7 @@ export default function LeaderboardPage() {
             <div className="overflow-x-auto">
               <div className="min-w-140">
                 {/* Table Header */}
-                <div className="grid grid-cols-[60px_1fr_100px_100px] gap-4 px-6 py-4 bg-[#0c0c0c] border-b border-[#333]">
+                <div className="grid grid-cols-[60px_1fr_100px_100px] gap-4 px-6 py-4 bg-(--background-terminal) border-b border-(--border)">
                   <span className="font-mono text-xs text-[#666] tracking-wider">
                     RANK
                   </span>
@@ -111,7 +111,7 @@ export default function LeaderboardPage() {
                   <div
                     key={entry.user_id || `${entry.username}-${index}`}
                     className={`leaderboard-row animate-fade-in ${
-                      user?.id === entry.user_id ? "bg-[#1a1a1a]" : ""
+                      user?.id === entry.user_id ? "bg-(--background-paper)" : ""
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                     data-testid={`leaderboard-row-${index + 1}`}
@@ -122,18 +122,18 @@ export default function LeaderboardPage() {
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-8 h-8 flex items-center justify-center border ${
-                          entry.rank <= 3 ? "border-[#ffb703]" : "border-[#333]"
+                          entry.rank <= 3 ? "border-(--primary)" : "border-(--border)"
                         }`}
                       >
-                        <span className="font-typewriter text-xs text-[#e5e5e5]">
+                        <span className="font-typewriter text-xs text-(--foreground)">
                           {entry.username.charAt(0).toUpperCase()}
                         </span>
                       </div>
                       <span
                         className={`font-mono ${
                           user?.id === entry.user_id
-                            ? "text-[#ffb703]"
-                            : "text-[#e5e5e5]"
+                            ? "text-(--primary)"
+                            : "text-(--foreground)"
                         }`}
                       >
                         {entry.username}
@@ -145,13 +145,13 @@ export default function LeaderboardPage() {
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="font-mono text-[#a3a3a3]">
+                      <span className="font-mono text-(--foreground-muted)">
                         {entry.cases_solved}
                       </span>
                     </div>
                     <div className="text-right flex items-center justify-end gap-2">
-                      <Award className="w-4 h-4 text-[#ffb703]" />
-                      <span className="font-mono text-[#ffb703]">
+                      <Award className="w-4 h-4 text-(--primary)" />
+                      <span className="font-mono text-(--primary)">
                         {entry.reputation ?? 0}
                       </span>
                     </div>

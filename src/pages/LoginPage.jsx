@@ -130,7 +130,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-(--border)"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-(--background) px-4 text-[#666] font-mono">
+                <span className="bg-(--background) px-4 text-(--foreground-muted) font-mono">
                   OR
                 </span>
               </div>
@@ -172,13 +172,13 @@ export default function LoginPage() {
               <div className="terminal-dot red" />
               <div className="terminal-dot yellow" />
               <div className="terminal-dot green" />
-              <span className="ml-3 text-[#666]">detective-terminal</span>
+              <span className="ml-3 text-(--foreground-muted)">detective-terminal</span>
             </div>
             <div className="space-y-2 font-mono text-sm">
-              <p className="text-[#666]">$ git status</p>
+              <p className="text-(--foreground-muted)">$ git status</p>
               <p className="terminal-text">On branch investigation</p>
               <p className="terminal-text">Your case awaits...</p>
-              <p className="text-[#666] animate-blink">$ _</p>
+              <p className="text-(--foreground-muted) animate-blink">$ _</p>
             </div>
           </div>
         </div>

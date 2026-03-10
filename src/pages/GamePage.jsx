@@ -220,7 +220,7 @@ export default function GamePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-(--background) flex items-center justify-center">
         <div className="terminal-text text-lg animate-pulse-glow">Loading case file...</div>
       </div>
     );
@@ -228,7 +228,7 @@ export default function GamePage() {
 
   if (!caseData) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-(--background) flex items-center justify-center">
         <div className="text-center">
           <p className="font-typewriter text-xl text-[#d00000] mb-4">Case not found</p>
           <Link to="/dashboard">
@@ -242,32 +242,32 @@ export default function GamePage() {
   const step = caseData.steps[currentStep];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-(--background)">
       {/* Top Bar */}
-      <div className="sticky top-0 z-50 bg-[#0a0a0a] border-b border-[#333] px-6 py-3">
+      <div className="sticky top-0 z-50 bg-(--background) border-b border-(--border) px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/cases" className="flex items-center gap-2 text-[#a3a3a3] hover:text-[#ffb703] transition-colors">
+            <Link to="/cases" className="flex items-center gap-2 text-(--foreground-muted) hover:text-(--primary) transition-colors">
               <ArrowLeft className="w-4 h-4" />
               <span className="font-mono text-sm">Exit Case</span>
             </Link>
-            <span className="text-[#333]">|</span>
+            <span className="text-(--border)">|</span>
           </div>
           <div className="flex items-center gap-6">
             {isReplay && (
-              <span className="font-mono text-xs text-[#666] px-2 py-1 border border-[#444] bg-[#1a1a1a]">
+              <span className="font-mono text-xs text-[#666] px-2 py-1 border border-[#444] bg-(--background-paper)">
                 REPLAY MODE
               </span>
             )}
             <div className="flex items-center gap-2">
-              <Award className="w-4 h-4 text-[#ffb703]" />
-              <span className={`font-mono text-sm ${isReplay ? 'text-[#666]' : 'text-[#ffb703]'}`} data-testid="earned-points">
+              <Award className="w-4 h-4 text-(--primary)" />
+              <span className={`font-mono text-sm ${isReplay ? 'text-[#666]' : 'text-(--primary)'}`} data-testid="earned-points">
                 {isReplay ? 'NO PTS' : `+${totalEarned} PTS`}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs text-[#666]">STEP</span>
-              <span className="font-mono text-sm text-[#e5e5e5]" data-testid="current-step">
+              <span className="font-mono text-sm text-(--foreground)" data-testid="current-step">
                 {currentStep + 1}/{caseData.steps.length}
               </span>
             </div>
@@ -278,7 +278,7 @@ export default function GamePage() {
       {/* Progress Bar */}
       <Progress 
         value={((currentStep + (caseCompleted ? 1 : 0)) / caseData.steps.length) * 100}
-        className="h-1 bg-[#1a1a1a] rounded-none"
+        className="h-1 bg-(--background-paper) rounded-none"
       />
 
       {/* Main Content - Split Layout */}
@@ -294,7 +294,7 @@ export default function GamePage() {
               }`}>
                 {caseData.difficulty}
               </span>
-              <h1 className="font-typewriter text-3xl text-[#e5e5e5] mb-2">
+              <h1 className="font-typewriter text-3xl text-(--foreground) mb-2">
                 {caseData.title}
               </h1>
               <p className="text-sm text-[#666]">{caseData.description}</p>
@@ -305,19 +305,19 @@ export default function GamePage() {
               <div className="space-y-6 animate-fade-in" data-testid="case-completed">
                 {/* Success Header */}
                 <div className="case-file text-center py-6">
-                  <CheckCircle className="w-16 h-16 text-[#00ff41] mx-auto mb-4" />
-                  <h2 className="font-typewriter text-2xl text-[#e5e5e5] mb-2">
+                  <CheckCircle className="w-16 h-16 text-(--foreground-terminal) mx-auto mb-4" />
+                  <h2 className="font-typewriter text-2xl text-(--foreground) mb-2">
                     {isReplay ? 'CASE REPLAYED' : 'CASE CLOSED'}
                   </h2>
-                  <p className="text-[#a3a3a3]">
+                  <p className="text-(--foreground-muted)">
                     {isReplay 
                       ? 'Good practice, Detective!'
                       : 'Excellent work, Detective.'}
                   </p>
                   {!isReplay && (
                     <div className="flex items-center justify-center gap-2 mt-4">
-                      <Award className="w-5 h-5 text-[#ffb703]" />
-                      <span className="font-mono text-xl text-[#ffb703]">
+                      <Award className="w-5 h-5 text-(--primary)" />
+                      <span className="font-mono text-xl text-(--primary)">
                         +{totalEarned} REPUTATION
                       </span>
                     </div>
@@ -326,16 +326,16 @@ export default function GamePage() {
 
                 {/* Case Summary */}
                 <div className="case-file">
-                  <h3 className="font-mono text-xs text-[#ffb703] tracking-wider mb-3">
+                  <h3 className="font-mono text-xs text-(--primary) tracking-wider mb-3">
                     CASE SUMMARY
                   </h3>
-                  <h4 className="font-typewriter text-lg text-[#e5e5e5] mb-2">
+                  <h4 className="font-typewriter text-lg text-(--foreground) mb-2">
                     {caseData.title}
                   </h4>
-                  <p className="text-sm text-[#a3a3a3] leading-relaxed mb-4">
+                  <p className="text-sm text-(--foreground-muted) leading-relaxed mb-4">
                     {caseData.description}
                   </p>
-                  <div className="p-3 bg-[#0c0c0c] border border-[#222]">
+                  <div className="p-3 bg-(--background-terminal) border border-[#222]">
                     <p className="font-typewriter text-sm text-[#666] italic">
                       "{caseData.story_intro.split('\n')[0]}"
                     </p>
@@ -345,25 +345,25 @@ export default function GamePage() {
                 {/* Commands Learned + Quick Reference */}
                 <div className="case-file">
                   <Accordion type="multiple" className="w-full">
-                    <AccordionItem value="commands-learned" className="border-[#333]">
-                      <AccordionTrigger className="font-mono text-xs text-[#ffb703] tracking-wider hover:no-underline">
+                    <AccordionItem value="commands-learned" className="border-(--border)">
+                      <AccordionTrigger className="font-mono text-xs text-(--primary) tracking-wider hover:no-underline">
                         COMMANDS LEARNED
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="space-y-3">
                           {caseData.steps.map((step, index) => (
-                            <div key={index} className="flex items-start gap-3 p-3 bg-[#0c0c0c] border border-[#222]">
-                              <div className="shrink-0 w-6 h-6 flex items-center justify-center bg-[#00ff41]/20 border border-[#00ff41]">
-                                <span className="font-mono text-xs text-[#00ff41]">{index + 1}</span>
+                            <div key={index} className="flex items-start gap-3 p-3 bg-(--background-terminal) border border-[#222]">
+                              <div className="shrink-0 w-6 h-6 flex items-center justify-center bg-(--foreground-terminal)/20 border border-(--foreground-terminal)">
+                                <span className="font-mono text-xs text-(--foreground-terminal)">{index + 1}</span>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <code className="font-mono text-sm text-[#00ff41] block mb-1">
+                                <code className="font-mono text-sm text-(--foreground-terminal) block mb-1">
                                   {step.expected_commands[0]}
                                 </code>
                                 <p className="text-xs text-[#666]">{step.hint}</p>
                               </div>
                               <div className="shrink-0">
-                                <span className="font-mono text-xs text-[#ffb703]">+{step.points}</span>
+                                <span className="font-mono text-xs text-(--primary)">+{step.points}</span>
                               </div>
                             </div>
                           ))}
@@ -371,15 +371,15 @@ export default function GamePage() {
                       </AccordionContent>
                     </AccordionItem>
 
-                    <AccordionItem value="quick-reference" className="border-[#333]">
-                      <AccordionTrigger className="font-mono text-xs text-[#ffb703] tracking-wider hover:no-underline">
+                    <AccordionItem value="quick-reference" className="border-(--border)">
+                      <AccordionTrigger className="font-mono text-xs text-(--primary) tracking-wider hover:no-underline">
                         QUICK REFERENCE
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="terminal-container p-4">
                           <div className="font-mono text-sm space-y-1">
                             {caseData.steps.map((step, index) => (
-                              <p key={index} className="text-[#00ff41]">
+                              <p key={index} className="text-(--foreground-terminal)">
                                 <span className="text-[#666]">$</span> {step.expected_commands[0]}
                               </p>
                             ))}
@@ -422,11 +422,11 @@ export default function GamePage() {
                   <p className="story-text mb-6">
                     {step.narrative}
                   </p>
-                  <div className="pt-4 border-t border-[#333]">
-                    <p className="font-mono text-xs text-[#ffb703] tracking-wider mb-2">
+                  <div className="pt-4 border-t border-(--border)">
+                    <p className="font-mono text-xs text-(--primary) tracking-wider mb-2">
                       OBJECTIVE
                     </p>
-                    <p className="text-[#e5e5e5]" data-testid="step-instruction">
+                    <p className="text-(--foreground)" data-testid="step-instruction">
                       {step.instruction}
                     </p>
                   </div>
@@ -443,8 +443,8 @@ export default function GamePage() {
                     {showHint ? 'Hide Hint' : 'Need a Hint?'}
                   </Button>
                   {showHint && (
-                    <div className="mt-3 p-4 bg-[#1a1a1a] border border-[#333] animate-fade-in" data-testid="hint-text">
-                      <p className="font-mono text-sm text-[#a3a3a3]">
+                    <div className="mt-3 p-4 bg-(--background-paper) border border-(--border) animate-fade-in" data-testid="hint-text">
+                      <p className="font-mono text-sm text-(--foreground-muted)">
                         {step.hint}
                       </p>
                     </div>
@@ -484,24 +484,24 @@ export default function GamePage() {
               <p>Git Noir Detective Terminal v1.0</p>
               <p>Type your git commands below.</p>
               {isReplay && (
-                <p className="text-[#ffb703] mt-2">⚠ REPLAY MODE - No points will be earned</p>
+                <p className="text-(--primary) mt-2">⚠ REPLAY MODE - No points will be earned</p>
               )}
-              <p className="text-[#333]">────────────────────────────────</p>
+              <p className="text-(--border)">────────────────────────────────</p>
             </div>
 
             {/* Command History */}
             {history.map((item, index) => (
               <div key={index} className="mb-3 animate-fade-in">
                 {item.type === "command" && (
-                  <p className="text-[#a3a3a3]">
-                    <span className="text-[#ffb703]">$</span> {item.text}
+                  <p className="text-(--foreground-muted)">
+                    <span className="text-(--primary)">$</span> {item.text}
                   </p>
                 )}
                 {item.type === "success" && (
-                  <div className={`pl-2 border-l-2 ${item.isReplay ? 'border-[#666]' : 'border-[#00ff41]'}`}>
+                  <div className={`pl-2 border-l-2 ${item.isReplay ? 'border-[#666]' : 'border-(--foreground-terminal)'}`}>
                     <p className={item.isReplay ? 'text-[#666]' : 'terminal-text'}>{item.text}</p>
                     {item.points > 0 && !item.isReplay && (
-                      <p className="text-[#ffb703] text-xs mt-1">+{item.points} reputation</p>
+                      <p className="text-(--primary) text-xs mt-1">+{item.points} reputation</p>
                     )}
                   </div>
                 )}
@@ -511,14 +511,14 @@ export default function GamePage() {
                   </div>
                 )}
                 {item.type === "narrative" && (
-                  <div className="pl-2 border-l-2 border-[#333] my-4">
+                  <div className="pl-2 border-l-2 border-(--border) my-4">
                     <p className="text-[#666] italic">{item.text}</p>
                     {item.instruction && (
                       <div className="mt-3">
-                        <p className="font-mono text-xs text-[#ffb703] tracking-wider mb-1">
+                        <p className="font-mono text-xs text-(--primary) tracking-wider mb-1">
                           OBJECTIVE
                         </p>
-                        <p className="text-[#e5e5e5]">{item.instruction}</p>
+                        <p className="text-(--foreground)">{item.instruction}</p>
                       </div>
                     )}
                   </div>
@@ -529,7 +529,7 @@ export default function GamePage() {
             {/* Input Line */}
             {!caseCompleted && (
               <form onSubmit={handleSubmit} className="flex items-center gap-2">
-                <span className="text-[#ffb703]">$</span>
+                <span className="text-(--primary)">$</span>
                 <input
                   ref={inputRef}
                   type="text"
@@ -550,7 +550,7 @@ export default function GamePage() {
           </div>
 
           {/* Terminal Footer */}
-          <div className="px-4 py-2 border-t border-[#333] bg-[#0a0a0a]">
+          <div className="px-4 py-2 border-t border-(--border) bg-(--background)">
             <div className="flex items-center justify-between">
               <span className="font-mono text-xs text-[#444]">
                 Press Enter to execute

@@ -300,10 +300,10 @@ export default function RegisterPage() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#333]"></div>
+                <div className="w-full border-t border-(--border)"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-(--background) px-4 text-[#666] font-mono">
+                <span className="bg-(--background) px-4 text-(--foreground-muted) font-mono">
                   OR
                 </span>
               </div>
