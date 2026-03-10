@@ -18,6 +18,7 @@ import {
   AccordionTrigger,
 } from "../components/ui/accordion";
 import { toast } from "sonner";
+import SupportButton from "../components/SupportButton";
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
@@ -219,41 +220,8 @@ export default function LandingPage() {
                 </svg>
                 GitHub
               </Link>
-              <button
-                type="button"
-                className="w-full flex items-center gap-3 py-3 px-4 text-[#ffdd00] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
-                onClick={() =>
-                  setMobileSupportMenuOpen((previous) => !previous)
-                }
-                data-testid="mobile-nav-support-btn"
-              >
-                <HandHeart className="w-5 h-5" />
-                Support
-              </button>
-              {mobileSupportMenuOpen && (
-                <div className="space-y-2" data-testid="mobile-support-options">
-                  <Link
-                    to="https://buymeacoffee.com/ilianrusev"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block py-2 px-10 text-[#ffdd00] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-xs uppercase tracking-wider transition-colors"
-                    onClick={closeMobileMenu}
-                    data-testid="mobile-support-coffee"
-                  >
-                    Buy Me a Coffee
-                  </Link>
-                  <Link
-                    to="https://revolut.me/iliyanecoe"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block py-2 px-10 text-[#e5e5e5] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-xs uppercase tracking-wider transition-colors"
-                    onClick={closeMobileMenu}
-                    data-testid="mobile-support-revolut"
-                  >
-                    Revolut
-                  </Link>
-                </div>
-              )}
+              <SupportButton onCloseMenu={closeMobileMenu} />
+
               <div className="border-t border-[#333] pt-4 mt-4">
                 {user ? (
                   <>
@@ -725,8 +693,7 @@ export default function LandingPage() {
               </h4>
               <p className="text-sm text-[#a3a3a3] leading-relaxed mb-4">
                 If Git Noir helped you learn, consider supporting the project.
-                Your
-                support helps keep the servers running and motivates new
+                Your support helps keep the servers running and motivates new
                 content.
               </p>
               <button
