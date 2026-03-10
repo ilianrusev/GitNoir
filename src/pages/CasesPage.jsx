@@ -13,6 +13,15 @@ import Header from "../components/Header";
 import SecondaryHeader from "../components/SecondaryHeader";
 import CasesGrid from "../components/cases/CasesGrid";
 
+const FILTER_OPTIONS = [
+  { value: "all", label: "All Cases" },
+  { value: "available", label: "Available" },
+  { value: "completed", label: "Completed" },
+  { value: "beginner", label: "Beginner" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced", label: "Advanced" },
+];
+
 export default function CasesPage() {
   const [cases, setCases] = useState([]);
   const [progress, setProgress] = useState(null);
@@ -84,42 +93,15 @@ export default function CasesPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-(--background-paper) border-(--border)">
-              <DropdownMenuItem
-                onClick={() => setFilter("all")}
-                className="text-(--foreground) focus:bg-(--secondary)"
-              >
-                All Cases
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setFilter("available")}
-                className="text-(--foreground) focus:bg-(--secondary)"
-              >
-                Available
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setFilter("completed")}
-                className="text-(--foreground) focus:bg-(--secondary)"
-              >
-                Completed
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setFilter("beginner")}
-                className="text-(--foreground) focus:bg-(--secondary)"
-              >
-                Beginner
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setFilter("intermediate")}
-                className="text-(--foreground) focus:bg-(--secondary)"
-              >
-                Intermediate
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setFilter("advanced")}
-                className="text-(--foreground) focus:bg-(--secondary)"
-              >
-                Advanced
-              </DropdownMenuItem>
+              {FILTER_OPTIONS.map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onClick={() => setFilter(option.value)}
+                  className="text-(--foreground) focus:bg-(--secondary)"
+                >
+                  {option.label}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

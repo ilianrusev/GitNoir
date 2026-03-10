@@ -32,6 +32,15 @@ const DROPDOWN_LINK_ACTIVE_CLASS = "text-(--primary) bg-(--background-paper)";
 
 const DROPDOWN_LINK_INACTIVE_CLASS = "text-(--foreground-muted)";
 
+const LANDING_GITHUB_LINK_CLASS =
+  "flex items-center gap-3 py-3 px-4 text-(--foreground-muted) hover:text-(--foreground) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors";
+
+const LANDING_LOGOUT_BUTTON_CLASS =
+  "w-full flex justify-center items-center py-3 px-4 mt-2 text-center text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider border border-(--border) transition-colors";
+
+const LANDING_LOGIN_LINK_CLASS =
+  "block py-3 px-4 text-center text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider border border-(--border) transition-colors";
+
 export default function Header({ variant = "default", reputation }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -79,7 +88,7 @@ export default function Header({ variant = "default", reputation }) {
         to="https://github.com/ilianrusev/GitNoir/"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-3 py-3 px-4 text-[#a3a3a3] hover:text-[#e5e5e5] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider transition-colors"
+        className={LANDING_GITHUB_LINK_CLASS}
         onClick={closeMobileMenu}
         data-testid="mobile-nav-github"
       >
@@ -89,7 +98,7 @@ export default function Header({ variant = "default", reputation }) {
 
       <SupportButton onCloseMenu={closeMobileMenu} variant="landing" />
 
-      <div className="border-t border-[#333] pt-4 mt-4">
+      <div className="border-t border-(--border) pt-4 mt-4">
         {user ? (
           <>
             <Link to="/dashboard" onClick={closeMobileMenu}>
@@ -102,18 +111,18 @@ export default function Header({ variant = "default", reputation }) {
             </Link>
             <button
               type="button"
-              className="w-full flex justify-center items-center py-3 px-4 mt-2 text-center text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider border border-[#333] transition-colors"
+              className={LANDING_LOGOUT_BUTTON_CLASS}
               onClick={handleLogout}
               data-testid="logout-btn"
             >
-              <LogOut className="w-4 h-4 text-[#a3a3a3]" /> Logout
+              <LogOut className="w-4 h-4 text-(--foreground-muted)" /> Logout
             </button>
           </>
         ) : (
           <div className="space-y-3">
             <Link
               to="/login"
-              className="block py-3 px-4 text-center text-[#a3a3a3] hover:text-[#ffb703] hover:bg-[#1a1a1a] font-mono text-sm uppercase tracking-wider border border-[#333] transition-colors"
+              className={LANDING_LOGIN_LINK_CLASS}
               onClick={closeMobileMenu}
               data-testid="mobile-nav-login"
             >

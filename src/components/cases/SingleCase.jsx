@@ -69,7 +69,7 @@ export default function SingleCase({
       )}
 
       {shouldSoftLockBlur && (
-        <div className="absolute inset-0 bg-[#0a0a0a]/25 backdrop-blur-[1px] pointer-events-none z-10" />
+        <div className="absolute inset-0 bg-(--background)/25 backdrop-blur-[1px] pointer-events-none z-10" />
       )}
 
       {!isCasesVariant && !isUnlocked && (
@@ -95,10 +95,10 @@ export default function SingleCase({
         </span>
         <div className="flex items-center gap-2">
           {status === "completed" && (
-            <span className="font-mono text-xs text-[#00ff41]">SOLVED</span>
+            <span className="font-mono text-xs text-(--foreground-terminal)">SOLVED</span>
           )}
           {status === "in_progress" && (
-            <span className="font-mono text-xs text-[#ffb703]">
+            <span className="font-mono text-xs text-(--primary)">
               IN PROGRESS
             </span>
           )}
@@ -106,18 +106,18 @@ export default function SingleCase({
       </div>
 
       <h3
-        className={`font-typewriter ${isCasesVariant ? "text-2xl mb-3" : "text-lg mb-2"} text-[#e5e5e5] ${status === "completed" ? "line-through opacity-60" : ""}`}
+        className={`font-typewriter ${isCasesVariant ? "text-2xl mb-3" : "text-lg mb-2"} text-(--foreground) ${status === "completed" ? "line-through opacity-60" : ""}`}
       >
         {caseData.title}
       </h3>
       <p
-        className={`text-[#a3a3a3] ${isCasesVariant ? "mb-6 leading-relaxed" : "text-sm mb-4 line-clamp-2"} ${status === "completed" ? "line-through opacity-60" : ""}`}
+        className={`text-(--foreground-muted) ${isCasesVariant ? "mb-6 leading-relaxed" : "text-sm mb-4 line-clamp-2"} ${status === "completed" ? "line-through opacity-60" : ""}`}
       >
         {caseData.description}
       </p>
 
       {isCasesVariant && (
-        <div className="p-4 bg-[#0c0c0c] border border-[#222] mb-6">
+        <div className="p-4 bg-(--background-terminal) border border-[#222] mb-6">
           <p className="font-typewriter text-sm text-[#666] italic line-clamp-3">
             "{caseData.story_intro.split("\n")[0]}"
           </p>
@@ -215,20 +215,20 @@ export default function SingleCase({
           <div className="mt-6 pt-4 border-t border-[#222]">
             <div className="flex items-center justify-between mb-2">
               <span className="font-mono text-xs text-[#666]">PROGRESS</span>
-              <span className="font-mono text-xs text-[#ffb703]">
+              <span className="font-mono text-xs text-(--primary)">
                 {caseProgress.current_step} / {caseData.steps.length}
               </span>
             </div>
             <Progress
               value={(caseProgress.current_step / caseData.steps.length) * 100}
-              className="h-1 bg-[#1a1a1a]"
+              className="h-1 bg-(--background-paper)"
             />
           </div>
         ) : (
           <div className="mt-4">
             <Progress
               value={(caseProgress.current_step / caseData.steps.length) * 100}
-              className="h-1 bg-[#1a1a1a]"
+              className="h-1 bg-(--background-paper)"
             />
             <span className="font-mono text-[10px] text-[#666] mt-1 block">
               Step {caseProgress.current_step + 1} of {caseData.steps.length}
