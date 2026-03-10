@@ -9,7 +9,7 @@ import { useOnClickOutside } from "../hooks/useOnClickOutside";
 import { toast } from "sonner";
 
 const NAV_CLASS_NAME =
-  "sticky top-0 z-50 bg-(--background)/90 backdrop-blur-sm border-b border-(--border)";
+  "sticky top-0 z-50 relative bg-(--background)/90 backdrop-blur-sm border-b border-(--border)";
 
 const BRAND_ICON_CLASS = "w-5 h-5 md:w-6 md:h-6 text-(--foreground-terminal)";
 
@@ -19,11 +19,10 @@ const BRAND_TEXT_CLASS =
 const MENU_BUTTON_CLASS =
   "p-2 transition-colors text-(--foreground) hover:text-(--primary)";
 
-const MENU_WRAPPER_CLASS =
-  "animate-fade-in md:absolute md:top-full md:inset-x-0 md:bg-transparent md:border-t-0 bg-(--background) border-t border-(--border)";
+const MENU_WRAPPER_CLASS = "animate-fade-in absolute top-full inset-x-0 z-50";
 
 const MENU_PANEL_CLASS =
-  "md:ml-auto md:w-full md:max-w-sm md:bg-(--background) md:border md:border-(--border)";
+  "w-full bg-(--background) border border-(--border) md:ml-auto md:max-w-sm";
 
 const DROPDOWN_LINK_BASE_CLASS =
   "block py-3 px-4 hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors";
