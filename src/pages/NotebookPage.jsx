@@ -277,7 +277,7 @@ export default function NotebookPage() {
                   className="flex items-start gap-3 p-3 bg-[#0c0c0c] border border-[#222] group"
                   data-testid={`command-${index}`}
                 >
-                  <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-[#00ff41]/20 border border-[#00ff41]/50">
+                  <div className="shrink-0 w-6 h-6 flex items-center justify-center bg-[#00ff41]/20 border border-[#00ff41]/50">
                     <span className="font-mono text-xs text-[#00ff41]">
                       {index + 1}
                     </span>
@@ -386,7 +386,7 @@ export default function NotebookPage() {
                                 key={index}
                                 className="flex items-start gap-3 p-3 bg-[#0c0c0c] border border-[#222] group"
                               >
-                                <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-[#00ff41]/20 border border-[#00ff41]/50">
+                                <div className="shrink-0 w-6 h-6 flex items-center justify-center bg-[#00ff41]/20 border border-[#00ff41]/50">
                                   <span className="font-mono text-xs text-[#00ff41]">
                                     {index + 1}
                                   </span>

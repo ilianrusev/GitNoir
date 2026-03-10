@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Terminal, Menu, X, Award, LogOut } from "lucide-react";
@@ -22,6 +22,8 @@ export default function Header({ variant = "default", reputation }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const menuButtonRef = useRef(null);
+  const menuPanelRef = useRef(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -30,6 +32,35 @@ export default function Header({ variant = "default", reputation }) {
   useEffect(() => {
     closeMobileMenu();
   }, [location.pathname, location.search, location.hash]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      return undefined;
+    }
+
+    const handleOutsideClick = (event) => {
+      const target = event.target;
+
+      if (!(target instanceof Node)) {
+        return;
+      }
+
+      const clickedMenuButton =
+        menuButtonRef.current && menuButtonRef.current.contains(target);
+      const clickedMenuPanel =
+        menuPanelRef.current && menuPanelRef.current.contains(target);
+
+      if (!clickedMenuButton && !clickedMenuPanel) {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutsideClick, true);
+
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsideClick, true);
+    };
+  }, [mobileMenuOpen]);
 
   const getDropdownLinkClass = (path) => {
     const baseClass =
@@ -76,6 +107,7 @@ export default function Header({ variant = "default", reputation }) {
 
           {/* Mobile Menu Button */}
           <button
+            ref={menuButtonRef}
             className="p-2 text-(--foreground) hover:text-(--primary) transition-colors"
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
@@ -94,7 +126,10 @@ export default function Header({ variant = "default", reputation }) {
       {mobileMenuOpen && (
         <div className="bg-(--background) border-t border-(--border) animate-fade-in md:absolute md:top-full md:inset-x-0 md:bg-transparent md:border-t-0">
           <div className="md:max-w-7xl md:mx-auto md:px-4 lg:px-6">
-            <div className="md:ml-auto md:w-full md:max-w-sm md:bg-(--background) md:border md:border-(--border)">
+            <div
+              ref={menuPanelRef}
+              className="md:ml-auto md:w-full md:max-w-sm md:bg-(--background) md:border md:border-(--border)"
+            >
               <div className="px-4 py-6 space-y-4">
             <Link
               to="/dashboard"
