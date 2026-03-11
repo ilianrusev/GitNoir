@@ -31,7 +31,7 @@ export default function LandingHeroSection({ user }) {
               className="btn-primary text-base px-8 py-4"
               data-testid="hero-start-btn"
             >
-              Begin Investigation
+              Start Investigation
             </Button>
           </Link>
           {user && (
