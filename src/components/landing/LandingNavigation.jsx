@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Terminal, LogOut, HandHeart } from "lucide-react";
+import { Terminal, LogOut, HandHeart, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 
@@ -122,8 +122,14 @@ export default function LandingNavigation({
             </>
           ) : (
             <div className="flex items-center gap-4">
-              <Link to="/login" className="nav-link" data-testid="nav-login">
-                Login
+              <Link
+                to="/login"
+                className="flex items-center text-(--foreground-muted) hover:text-(--primary) transition-colors"
+                title="Login"
+                aria-label="Login"
+                data-testid="nav-login"
+              >
+                <User className="w-5 h-5" />
               </Link>
               <Link to="/register">
                 <Button className="btn-primary" data-testid="nav-register-btn">
