@@ -23,7 +23,11 @@
         "git tag -a case-closed-v1 -m \"First case closure\"",
         "git tag -a case-closed-v1 -m 'First case closure'",
         "git tag --annotate case-closed-v1 -m \"First case closure\"",
-        "git tag --annotate case-closed-v1 -m 'First case closure'"
+        "git tag --annotate case-closed-v1 -m 'First case closure'",
+        "git tag -m \"First case closure\" case-closed-v1",
+        "git tag -m 'First case closure' case-closed-v1",
+        "git tag -m \"First case closure\" -a case-closed-v1",
+        "git tag -m 'First case closure' -a case-closed-v1"
       ],
       "hint": "Create an annotated tag with a message",
       "points": 30

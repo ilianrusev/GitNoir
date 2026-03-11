@@ -36,11 +36,7 @@
     {
       "instruction": "Stash your current changes before the operation.",
       "narrative": "Before going deeper, I needed to secure my current findings.",
-      "expected_commands": [
-        "git stash",
-        "git stash push",
-        "git stash save"
-      ],
+      "expected_commands": ["git stash", "git stash push", "git stash save"],
       "hint": "Temporarily store modified tracked files",
       "points": 40
     },
@@ -61,6 +57,7 @@
       "narrative": "The final piece. Undo the cover-up while preserving the evidence.",
       "expected_commands": [
         "git reset --soft HEAD~1",
+        "git reset --soft HEAD~",
         "git reset --soft HEAD^"
       ],
       "hint": "Reset to previous commit, keep changes staged",
