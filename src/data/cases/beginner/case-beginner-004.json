@@ -1,0 +1,68 @@
+{
+  "id": "beginner-case-004",
+  "title": "THE STAGED DECEPTION",
+  "description": "Learn to selectively stage evidence. Not everything belongs in the case file.",
+  "difficulty": "Beginner",
+  "total_points": 110,
+  "created_at": "2026-03-12",
+  "story_intro": "'We found multiple pieces of evidence,' the junior detective reported, 'but some of it might be planted.'\n\nIn detective work, you don't submit everything to the court. You carefully select what's relevant. Same with Git - staging is an art.\n\nI would teach them the power of selective staging.",
+  "steps": [
+    {
+      "instruction": "Check what files have been modified.",
+      "narrative": "First, survey all the evidence on the table.",
+      "expected_commands": [
+        "git status",
+        "git status --short",
+        "git status -s"
+      ],
+      "hint": "Show the working tree status",
+      "points": 20
+    },
+    {
+      "instruction": "Stage only the file called 'witness.txt'.",
+      "narrative": "The witness testimony was solid. That goes in.",
+      "expected_commands": [
+        "git add witness.txt",
+        "git add ./witness.txt",
+        "git add -- witness.txt"
+      ],
+      "hint": "Add a specific file to staging",
+      "points": 25
+    },
+    {
+      "instruction": "Verify that only witness.txt is staged.",
+      "narrative": "Double-check. In this business, mistakes cost lives.",
+      "expected_commands": [
+        "git status",
+        "git status --short",
+        "git status -s"
+      ],
+      "hint": "Check the staging area",
+      "points": 20
+    },
+    {
+      "instruction": "Unstage witness.txt - we need to review it again.",
+      "narrative": "Wait. Something didn't add up. Better pull it back for review.",
+      "expected_commands": [
+        "git reset witness.txt",
+        "git reset -- witness.txt",
+        "git restore --staged witness.txt",
+        "git restore --staged -- witness.txt",
+        "git reset HEAD witness.txt"
+      ],
+      "hint": "Remove a file from staging area",
+      "points": 25
+    },
+    {
+      "instruction": "Now stage all .txt files at once.",
+      "narrative": "After review, all text evidence was verified. Stage them all.",
+      "expected_commands": [
+        "git add *.txt",
+        "git add '*.txt'",
+        "git add -- '*.txt'"
+      ],
+      "hint": "Use a pattern to stage multiple files",
+      "points": 20
+    }
+  ]
+}

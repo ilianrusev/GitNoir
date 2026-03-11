@@ -1,0 +1,64 @@
+{
+  "id": "advanced-case-003",
+  "title": "THE SUBMODULE SYNDICATE",
+  "description": "The evidence spans multiple repositories. Navigate the web of submodules.",
+  "difficulty": "Advanced",
+  "total_points": 220,
+  "created_at": "2026-01-01",
+  "story_intro": "The criminal organization was clever. They split their operations across multiple repositories, linked together as submodules.\n\n'It's like a hydra,' my partner said. 'Cut one head, two more appear.'\n\nTime to master the art of submodules - repositories within repositories.",
+  "steps": [
+    {
+      "instruction": "Add a submodule from 'https://github.com/syndicate/tools.git' into 'tools' folder.",
+      "narrative": "Link their tools repository into our investigation.",
+      "expected_commands": [
+        "git submodule add https://github.com/syndicate/tools.git tools",
+        "git submodule add --name tools https://github.com/syndicate/tools.git tools"
+      ],
+      "hint": "Add a repository as a submodule",
+      "points": 45
+    },
+    {
+      "instruction": "Initialize all submodules in the repository.",
+      "narrative": "Activate all the linked repositories.",
+      "expected_commands": [
+        "git submodule init",
+        "git submodule update --init"
+      ],
+      "hint": "Initialize submodules",
+      "points": 40
+    },
+    {
+      "instruction": "Update all submodules to their latest commits.",
+      "narrative": "Pull the latest evidence from all linked repos.",
+      "expected_commands": [
+        "git submodule update",
+        "git submodule update --remote",
+        "git submodule update --init --recursive",
+        "git submodule update --remote --recursive"
+      ],
+      "hint": "Update submodule contents",
+      "points": 45
+    },
+    {
+      "instruction": "Clone a repository and all its submodules in one command.",
+      "narrative": "Get everything at once - the parent and all children.",
+      "expected_commands": [
+        "git clone --recurse-submodules https://github.com/case/main.git",
+        "git clone --recursive https://github.com/case/main.git",
+        "git clone https://github.com/case/main.git --recurse-submodules"
+      ],
+      "hint": "Clone with all submodules",
+      "points": 45
+    },
+    {
+      "instruction": "Check the status of all submodules.",
+      "narrative": "Survey all linked repositories at once.",
+      "expected_commands": [
+        "git submodule status",
+        "git submodule summary"
+      ],
+      "hint": "Show submodule status",
+      "points": 45
+    }
+  ]
+}

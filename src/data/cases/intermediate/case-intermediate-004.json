@@ -1,0 +1,64 @@
+{
+  "id": "intermediate-case-004",
+  "title": "THE CHERRY PICKER",
+  "description": "Extract specific commits from one branch to another. Surgical precision required.",
+  "difficulty": "Intermediate",
+  "total_points": 160,
+  "created_at": "2026-03-12",
+  "story_intro": "Two separate investigations had been running in parallel. One team found crucial evidence, but their branch was a mess.\n\n'I only need that ONE commit,' I muttered. 'Not the whole chaotic branch.'\n\nCherry-pick. Take exactly what you need, leave the rest behind.",
+  "steps": [
+    {
+      "instruction": "View the log of the 'chaotic-investigation' branch to find the good commit.",
+      "narrative": "First, identify exactly which commit contains the evidence I need.",
+      "expected_commands": [
+        "git log chaotic-investigation",
+        "git log chaotic-investigation --oneline",
+        "git log --oneline chaotic-investigation"
+      ],
+      "hint": "View commits on another branch",
+      "points": 30
+    },
+    {
+      "instruction": "Make sure you're on the main branch.",
+      "narrative": "Cherry-picking brings commits TO your current branch. Get positioned.",
+      "expected_commands": [
+        "git checkout main",
+        "git switch main",
+        "git checkout refs/heads/main"
+      ],
+      "hint": "Switch to main branch",
+      "points": 25
+    },
+    {
+      "instruction": "Cherry-pick the commit with hash 'abc1234'.",
+      "narrative": "Extract that single commit. Surgical precision.",
+      "expected_commands": [
+        "git cherry-pick abc1234",
+        "git cherry-pick --no-edit abc1234"
+      ],
+      "hint": "Apply a specific commit to current branch",
+      "points": 40
+    },
+    {
+      "instruction": "If there's a conflict, abort the cherry-pick operation.",
+      "narrative": "Something went wrong. Abort and reassess.",
+      "expected_commands": [
+        "git cherry-pick --abort"
+      ],
+      "hint": "Cancel an in-progress cherry-pick",
+      "points": 30
+    },
+    {
+      "instruction": "View the log to confirm the commit was applied.",
+      "narrative": "Verify the evidence is now part of our clean investigation.",
+      "expected_commands": [
+        "git log",
+        "git log --oneline",
+        "git log -n 10",
+        "git log --oneline -n 10"
+      ],
+      "hint": "Check commit history",
+      "points": 35
+    }
+  ]
+}
