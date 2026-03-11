@@ -26,7 +26,9 @@ export default function SecondaryHeader({
       <h1 className="font-typewriter text-(--foreground) text-4xl">{title}</h1>
 
       {description && (
-        <p className="max-w-2xl text-(--foreground-muted) mt-2">{description}</p>
+        <p className="max-w-2xl text-(--foreground-muted) mt-2">
+          {description}
+        </p>
       )}
     </div>
   );

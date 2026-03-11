@@ -62,7 +62,7 @@ export default function CasesPage() {
             return progress?.completed_cases?.includes(c.id);
           if (filter === "available")
             return (
-              isCaseUnlocked(c, progress) &&
+              isCaseUnlocked(c, progress, cases) &&
               !progress?.completed_cases?.includes(c.id)
             );
           return true;
@@ -106,7 +106,12 @@ export default function CasesPage() {
           </DropdownMenu>
         </div>
         {/* Cases Grid */}
-        <CasesGrid cases={filteredCases} progress={progress} variant="cases" />
+        <CasesGrid
+          filterCases={filteredCases}
+          progress={progress}
+          variant="cases"
+          allCases={cases}
+        />
 
         {filteredCases.length === 0 && (
           <div className="text-center py-16">

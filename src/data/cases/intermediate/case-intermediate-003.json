@@ -3,9 +3,8 @@
   "title": "THE TAG TEAM TAKEDOWN",
   "description": "Mark important milestones in the investigation. Tags are permanent markers in history.",
   "difficulty": "Intermediate",
-  "unlock_cost": 200,
   "total_points": 140,
-  "created_at": "2026-01-01",
+  "created_at": "2026-03-10",
   "story_intro": "The case was sprawling across months of commits. 'How do we mark the key moments?' my partner asked.\n\n'Tags,' I replied. 'Permanent markers that never move. When we crack a major lead, we tag it. Future detectives will thank us.'\n\nTime to mark our territory in history.",
   "steps": [
     {

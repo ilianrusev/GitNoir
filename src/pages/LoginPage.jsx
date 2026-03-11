@@ -172,7 +172,9 @@ export default function LoginPage() {
               <div className="terminal-dot red" />
               <div className="terminal-dot yellow" />
               <div className="terminal-dot green" />
-              <span className="ml-3 text-(--foreground-muted)">detective-terminal</span>
+              <span className="ml-3 text-(--foreground-muted)">
+                detective-terminal
+              </span>
             </div>
             <div className="space-y-2 font-mono text-sm">
               <p className="text-(--foreground-muted)">$ git status</p>

@@ -3,9 +3,8 @@
   "title": "THE MISSING COMMIT",
   "description": "A critical commit has vanished from the repository. Track it down before it's too late.",
   "difficulty": "Beginner",
-  "unlock_cost": 0,
   "total_points": 100,
-  "created_at": "2026-03-07",
+  "created_at": "2026-03-09",
   "story_intro": "The rain pelted against my office window as the phone rang. Another case.\n\n'Detective, we have a situation,' the voice trembled. 'Our repository... someone's tampered with the history. A crucial commit has disappeared.'\n\nI grabbed my coat. Time to investigate the crime scene - a Git repository with secrets buried in its logs.",
   "steps": [
     {

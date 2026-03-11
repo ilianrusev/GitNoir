@@ -108,7 +108,6 @@ Follow these steps to add a case that works with the current data structure and 
 	"title": "THE BRANCH ALIBI",
 	"description": "A suspect branch disappeared after a rushed investigation.",
 	"difficulty": "Beginner",
-	"unlock_cost": 0,
 	"total_points": 100,
 	"story_intro": "A short detective-style intro to the scenario.",
 	"created_at": "2026-03-07",
@@ -134,12 +133,12 @@ Follow these steps to add a case that works with the current data structure and 
 4. Keep values valid:
 	 - `id` must match `case-###` (example: `case-021`)
 	 - `difficulty` must be exactly `Beginner`, `Intermediate`, or `Advanced`
-	 - `unlock_cost` must be `0` or higher
 	 - `total_points` must be at least `1`
 	 - `total_points` must exactly equal the sum of all `steps[].points`
 	 - `created_at` is optional, but when present (`YYYY-MM-DD`), recent cases get a `NEW` badge in the UI
 	 - `story_intro` should be engaging, clear, and fit the detective-noir tone of the game
 	 - each step needs: `instruction`, `narrative`, `expected_commands`, `hint`, `points`
+	 - unlocking is progression-based (not stored per case)
 
 5. Validate before committing:
 

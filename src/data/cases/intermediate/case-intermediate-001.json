@@ -3,9 +3,8 @@
   "title": "THE MERGE MURDER",
   "description": "Two parallel investigations must become one. But merging them reveals a deadly conflict.",
   "difficulty": "Intermediate",
-  "unlock_cost": 150,
   "total_points": 150,
-  "created_at": "2026-01-01",
+  "created_at": "2026-03-10",
   "story_intro": "The phone call came at midnight. 'Detective, we have a merge conflict. And this time... it's fatal.'\n\nTwo teams had been investigating the same case from different angles. Now their findings needed to come together. But the merge revealed inconsistencies - someone was lying.\n\nI grabbed my fedora. Resolving conflicts is messy business, but someone's gotta do it.",
   "steps": [
     {

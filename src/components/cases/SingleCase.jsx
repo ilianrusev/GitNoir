@@ -22,7 +22,7 @@ export default function SingleCase({
   caseData,
   status,
   caseProgress,
-  animationDelay,
+  lockHint,
   variant = "dashboard",
 }) {
   const isUnlocked = status !== "locked";
@@ -54,10 +54,9 @@ export default function SingleCase({
     <div
       className={
         isCasesVariant
-          ? "case-file animate-fade-in"
+          ? "case-file"
           : `case-card p-6 relative ${!isUnlocked ? "locked" : ""}`
       }
-      style={{ animationDelay }}
       data-testid={`case-card-${caseData.id}`}
     >
       {isNewCase && (
@@ -76,7 +75,7 @@ export default function SingleCase({
         <div className="locked-overlay">
           <Lock className="w-8 h-8 text-[#666]" />
           <span className="font-mono text-xs text-[#666]">
-            {caseData.unlock_cost} REP TO UNLOCK
+            {lockHint || "LOCKED"}
           </span>
         </div>
       )}
@@ -95,7 +94,9 @@ export default function SingleCase({
         </span>
         <div className="flex items-center gap-2">
           {status === "completed" && (
-            <span className="font-mono text-xs text-(--foreground-terminal)">SOLVED</span>
+            <span className="font-mono text-xs text-(--foreground-terminal)">
+              SOLVED
+            </span>
           )}
           {status === "in_progress" && (
             <span className="font-mono text-xs text-(--primary)">
@@ -127,14 +128,16 @@ export default function SingleCase({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-auto pt-4 border-t border-[#222]">
         {isCasesVariant ? (
           <>
-            <div className="flex flex-wrap items-center gap-3 min-w-0">
-              <span className="font-mono text-xs text-[#666]">
-                {caseData.steps.length} STEPS
-              </span>
+            <div className="flex flex-wrap items-center gap-3 min-w-0 relative z-20">
+              {isUnlocked && (
+                <span className="font-mono text-xs text-[#666]">
+                  {caseData.steps.length} STEPS
+                </span>
+              )}
               {!isUnlocked && (
                 <span className="font-mono text-xs text-[#666] flex items-center gap-1">
                   <Lock className="w-3 h-3" />
-                  REQUIRES {caseData.unlock_cost} REP
+                  {lockHint || "LOCKED"}
                 </span>
               )}
             </div>
@@ -169,7 +172,7 @@ export default function SingleCase({
                 data-testid={`unlock-case-${caseData.id}`}
               >
                 <Lock className="w-4 h-4 mr-2" />
-                Locked ({caseData.unlock_cost} REP)
+                Locked
               </Button>
             )}
           </>

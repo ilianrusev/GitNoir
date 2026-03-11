@@ -73,7 +73,11 @@ export default function DashboardPage() {
           </h2>
         </div>
 
-        <CasesGrid cases={recentCases} progress={progress} />
+        <CasesGrid
+          filterCases={recentCases}
+          progress={progress}
+          allCases={cases}
+        />
 
         {cases.length > 9 && (
           <div className="mt-8 text-center">

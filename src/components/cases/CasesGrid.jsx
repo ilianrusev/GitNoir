@@ -1,17 +1,28 @@
 import SingleCase from "./SingleCase";
-import { getCaseStatus } from "../../services/caseStatusService";
+import {
+  getCaseStatus,
+  getCaseUnlockHint,
+} from "../../services/caseStatusService";
 
-export default function CasesGrid({ cases, progress, variant }) {
+export default function CasesGrid({
+  filterCases,
+  progress,
+  variant,
+  allCases,
+}) {
   const gridClassName =
     variant === "cases"
       ? "grid grid-cols-1 lg:grid-cols-2 gap-8"
       : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
 
+  const statusCases = allCases || filterCases;
+
   return (
     <div className={gridClassName}>
-      {cases.map((caseData, index) => {
-        const status = getCaseStatus(caseData, progress);
+      {filterCases.map((caseData, index) => {
+        const status = getCaseStatus(caseData, progress, statusCases);
         const caseProgress = progress?.case_progress?.[caseData.id];
+        const lockHint = getCaseUnlockHint(caseData, progress, statusCases);
 
         return (
           <SingleCase
@@ -19,7 +30,7 @@ export default function CasesGrid({ cases, progress, variant }) {
             caseData={caseData}
             status={status}
             caseProgress={caseProgress}
-            animationDelay={`${index * 0.1}s`}
+            lockHint={lockHint}
             variant={variant}
           />
         );

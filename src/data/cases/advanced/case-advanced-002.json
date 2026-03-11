@@ -3,9 +3,8 @@
   "title": "THE BISECT MANHUNT",
   "description": "A bug was introduced somewhere in 100 commits. Use binary search to find it fast.",
   "difficulty": "Advanced",
-  "unlock_cost": 400,
   "total_points": 200,
-  "created_at": "2026-01-01",
+  "created_at": "2026-03-11",
   "story_intro": "'The bug appeared sometime in the last 100 commits,' the developer said hopelessly. 'It could take days to find.'\n\nI smiled. 'Or minutes. Git bisect uses binary search. We'll find your culprit in about 7 steps.'\n\nThe most efficient manhunt in version control.",
   "steps": [
     {

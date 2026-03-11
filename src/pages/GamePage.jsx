@@ -33,7 +33,7 @@ export default function GamePage() {
   const scrollToCaseTop = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   };
-  
+
   const [caseData, setCaseData] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [command, setCommand] = useState("");
@@ -44,7 +44,7 @@ export default function GamePage() {
   const [caseCompleted, setCaseCompleted] = useState(false);
   const [totalEarned, setTotalEarned] = useState(0);
   const [isReplay, setIsReplay] = useState(false);
-  
+
   const inputRef = useRef(null);
   const terminalRef = useRef(null);
 
@@ -112,7 +112,7 @@ export default function GamePage() {
     try {
       const caseInfo = getCaseById(caseId);
       const progress = getUserProgress();
-      
+
       if (!caseInfo) {
         toast.error("Case not found");
         navigate("/dashboard");
@@ -126,7 +126,7 @@ export default function GamePage() {
       }
 
       setCaseData(caseInfo);
-      
+
       // Check if case is already completed (replay mode)
       if (progress?.completed_cases?.includes(caseId)) {
         setIsReplay(true);
@@ -168,19 +168,22 @@ export default function GamePage() {
     setShowHint(false);
 
     // Add command to history
-    setHistory(prev => [...prev, { type: "command", text: userCommand }]);
+    setHistory((prev) => [...prev, { type: "command", text: userCommand }]);
 
     try {
       const result = validateCommand(caseId, currentStep, userCommand);
 
       if (result.is_correct) {
-        setHistory(prev => [...prev, { 
-          type: "success", 
-          text: result.feedback,
-          points: result.points_earned,
-          isReplay: isReplay
-        }]);
-        setTotalEarned(prev => prev + result.points_earned);
+        setHistory((prev) => [
+          ...prev,
+          {
+            type: "success",
+            text: result.feedback,
+            points: result.points_earned,
+            isReplay: isReplay,
+          },
+        ]);
+        setTotalEarned((prev) => prev + result.points_earned);
 
         if (result.case_completed) {
           setCaseCompleted(true);
@@ -194,25 +197,34 @@ export default function GamePage() {
           setCurrentStep(result.next_step);
           // Add narrative for next step
           setTimeout(() => {
-            setHistory(prev => [...prev, { 
-              type: "narrative", 
-              text:
-                result.next_step_narrative ||
-                caseData.steps[result.next_step].narrative,
-              instruction:
-                result.next_step_instruction ||
-                caseData.steps[result.next_step].instruction,
-            }]);
+            setHistory((prev) => [
+              ...prev,
+              {
+                type: "narrative",
+                text:
+                  result.next_step_narrative ||
+                  caseData.steps[result.next_step].narrative,
+                instruction:
+                  result.next_step_instruction ||
+                  caseData.steps[result.next_step].instruction,
+              },
+            ]);
 
             focusCommandInput();
           }, 500);
         }
       } else {
-        setHistory(prev => [...prev, { type: "error", text: result.feedback }]);
+        setHistory((prev) => [
+          ...prev,
+          { type: "error", text: result.feedback },
+        ]);
       }
     } catch (error) {
       console.error("Validation error:", error);
-      setHistory(prev => [...prev, { type: "error", text: "Command validation failed. Try again." }]);
+      setHistory((prev) => [
+        ...prev,
+        { type: "error", text: "Command validation failed. Try again." },
+      ]);
     } finally {
       setSubmitting(false);
     }
@@ -221,7 +233,9 @@ export default function GamePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-(--background) flex items-center justify-center">
-        <div className="terminal-text text-lg animate-pulse-glow">Loading case file...</div>
+        <div className="terminal-text text-lg animate-pulse-glow">
+          Loading case file...
+        </div>
       </div>
     );
   }
@@ -230,7 +244,9 @@ export default function GamePage() {
     return (
       <div className="min-h-screen bg-(--background) flex items-center justify-center">
         <div className="text-center">
-          <p className="font-typewriter text-xl text-[#d00000] mb-4">Case not found</p>
+          <p className="font-typewriter text-xl text-[#d00000] mb-4">
+            Case not found
+          </p>
           <Link to="/dashboard">
             <Button className="btn-outline">Return to Dashboard</Button>
           </Link>
@@ -247,7 +263,10 @@ export default function GamePage() {
       <div className="sticky top-0 z-50 bg-(--background) border-b border-(--border) px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/cases" className="flex items-center gap-2 text-(--foreground-muted) hover:text-(--primary) transition-colors">
+            <Link
+              to="/cases"
+              className="flex items-center gap-2 text-(--foreground-muted) hover:text-(--primary) transition-colors"
+            >
               <ArrowLeft className="w-4 h-4" />
               <span className="font-mono text-sm">Exit Case</span>
             </Link>
@@ -261,13 +280,19 @@ export default function GamePage() {
             )}
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-(--primary)" />
-              <span className={`font-mono text-sm ${isReplay ? 'text-[#666]' : 'text-(--primary)'}`} data-testid="earned-points">
-                {isReplay ? 'NO PTS' : `+${totalEarned} PTS`}
+              <span
+                className={`font-mono text-sm ${isReplay ? "text-[#666]" : "text-(--primary)"}`}
+                data-testid="earned-points"
+              >
+                {isReplay ? "NO PTS" : `+${totalEarned} PTS`}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs text-[#666]">STEP</span>
-              <span className="font-mono text-sm text-(--foreground)" data-testid="current-step">
+              <span
+                className="font-mono text-sm text-(--foreground)"
+                data-testid="current-step"
+              >
                 {currentStep + 1}/{caseData.steps.length}
               </span>
             </div>
@@ -276,8 +301,11 @@ export default function GamePage() {
       </div>
 
       {/* Progress Bar */}
-      <Progress 
-        value={((currentStep + (caseCompleted ? 1 : 0)) / caseData.steps.length) * 100}
+      <Progress
+        value={
+          ((currentStep + (caseCompleted ? 1 : 0)) / caseData.steps.length) *
+          100
+        }
         className="h-1 bg-(--background-paper) rounded-none"
       />
 
@@ -288,10 +316,15 @@ export default function GamePage() {
           <div className="max-w-xl mx-auto lg:mx-0">
             {/* Case Header */}
             <div className="mb-8">
-              <span className={`badge-difficulty mb-4 inline-block ${
-                caseData.difficulty === 'Beginner' ? 'badge-beginner' :
-                caseData.difficulty === 'Intermediate' ? 'badge-intermediate' : 'badge-advanced'
-              }`}>
+              <span
+                className={`badge-difficulty mb-4 inline-block ${
+                  caseData.difficulty === "Beginner"
+                    ? "badge-beginner"
+                    : caseData.difficulty === "Intermediate"
+                      ? "badge-intermediate"
+                      : "badge-advanced"
+                }`}
+              >
                 {caseData.difficulty}
               </span>
               <h1 className="font-typewriter text-3xl text-(--foreground) mb-2">
@@ -302,17 +335,20 @@ export default function GamePage() {
 
             {caseCompleted ? (
               /* Case Completed Screen */
-              <div className="space-y-6 animate-fade-in" data-testid="case-completed">
+              <div
+                className="space-y-6 animate-fade-in"
+                data-testid="case-completed"
+              >
                 {/* Success Header */}
                 <div className="case-file text-center py-6">
                   <CheckCircle className="w-16 h-16 text-(--foreground-terminal) mx-auto mb-4" />
                   <h2 className="font-typewriter text-2xl text-(--foreground) mb-2">
-                    {isReplay ? 'CASE REPLAYED' : 'CASE CLOSED'}
+                    {isReplay ? "CASE REPLAYED" : "CASE CLOSED"}
                   </h2>
                   <p className="text-(--foreground-muted)">
-                    {isReplay 
-                      ? 'Good practice, Detective!'
-                      : 'Excellent work, Detective.'}
+                    {isReplay
+                      ? "Good practice, Detective!"
+                      : "Excellent work, Detective."}
                   </p>
                   {!isReplay && (
                     <div className="flex items-center justify-center gap-2 mt-4">
@@ -337,7 +373,7 @@ export default function GamePage() {
                   </p>
                   <div className="p-3 bg-(--background-terminal) border border-[#222]">
                     <p className="font-typewriter text-sm text-[#666] italic">
-                      "{caseData.story_intro.split('\n')[0]}"
+                      "{caseData.story_intro.split("\n")[0]}"
                     </p>
                   </div>
                 </div>
@@ -345,25 +381,37 @@ export default function GamePage() {
                 {/* Commands Learned + Quick Reference */}
                 <div className="case-file">
                   <Accordion type="multiple" className="w-full">
-                    <AccordionItem value="commands-learned" className="border-(--border)">
+                    <AccordionItem
+                      value="commands-learned"
+                      className="border-(--border)"
+                    >
                       <AccordionTrigger className="font-mono text-xs text-(--primary) tracking-wider hover:no-underline">
                         COMMANDS LEARNED
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="space-y-3">
                           {caseData.steps.map((step, index) => (
-                            <div key={index} className="flex items-start gap-3 p-3 bg-(--background-terminal) border border-[#222]">
+                            <div
+                              key={index}
+                              className="flex items-start gap-3 p-3 bg-(--background-terminal) border border-[#222]"
+                            >
                               <div className="shrink-0 w-6 h-6 flex items-center justify-center bg-(--foreground-terminal)/20 border border-(--foreground-terminal)">
-                                <span className="font-mono text-xs text-(--foreground-terminal)">{index + 1}</span>
+                                <span className="font-mono text-xs text-(--foreground-terminal)">
+                                  {index + 1}
+                                </span>
                               </div>
                               <div className="flex-1 min-w-0">
                                 <code className="font-mono text-sm text-(--foreground-terminal) block mb-1">
                                   {step.expected_commands[0]}
                                 </code>
-                                <p className="text-xs text-[#666]">{step.hint}</p>
+                                <p className="text-xs text-[#666]">
+                                  {step.hint}
+                                </p>
                               </div>
                               <div className="shrink-0">
-                                <span className="font-mono text-xs text-(--primary)">+{step.points}</span>
+                                <span className="font-mono text-xs text-(--primary)">
+                                  +{step.points}
+                                </span>
                               </div>
                             </div>
                           ))}
@@ -371,7 +419,10 @@ export default function GamePage() {
                       </AccordionContent>
                     </AccordionItem>
 
-                    <AccordionItem value="quick-reference" className="border-(--border)">
+                    <AccordionItem
+                      value="quick-reference"
+                      className="border-(--border)"
+                    >
                       <AccordionTrigger className="font-mono text-xs text-(--primary) tracking-wider hover:no-underline">
                         QUICK REFERENCE
                       </AccordionTrigger>
@@ -379,8 +430,12 @@ export default function GamePage() {
                         <div className="terminal-container p-4">
                           <div className="font-mono text-sm space-y-1">
                             {caseData.steps.map((step, index) => (
-                              <p key={index} className="text-(--foreground-terminal)">
-                                <span className="text-[#666]">$</span> {step.expected_commands[0]}
+                              <p
+                                key={index}
+                                className="text-(--foreground-terminal)"
+                              >
+                                <span className="text-[#666]">$</span>{" "}
+                                {step.expected_commands[0]}
                               </p>
                             ))}
                           </div>
@@ -396,11 +451,18 @@ export default function GamePage() {
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-3">
                   <Link to="/cases">
-                    <Button className="btn-primary w-full" data-testid="next-case-btn">
+                    <Button
+                      className="btn-primary w-full"
+                      data-testid="next-case-btn"
+                    >
                       Next Case <ChevronRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
-                  <Button className="btn-outline w-full" onClick={restartCase} data-testid="replay-btn">
+                  <Button
+                    className="btn-outline w-full"
+                    onClick={restartCase}
+                    data-testid="replay-btn"
+                  >
                     Replay Case
                   </Button>
                 </div>
@@ -418,15 +480,19 @@ export default function GamePage() {
                 )}
 
                 {/* Current Narrative */}
-                <div className="case-file animate-fade-in" data-testid="current-narrative">
-                  <p className="story-text mb-6">
-                    {step.narrative}
-                  </p>
+                <div
+                  className="case-file animate-fade-in"
+                  data-testid="current-narrative"
+                >
+                  <p className="story-text mb-6">{step.narrative}</p>
                   <div className="pt-4 border-t border-(--border)">
                     <p className="font-mono text-xs text-(--primary) tracking-wider mb-2">
                       OBJECTIVE
                     </p>
-                    <p className="text-(--foreground)" data-testid="step-instruction">
+                    <p
+                      className="text-(--foreground)"
+                      data-testid="step-instruction"
+                    >
                       {step.instruction}
                     </p>
                   </div>
@@ -440,10 +506,13 @@ export default function GamePage() {
                     data-testid="hint-btn"
                   >
                     <Lightbulb className="w-3 h-3 mr-2" />
-                    {showHint ? 'Hide Hint' : 'Need a Hint?'}
+                    {showHint ? "Hide Hint" : "Need a Hint?"}
                   </Button>
                   {showHint && (
-                    <div className="mt-3 p-4 bg-(--background-paper) border border-(--border) animate-fade-in" data-testid="hint-text">
+                    <div
+                      className="mt-3 p-4 bg-(--background-paper) border border-(--border) animate-fade-in"
+                      data-testid="hint-text"
+                    >
                       <p className="font-mono text-sm text-(--foreground-muted)">
                         {step.hint}
                       </p>
@@ -470,11 +539,13 @@ export default function GamePage() {
             <div className="terminal-dot red" />
             <div className="terminal-dot yellow" />
             <div className="terminal-dot green" />
-            <span className="ml-3 font-mono text-xs text-[#666]">git-detective-terminal</span>
+            <span className="ml-3 font-mono text-xs text-[#666]">
+              git-detective-terminal
+            </span>
           </div>
 
           {/* Terminal Output */}
-          <div 
+          <div
             ref={terminalRef}
             className="flex-1 p-4 overflow-y-auto font-mono text-sm"
             data-testid="terminal-output"
@@ -484,9 +555,13 @@ export default function GamePage() {
               <p>Git Noir Detective Terminal v1.0</p>
               <p>Type your git commands below.</p>
               {isReplay && (
-                <p className="text-(--primary) mt-2">⚠ REPLAY MODE - No points will be earned</p>
+                <p className="text-(--primary) mt-2">
+                  ⚠ REPLAY MODE - No points will be earned
+                </p>
               )}
-              <p className="text-(--border)">────────────────────────────────</p>
+              <p className="text-(--border)">
+                ────────────────────────────────
+              </p>
             </div>
 
             {/* Command History */}
@@ -498,10 +573,20 @@ export default function GamePage() {
                   </p>
                 )}
                 {item.type === "success" && (
-                  <div className={`pl-2 border-l-2 ${item.isReplay ? 'border-[#666]' : 'border-(--foreground-terminal)'}`}>
-                    <p className={item.isReplay ? 'text-[#666]' : 'terminal-text'}>{item.text}</p>
+                  <div
+                    className={`pl-2 border-l-2 ${item.isReplay ? "border-[#666]" : "border-(--foreground-terminal)"}`}
+                  >
+                    <p
+                      className={
+                        item.isReplay ? "text-[#666]" : "terminal-text"
+                      }
+                    >
+                      {item.text}
+                    </p>
                     {item.points > 0 && !item.isReplay && (
-                      <p className="text-(--primary) text-xs mt-1">+{item.points} reputation</p>
+                      <p className="text-(--primary) text-xs mt-1">
+                        +{item.points} reputation
+                      </p>
                     )}
                   </div>
                 )}
@@ -518,7 +603,9 @@ export default function GamePage() {
                         <p className="font-mono text-xs text-(--primary) tracking-wider mb-1">
                           OBJECTIVE
                         </p>
-                        <p className="text-(--foreground)">{item.instruction}</p>
+                        <p className="text-(--foreground)">
+                          {item.instruction}
+                        </p>
                       </div>
                     )}
                   </div>

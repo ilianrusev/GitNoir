@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://git-noir.local/schemas/case.schema.json",
   "title": "Git Noir Case",
+  "description": "Case definition schema. Case unlocks are progression-based in app logic and are not stored per case.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,7 +10,6 @@
     "title",
     "description",
     "difficulty",
-    "unlock_cost",
     "total_points",
     "story_intro",
     "steps"
@@ -30,10 +30,6 @@
     "difficulty": {
       "type": "string",
       "enum": ["Beginner", "Intermediate", "Advanced"]
-    },
-    "unlock_cost": {
-      "type": "integer",
-      "minimum": 0
     },
     "total_points": {
       "type": "integer",

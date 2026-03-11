@@ -110,10 +110,11 @@ export default function LeaderboardPage() {
                 {leaderboard.map((entry, index) => (
                   <div
                     key={entry.user_id || `${entry.username}-${index}`}
-                    className={`leaderboard-row animate-fade-in ${
-                      user?.id === entry.user_id ? "bg-(--background-paper)" : ""
+                    className={`leaderboard-row ${
+                      user?.id === entry.user_id
+                        ? "bg-(--background-paper)"
+                        : ""
                     }`}
-                    style={{ animationDelay: `${index * 0.05}s` }}
                     data-testid={`leaderboard-row-${index + 1}`}
                   >
                     <div className="flex items-center justify-center">
@@ -122,7 +123,9 @@ export default function LeaderboardPage() {
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-8 h-8 flex items-center justify-center border ${
-                          entry.rank <= 3 ? "border-(--primary)" : "border-(--border)"
+                          entry.rank <= 3
+                            ? "border-(--primary)"
+                            : "border-(--border)"
                         }`}
                       >
                         <span className="font-typewriter text-xs text-(--foreground)">
@@ -161,7 +164,6 @@ export default function LeaderboardPage() {
             </div>
           </div>
         )}
-
       </main>
     </div>
   );

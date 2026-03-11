@@ -179,29 +179,20 @@ export default function LandingPage() {
         />
         <div className="hero-overlay" />
         <div className="hero-content -translate-y-10 md:-translate-y-10">
-          <p className="font-mono text-xs text-(--primary) tracking-[0.3em] mb-4 animate-fade-in">
+          <p className="font-mono text-xs text-(--primary) tracking-[0.3em] mb-4">
             CASE FILE #001 - ACTIVE
           </p>
-          <h1
-            className="font-typewriter text-5xl md:text-7xl text-(--foreground) mb-6 leading-tight animate-fade-in"
-            style={{ animationDelay: "0.1s" }}
-          >
+          <h1 className="font-typewriter text-5xl md:text-7xl text-(--foreground) mb-6 leading-tight">
             LEARN GIT.
             <br />
             <span className="text-(--primary)">SOLVE MYSTERIES.</span>
           </h1>
-          <p
-            className="text-lg md:text-xl text-(--foreground-muted) max-w-xl mb-10 leading-relaxed animate-fade-in"
-            style={{ animationDelay: "0.2s" }}
-          >
+          <p className="text-lg md:text-xl text-(--foreground-muted) max-w-xl mb-10 leading-relaxed">
             Every commit tells a story. Every branch holds a clue. Master Git
             commands by solving detective cases in this noir-themed learning
             adventure.
           </p>
-          <div
-            className="flex flex-wrap gap-4 animate-fade-in"
-            style={{ animationDelay: "0.3s" }}
-          >
+          <div className="flex flex-wrap gap-4">
             <Link to="/register">
               <Button
                 className="btn-primary text-base px-8 py-4"
@@ -235,10 +226,7 @@ export default function LandingPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div
-              className="case-card p-8 animate-fade-in"
-              data-testid="feature-card-1"
-            >
+            <div className="case-card p-8" data-testid="feature-card-1">
               <div className="w-12 h-12 flex items-center justify-center border border-(--foreground-terminal) mb-6">
                 <Terminal className="w-6 h-6 text-(--foreground-terminal)" />
               </div>
@@ -251,11 +239,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div
-              className="case-card p-8 animate-fade-in"
-              style={{ animationDelay: "0.1s" }}
-              data-testid="feature-card-2"
-            >
+            <div className="case-card p-8" data-testid="feature-card-2">
               <div className="w-12 h-12 flex items-center justify-center border border-(--primary) mb-6">
                 <GitBranch className="w-6 h-6 text-(--primary)" />
               </div>
@@ -268,11 +252,7 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div
-              className="case-card p-8 animate-fade-in"
-              style={{ animationDelay: "0.2s" }}
-              data-testid="feature-card-3"
-            >
+            <div className="case-card p-8" data-testid="feature-card-3">
               <div className="w-12 h-12 flex items-center justify-center border border-[#d00000] mb-6">
                 <Award className="w-6 h-6 text-[#d00000]" />
               </div>
@@ -299,10 +279,7 @@ export default function LandingPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div
-              className="case-file animate-slide-in"
-              data-testid="case-preview-1"
-            >
+            <div className="case-file" data-testid="case-preview-1">
               <div className="flex items-start justify-between mb-4">
                 <span className="badge-difficulty badge-beginner">
                   Beginner
@@ -325,11 +302,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div
-              className="case-file animate-slide-in"
-              style={{ animationDelay: "0.1s" }}
-              data-testid="case-preview-2"
-            >
+            <div className="case-file" data-testid="case-preview-2">
               <div className="flex items-start justify-between mb-4">
                 <span className="badge-difficulty badge-beginner">
                   Beginner

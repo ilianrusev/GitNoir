@@ -2,6 +2,10 @@
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
 import { getCurrentUser, saveUser } from "./authService";
+import {
+  getTierPosition,
+  getTierUnlockCounts,
+} from "./unlockProgressionService";
 
 const caseModules = import.meta.glob("../data/cases/**/*.json", {
   eager: true,
@@ -70,12 +74,17 @@ export const isCaseUnlocked = (caseId) => {
   const user = normalizeReputation(getCurrentUser());
 
   if (!caseData) return false;
-  if (caseData.unlock_cost === 0) return true;
   if (!user) return false;
   if (user.completed_cases.includes(caseId)) return true;
   if (user.case_progress[caseId]) return true;
 
-  return user.reputation >= caseData.unlock_cost;
+  const { difficultyKey, position } = getTierPosition(caseData, casesData);
+  if (difficultyKey && position) {
+    const unlockCounts = getTierUnlockCounts(user, casesData);
+    return position <= (unlockCounts[difficultyKey] || 0);
+  }
+
+  return false;
 };
 
 // Validate a command
@@ -174,10 +183,10 @@ export const validateCommand = (
       next_step: caseCompleted ? null : nextStep,
       next_step_narrative: caseCompleted
         ? null
-        : caseData.steps[nextStep]?.narrative ?? null,
+        : (caseData.steps[nextStep]?.narrative ?? null),
       next_step_instruction: caseCompleted
         ? null
-        : caseData.steps[nextStep]?.instruction ?? null,
+        : (caseData.steps[nextStep]?.instruction ?? null),
       case_completed: caseCompleted,
     };
   } else {
