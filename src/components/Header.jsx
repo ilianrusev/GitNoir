@@ -153,15 +153,6 @@ export default function Header({ variant = "default", reputation }) {
         Dashboard
       </NavLink>
       <NavLink
-        to="/cases"
-        end
-        className={getDropdownNavLinkClass}
-        onClick={closeMobileMenu}
-        data-testid="mobile-nav-cases"
-      >
-        Cases
-      </NavLink>
-      <NavLink
         to="/cheatsheet"
         end
         className={getDropdownNavLinkClass}

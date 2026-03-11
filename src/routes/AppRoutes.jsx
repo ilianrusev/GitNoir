@@ -4,7 +4,6 @@ import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import DashboardPage from "../pages/DashboardPage";
-import CasesPage from "../pages/CasesPage";
 import GamePage from "../pages/GamePage";
 import LeaderboardPage from "../pages/LeaderboardPage";
 import CheatSheetPage from "../pages/CheatSheetPage";
@@ -37,14 +36,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/cases"
-        element={
-          <ProtectedRoute>
-            <CasesPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/cases" element={<Navigate to="/dashboard" replace />} />
       <Route
         path="/game/:caseId"
         element={

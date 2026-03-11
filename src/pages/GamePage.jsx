@@ -121,7 +121,7 @@ export default function GamePage() {
 
       if (!isCaseUnlocked(caseId)) {
         toast.error("You need more reputation to access this case.");
-        navigate("/cases");
+        navigate("/dashboard");
         return;
       }
 
@@ -273,7 +273,7 @@ export default function GamePage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
-              to="/cases"
+              to="/dashboard"
               className="flex items-center gap-2 text-(--foreground-muted) hover:text-(--primary) transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -459,7 +459,7 @@ export default function GamePage() {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-3">
-                  <Link to="/cases">
+                  <Link to="/dashboard">
                     <Button
                       className="btn-primary w-full"
                       data-testid="next-case-btn"

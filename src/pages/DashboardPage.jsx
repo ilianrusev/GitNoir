@@ -1,16 +1,34 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getCases, getUserProgress } from "../services/gameService";
+import { isCaseUnlocked } from "../services/caseStatusService";
+import { Filter } from "lucide-react";
 import { Button } from "../components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
 import Header from "../components/Header";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import CasesGrid from "../components/cases/CasesGrid";
 import SecondaryHeader from "../components/SecondaryHeader";
+
+const FILTER_OPTIONS = [
+  { value: "all", label: "All Cases" },
+  { value: "available", label: "Available" },
+  { value: "completed", label: "Completed" },
+  { value: "beginner", label: "Beginner" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced", label: "Advanced" },
+];
+
 export default function DashboardPage() {
   const { user } = useAuth();
   const [cases, setCases] = useState([]);
   const [progress, setProgress] = useState(null);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     loadData();
@@ -26,17 +44,36 @@ export default function DashboardPage() {
   const reputation = progress?.reputation || 0;
   const completedCount = progress?.completed_cases?.length || 0;
 
-  const recentCases = [...cases]
-    .sort((firstCase, secondCase) => {
-      const firstCreatedAt = firstCase.created_at
-        ? new Date(firstCase.created_at).getTime()
-        : 0;
-      const secondCreatedAt = secondCase.created_at
-        ? new Date(secondCase.created_at).getTime()
-        : 0;
-      return secondCreatedAt - firstCreatedAt;
-    })
-    .slice(0, 9);
+  const difficultyOrder = {
+    beginner: 0,
+    intermediate: 1,
+    advanced: 2,
+  };
+
+  const sortByDifficulty = (casesList) =>
+    [...casesList].sort((a, b) => {
+      const aOrder = difficultyOrder[a.difficulty?.toLowerCase()] ?? 999;
+      const bOrder = difficultyOrder[b.difficulty?.toLowerCase()] ?? 999;
+      return aOrder - bOrder;
+    });
+
+  const filteredCases =
+    filter === "all"
+      ? sortByDifficulty(cases)
+      : cases.filter((caseItem) => {
+          if (filter === "beginner") return caseItem.difficulty === "Beginner";
+          if (filter === "intermediate")
+            return caseItem.difficulty === "Intermediate";
+          if (filter === "advanced") return caseItem.difficulty === "Advanced";
+          if (filter === "completed")
+            return progress?.completed_cases?.includes(caseItem.id);
+          if (filter === "available")
+            return (
+              isCaseUnlocked(caseItem, progress, cases) &&
+              !progress?.completed_cases?.includes(caseItem.id)
+            );
+          return true;
+        });
 
   return (
     <div className="min-h-screen bg-(--background)">
@@ -64,28 +101,51 @@ export default function DashboardPage() {
           totalCases={cases.length}
         />
 
-        <div className="mb-8">
-          <p className="font-mono text-xs text-(--primary) tracking-[0.3em] mb-4">
-            YOUR CASES
-          </p>
-          <h2 className="font-typewriter text-2xl text-(--foreground) mb-6">
-            RECENT INVESTIGATIONS
-          </h2>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+          <div className="mb-8">
+            <p className="font-mono text-xs text-(--primary) tracking-[0.3em] mb-4">
+              YOUR CASES
+            </p>
+            <h2 className="font-typewriter text-2xl text-(--foreground) mb-6">
+              ALL INVESTIGATIONS
+            </h2>
+          </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                className="btn-outline flex items-center gap-2 w-fit mb-6"
+                data-testid="filter-dropdown"
+              >
+                <Filter className="w-4 h-4" />
+                Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-(--background-paper) border-(--border)">
+              {FILTER_OPTIONS.map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onClick={() => setFilter(option.value)}
+                  className="text-(--foreground) focus:bg-(--secondary)"
+                >
+                  {option.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <CasesGrid
-          filterCases={recentCases}
+          filterCases={filteredCases}
           progress={progress}
           allCases={cases}
         />
 
-        {cases.length > 9 && (
-          <div className="mt-8 text-center">
-            <Link to="/cases">
-              <Button className="btn-outline" data-testid="view-all-cases">
-                View All {cases.length} Cases
-              </Button>
-            </Link>
+        {filteredCases.length === 0 && (
+          <div className="text-center py-16">
+            <p className="font-typewriter text-xl text-[#666]">
+              No cases match your filter.
+            </p>
           </div>
         )}
       </main>
