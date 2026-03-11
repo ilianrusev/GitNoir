@@ -230,6 +230,15 @@ export default function GamePage() {
     }
   };
 
+  const handleCommandChange = (event) => {
+    const nextValue = event.target.value;
+    if (nextValue.length === 1) {
+      setCommand(nextValue.toLowerCase());
+      return;
+    }
+    setCommand(nextValue);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-(--background) flex items-center justify-center">
@@ -621,11 +630,13 @@ export default function GamePage() {
                   ref={inputRef}
                   type="text"
                   value={command}
-                  onChange={(e) => setCommand(e.target.value)}
+                  onChange={handleCommandChange}
                   className="terminal-input flex-1"
                   placeholder="Enter git command..."
                   disabled={submitting}
                   autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect="off"
                   spellCheck="false"
                   data-testid="terminal-input"
                 />
