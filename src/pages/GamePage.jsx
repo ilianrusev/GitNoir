@@ -315,7 +315,7 @@ export default function GamePage() {
         <div className="narrative-panel">
           <div className="max-w-xl mx-auto lg:mx-0">
             {/* Case Header */}
-            <div className="mb-8">
+            <div className="mb-2">
               <span
                 className={`badge-difficulty mb-4 inline-block ${
                   caseData.difficulty === "Beginner"
@@ -327,10 +327,10 @@ export default function GamePage() {
               >
                 {caseData.difficulty}
               </span>
-              <h1 className="font-typewriter text-3xl text-(--foreground) mb-2">
+              {/* <h1 className="font-typewriter text-3xl text-(--foreground) mb-2">
                 {caseData.title}
               </h1>
-              <p className="text-sm text-[#666]">{caseData.description}</p>
+              <p className="text-sm text-[#666]">{caseData.description}</p> */}
             </div>
 
             {caseCompleted ? (
