@@ -11,7 +11,9 @@
       "instruction": "Clone the repository from 'https://github.com/agency/evidence.git'",
       "narrative": "The repository URL glowed on my screen. One command to copy everything.",
       "expected_commands": [
-        "git clone https://github.com/agency/evidence.git"
+        "git clone https://github.com/agency/evidence.git",
+        "git clone 'https://github.com/agency/evidence.git'",
+        "git clone \"https://github.com/agency/evidence.git\""
       ],
       "hint": "Create a copy of a remote repository",
       "points": 25

@@ -12,7 +12,11 @@
       "narrative": "The official history was sanitized, but ghosts remain. I needed to see everything.",
       "expected_commands": [
         "git reflog",
-        "git log --all"
+        "git log --all",
+        "git log --oneline --all",
+        "git log --all --oneline",
+        "git log --all --decorate --oneline",
+        "git log --all --oneline --decorate"
       ],
       "hint": "Show reference logs or all commits",
       "points": 35
@@ -21,7 +25,10 @@
       "instruction": "Start an interactive rebase of the last 3 commits.",
       "narrative": "Time to dive into the timeline and examine each commit closely.",
       "expected_commands": [
-        "git rebase -i HEAD~3"
+        "git rebase -i HEAD~3",
+        "git rebase --interactive HEAD~3",
+        "git rebase -i HEAD^^^",
+        "git rebase --interactive HEAD^^^"
       ],
       "hint": "Start interactive rebase for last 3 commits",
       "points": 40
@@ -31,7 +38,8 @@
       "narrative": "Before going deeper, I needed to secure my current findings.",
       "expected_commands": [
         "git stash",
-        "git stash push"
+        "git stash push",
+        "git stash save"
       ],
       "hint": "Temporarily store modified tracked files",
       "points": 40
@@ -41,7 +49,9 @@
       "narrative": "Operation complete. Time to restore my secured evidence.",
       "expected_commands": [
         "git stash pop",
-        "git stash apply"
+        "git stash apply",
+        "git stash pop stash@{0}",
+        "git stash apply stash@{0}"
       ],
       "hint": "Restore stashed changes",
       "points": 40

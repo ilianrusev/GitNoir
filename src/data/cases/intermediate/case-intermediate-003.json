@@ -21,7 +21,9 @@
       "narrative": "For major milestones, annotated tags carry more weight - they have messages.",
       "expected_commands": [
         "git tag -a case-closed-v1 -m \"First case closure\"",
-        "git tag -a case-closed-v1 -m 'First case closure'"
+        "git tag -a case-closed-v1 -m 'First case closure'",
+        "git tag --annotate case-closed-v1 -m \"First case closure\"",
+        "git tag --annotate case-closed-v1 -m 'First case closure'"
       ],
       "hint": "Create an annotated tag with a message",
       "points": 30
@@ -50,7 +52,8 @@
       "instruction": "Delete the tag 'arrest-v1' - wrong suspect.",
       "narrative": "We tagged the wrong moment. Remove that marker.",
       "expected_commands": [
-        "git tag -d arrest-v1"
+        "git tag -d arrest-v1",
+        "git tag --delete arrest-v1"
       ],
       "hint": "Delete a local tag",
       "points": 30

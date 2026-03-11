@@ -20,7 +20,8 @@
       "instruction": "Mark the current commit as bad (it has the bug).",
       "narrative": "We know the bug exists now. Mark this as bad.",
       "expected_commands": [
-        "git bisect bad"
+        "git bisect bad",
+        "git bisect bad HEAD"
       ],
       "hint": "Mark current commit as buggy",
       "points": 35
@@ -38,7 +39,8 @@
       "instruction": "After testing, mark the current commit as good.",
       "narrative": "This version works. The bug must be later.",
       "expected_commands": [
-        "git bisect good"
+        "git bisect good",
+        "git bisect good HEAD"
       ],
       "hint": "Mark tested commit as good",
       "points": 40
@@ -47,7 +49,8 @@
       "instruction": "Reset and end the bisect session.",
       "narrative": "Investigation complete. Return to normal operations.",
       "expected_commands": [
-        "git bisect reset"
+        "git bisect reset",
+        "git bisect reset HEAD"
       ],
       "hint": "End the bisect session",
       "points": 50

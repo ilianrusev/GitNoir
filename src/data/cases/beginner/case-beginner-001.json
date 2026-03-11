@@ -13,7 +13,8 @@
       "expected_commands": [
         "git log",
         "git log --oneline",
-        "git log -a"
+        "git log --all",
+        "git log --all --oneline"
       ],
       "hint": "Use the command to view commit history",
       "points": 20

@@ -12,7 +12,8 @@
       "narrative": "First, I needed to map the network. Every remote connection was a potential lead.",
       "expected_commands": [
         "git remote",
-        "git remote -v"
+        "git remote -v",
+        "git remote --verbose"
       ],
       "hint": "Show all remote repositories",
       "points": 30
@@ -22,7 +23,10 @@
       "narrative": "Information flows constantly in this network. Time to intercept the latest transmissions.",
       "expected_commands": [
         "git fetch",
-        "git fetch origin"
+        "git fetch origin",
+        "git fetch --all",
+        "git fetch origin main",
+        "git fetch origin master"
       ],
       "hint": "Download objects and refs from the remote",
       "points": 35
@@ -32,6 +36,7 @@
       "narrative": "I needed everything they had. A full download of their latest operations.",
       "expected_commands": [
         "git pull",
+        "git pull origin",
         "git pull origin main",
         "git pull origin master"
       ],
@@ -45,7 +50,9 @@
         "git push",
         "git push origin",
         "git push origin main",
-        "git push origin master"
+        "git push origin master",
+        "git push -u origin main",
+        "git push -u origin master"
       ],
       "hint": "Upload your local commits to the remote",
       "points": 40
@@ -54,7 +61,13 @@
       "instruction": "Add a new remote called 'backup' with URL 'https://backup.agency.git'",
       "narrative": "Never keep all your eggs in one basket. A backup remote for redundancy.",
       "expected_commands": [
-        "git remote add backup https://backup.agency.git"
+        "git remote add backup https://backup.agency.git",
+        "git remote add backup 'https://backup.agency.git'",
+        "git remote add backup \"https://backup.agency.git\"",
+        "git remote add 'backup' https://backup.agency.git",
+        "git remote add \"backup\" https://backup.agency.git",
+        "git remote add 'backup' 'https://backup.agency.git'",
+        "git remote add \"backup\" \"https://backup.agency.git\""
       ],
       "hint": "Add a new remote repository",
       "points": 40
