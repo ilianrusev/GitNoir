@@ -13,11 +13,99 @@ import { auth, db } from "../firebase";
 
 const STORAGE_KEYS = {
   USER: "git_quest_user",
+  GUEST_USER: "unauth_user",
 };
 const USERS_COLLECTION = "users";
 const googleProvider = new GoogleAuthProvider();
 let runtimeUserSnapshot = null;
 const PASSWORD_POLICY_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+
+const createGuestUser = () => ({
+  id: "guest-user",
+  username: "Detective",
+  email: "",
+  password: "",
+  reputation: 0,
+  completed_cases: [],
+  case_progress: {},
+  created_at: new Date().toISOString(),
+  is_guest: true,
+});
+
+const normalizeUser = (user) => {
+  if (!user || typeof user !== "object") {
+    return null;
+  }
+
+  return {
+    ...user,
+    reputation: Number(user.reputation ?? 0),
+    completed_cases: Array.isArray(user.completed_cases)
+      ? user.completed_cases
+      : [],
+    case_progress:
+      user.case_progress && typeof user.case_progress === "object"
+        ? user.case_progress
+        : {},
+  };
+};
+
+const readStorageUser = (key) => {
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
+
+  try {
+    return normalizeUser(JSON.parse(raw));
+  } catch {
+    localStorage.removeItem(key);
+    return null;
+  }
+};
+
+const mergeCaseProgress = (baseProgress = {}, incomingProgress = {}) => {
+  const merged = { ...baseProgress };
+
+  Object.entries(incomingProgress).forEach(([caseId, incomingCaseProgress]) => {
+    const normalizedIncoming = normalizeUser({
+      case_progress: { [caseId]: incomingCaseProgress },
+    })?.case_progress?.[caseId];
+
+    if (!normalizedIncoming) return;
+
+    const existing = merged[caseId];
+    if (!existing) {
+      merged[caseId] = normalizedIncoming;
+      return;
+    }
+
+    const existingStep = Number(existing.current_step ?? 0);
+    const incomingStep = Number(normalizedIncoming.current_step ?? 0);
+    const existingEarned = Number(existing.earned_points ?? 0);
+    const incomingEarned = Number(normalizedIncoming.earned_points ?? 0);
+
+    const shouldUseIncoming =
+      incomingStep > existingStep ||
+      (incomingStep === existingStep && incomingEarned > existingEarned);
+
+    if (shouldUseIncoming) {
+      merged[caseId] = normalizedIncoming;
+    }
+  });
+
+  return merged;
+};
+
+const mergeCompletedCases = (first = [], second = []) =>
+  Array.from(new Set([...(first || []), ...(second || [])]));
+
+const getOrCreateGuestUser = () => {
+  const storedGuest = readStorageUser(STORAGE_KEYS.GUEST_USER);
+  const guestUser = storedGuest || createGuestUser();
+
+  localStorage.setItem(STORAGE_KEYS.GUEST_USER, JSON.stringify(guestUser));
+  runtimeUserSnapshot = guestUser;
+  return guestUser;
+};
 
 export const PASSWORD_POLICY_MESSAGE =
   "Password must be at least 8 symbols long and include at least one uppercase letter, one lowercase letter, and one number.";
@@ -29,20 +117,26 @@ export const setRuntimeUserSnapshot = (user) => {
   runtimeUserSnapshot = user ?? null;
 };
 
+export const isGuestUser = (user) => Boolean(user?.is_guest);
+
 export const getCurrentUser = () => {
-  const userData = localStorage.getItem(STORAGE_KEYS.USER);
+  const storedAuthUser = readStorageUser(STORAGE_KEYS.USER);
+  if (storedAuthUser) {
+    runtimeUserSnapshot = storedAuthUser;
+    return storedAuthUser;
+  }
 
-  if (!userData) {
+  const storedGuestUser = readStorageUser(STORAGE_KEYS.GUEST_USER);
+  if (storedGuestUser) {
+    runtimeUserSnapshot = storedGuestUser;
+    return storedGuestUser;
+  }
+
+  if (runtimeUserSnapshot) {
     return runtimeUserSnapshot;
   }
 
-  try {
-    const parsedUser = JSON.parse(userData);
-    runtimeUserSnapshot = parsedUser;
-    return parsedUser;
-  } catch {
-    return runtimeUserSnapshot;
-  }
+  return getOrCreateGuestUser();
 };
 
 const persistUserProfile = async (user) => {
@@ -67,14 +161,21 @@ const persistUserProfile = async (user) => {
 };
 
 export const saveUser = (user, options = {}) => {
-  const { persistProfile = true } = options;
-  const normalizedUser = {
-    ...user,
-    reputation: user?.reputation ?? 0,
-  };
+  const { persistProfile = true, clearGuestUser = false } = options;
+  const normalizedUser = normalizeUser(user);
+  if (!normalizedUser) return;
 
   runtimeUserSnapshot = normalizedUser;
+
+  if (isGuestUser(normalizedUser)) {
+    localStorage.setItem(STORAGE_KEYS.GUEST_USER, JSON.stringify(normalizedUser));
+    return;
+  }
+
   localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(normalizedUser));
+  if (clearGuestUser) {
+    localStorage.removeItem(STORAGE_KEYS.GUEST_USER);
+  }
 
   if (persistProfile) {
     void persistUserProfile(normalizedUser);
@@ -83,45 +184,82 @@ export const saveUser = (user, options = {}) => {
 
 export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   if (!firebaseUser) {
-    runtimeUserSnapshot = null;
     localStorage.removeItem(STORAGE_KEYS.USER);
-    return null;
+    return getOrCreateGuestUser();
   }
 
-  const { password = "", displayName = "", persistProfile = false } = options;
+  const {
+    password = "",
+    displayName = "",
+    persistProfile = false,
+    mergeGuestProgress = false,
+  } = options;
   const normalizedDisplayName = displayName.trim();
-  const storedUser = getCurrentUser();
+  const storedAuthUser = readStorageUser(STORAGE_KEYS.USER);
+  const guestUser = mergeGuestProgress
+    ? readStorageUser(STORAGE_KEYS.GUEST_USER)
+    : null;
   const userDocRef = doc(db, USERS_COLLECTION, firebaseUser.uid);
   const userSnapshot = await getDoc(userDocRef);
   const dbUser = userSnapshot.exists() ? userSnapshot.data() : null;
   const needsReputationMigration = !dbUser || dbUser.reputation === undefined;
   const shouldPersistProfile = persistProfile || needsReputationMigration;
 
-  const reputation = dbUser?.reputation ?? storedUser?.reputation ?? 0;
+  const dbCompletedCases = Array.isArray(dbUser?.completed_cases)
+    ? dbUser.completed_cases
+    : [];
+  const storedCompletedCases = storedAuthUser?.completed_cases ?? [];
+  const guestCompletedCases = guestUser?.completed_cases ?? [];
+  const completedCases = mergeCompletedCases(
+    mergeCompletedCases(dbCompletedCases, storedCompletedCases),
+    guestCompletedCases,
+  );
+
+  const mergedCaseProgress = mergeCaseProgress(
+    mergeCaseProgress(dbUser?.case_progress ?? {}, storedAuthUser?.case_progress ?? {}),
+    guestUser?.case_progress ?? {},
+  );
+
+  completedCases.forEach((completedCaseId) => {
+    if (mergedCaseProgress[completedCaseId]) {
+      delete mergedCaseProgress[completedCaseId];
+    }
+  });
+
+  const baseReputation = Number(
+    dbUser?.reputation ?? storedAuthUser?.reputation ?? 0,
+  );
+  const guestReputation = Number(guestUser?.reputation ?? 0);
+  const reputation = Math.max(baseReputation, guestReputation);
 
   const defaultUsername =
     firebaseUser.displayName ||
     (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Detective");
 
   const syncedUser = {
-    ...storedUser,
+    ...storedAuthUser,
     id: firebaseUser.uid,
+    is_guest: false,
     username:
       normalizedDisplayName ||
       dbUser?.display_name ||
-      storedUser?.username ||
+      storedAuthUser?.username ||
       defaultUsername,
-    email: firebaseUser.email || storedUser?.email || "",
-    password: storedUser?.password || password,
+    email: firebaseUser.email || storedAuthUser?.email || "",
+    password: storedAuthUser?.password || password,
     reputation,
-    completed_cases:
-      dbUser?.completed_cases ?? storedUser?.completed_cases ?? [],
-    case_progress: dbUser?.case_progress ?? storedUser?.case_progress ?? {},
+    completed_cases: completedCases,
+    case_progress: mergedCaseProgress,
     created_at:
-      dbUser?.created_at || storedUser?.created_at || new Date().toISOString(),
+      dbUser?.created_at ||
+      storedAuthUser?.created_at ||
+      new Date().toISOString(),
   };
 
-  saveUser(syncedUser, { persistProfile: shouldPersistProfile });
+  saveUser(syncedUser, {
+    persistProfile: shouldPersistProfile,
+    clearGuestUser: mergeGuestProgress,
+  });
   return syncedUser;
 };
 
@@ -147,6 +285,7 @@ export const registerUser = async (username, email, password) => {
       password,
       displayName: username,
       persistProfile: true,
+      mergeGuestProgress: true,
     });
   } catch (error) {
     const registrationErrors = {
@@ -195,14 +334,16 @@ export const loginWithGoogleUser = async () => {
   try {
     const credentials = await signInWithPopup(auth, googleProvider);
     const additionalUserInfo = getAdditionalUserInfo(credentials);
+    const isNewUser = additionalUserInfo?.isNewUser ?? false;
     const syncedUser = await syncUserFromFirebaseUser(credentials.user, {
       displayName: credentials.user.displayName || "",
-      persistProfile: additionalUserInfo?.isNewUser ?? false,
+      persistProfile: isNewUser,
+      mergeGuestProgress: isNewUser,
     });
 
     return {
       user: syncedUser,
-      isNewUser: additionalUserInfo?.isNewUser ?? false,
+      isNewUser,
     };
   } catch (error) {
     const isCoopWindowCheckIssue =
@@ -249,7 +390,7 @@ export const logoutUser = async () => {
       logoutErrors[error.code] || "Logout failed. Please try again.";
     throw new Error(message);
   } finally {
-    runtimeUserSnapshot = null;
     localStorage.removeItem(STORAGE_KEYS.USER);
+    runtimeUserSnapshot = getOrCreateGuestUser();
   }
 };

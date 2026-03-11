@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     await logoutUser();
-    setUser(null);
+    setUser(getCurrentUser());
   };
 
   const refreshUser = () => {

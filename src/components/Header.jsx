@@ -1,10 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Terminal, Menu, X, Award, LogOut } from "lucide-react";
+import { isGuestUser } from "../services/authService";
+import {
+  Terminal,
+  Menu,
+  X,
+  Award,
+  LogOut,
+  HandHeart,
+  User,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import SupportButton from "./SupportButton";
 import GitHubIcon from "./icons/GitHubIcon";
+import CoffeeIcon from "./icons/CoffeeIcon";
+import RevolutIcon from "./icons/RevolutIcon";
 import { useOnClickOutside } from "../hooks/useOnClickOutside";
 import { toast } from "sonner";
 
@@ -34,29 +45,41 @@ const DROPDOWN_LINK_INACTIVE_CLASS = "text-(--foreground-muted)";
 const LANDING_GITHUB_LINK_CLASS =
   "flex items-center gap-3 py-3 px-4 text-(--foreground-muted) hover:text-(--foreground) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider transition-colors";
 
-const LANDING_LOGOUT_BUTTON_CLASS =
-  "w-full flex justify-center items-center py-3 px-4 mt-2 text-center text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider border border-(--border) transition-colors";
+const LANDING_DESKTOP_ICON_BUTTON_CLASS =
+  "p-2 text-(--foreground-muted) hover:text-(--primary) transition-colors";
 
-const LANDING_LOGIN_LINK_CLASS =
-  "block py-3 px-4 text-center text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-sm uppercase tracking-wider border border-(--border) transition-colors";
+const BASE_NAV_ITEMS = [
+  { to: "/dashboard", label: "Dashboard", testId: "mobile-nav-dashboard" },
+  {
+    to: "/cheatsheet",
+    label: "Cheat Sheet",
+    testId: "mobile-nav-cheatsheet",
+  },
+];
 
 export default function Header({ variant = "default", reputation }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const isAuthenticated = Boolean(user) && !isGuestUser(user);
   const isLandingVariant = variant === "landing";
+  const showLandingDesktopIcons = isLandingVariant;
+  const showLandingProfileIcon = isLandingVariant && !isAuthenticated;
   const showReputation =
     !isLandingVariant && reputation !== null && reputation !== undefined;
 
   const menuButtonRef = useRef(null);
   const menuPanelRef = useRef(null);
+  const desktopSupportRef = useRef(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [desktopSupportOpen, setDesktopSupportOpen] = useState(false);
 
   const toggleMobileMenu = () => setMobileMenuOpen((previous) => !previous);
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   useEffect(() => {
     closeMobileMenu();
+    setDesktopSupportOpen(false);
   }, [location.pathname, location.search, location.hash]);
 
   useOnClickOutside({
@@ -65,10 +88,124 @@ export default function Header({ variant = "default", reputation }) {
     onOutsideClick: closeMobileMenu,
   });
 
+  useOnClickOutside({
+    refs: [desktopSupportRef],
+    enabled: desktopSupportOpen,
+    onOutsideClick: () => setDesktopSupportOpen(false),
+  });
+
   const getDropdownNavLinkClass = ({ isActive }) =>
     isActive
       ? `${DROPDOWN_LINK_BASE_CLASS} ${DROPDOWN_LINK_ACTIVE_CLASS}`
       : `${DROPDOWN_LINK_BASE_CLASS} ${DROPDOWN_LINK_INACTIVE_CLASS}`;
+
+  const renderNavLinks = () => (
+    <>
+      {BASE_NAV_ITEMS.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end
+          className={getDropdownNavLinkClass}
+          onClick={closeMobileMenu}
+          data-testid={item.testId}
+        >
+          {item.label}
+        </NavLink>
+      ))}
+
+      {isAuthenticated && (
+        <NavLink
+          to="/leaderboard"
+          end
+          className={getDropdownNavLinkClass}
+          onClick={closeMobileMenu}
+          data-testid="mobile-nav-leaderboard"
+        >
+          Leaderboard
+        </NavLink>
+      )}
+    </>
+  );
+
+  const renderCreateBadgeButton = (testId = "mobile-create-badge-btn") => (
+    <Link to="/register" onClick={closeMobileMenu}>
+      <Button className="btn-outline w-full mt-3" data-testid={testId}>
+        Create Your Badge
+      </Button>
+    </Link>
+  );
+
+  const renderLogoutButton = (testId, extraClass = "") => (
+    <Button
+      onClick={handleLogout}
+      className={`btn-outline w-full flex items-center justify-center gap-2 ${extraClass}`}
+      data-testid={testId}
+    >
+      <LogOut className="w-4 h-4" />
+      Logout
+    </Button>
+  );
+
+  const renderSupportSection = (isLanding) => {
+    if (isLanding) {
+      return (
+        <div className="md:hidden">
+          <Link
+            to="https://github.com/ilianrusev/GitNoir/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={LANDING_GITHUB_LINK_CLASS}
+            data-testid="mobile-nav-github"
+          >
+            <GitHubIcon className="w-5 h-5" />
+            GitHub
+          </Link>
+
+          <SupportButton onCloseMenu={closeMobileMenu} />
+        </div>
+      );
+    }
+
+    return <SupportButton onCloseMenu={closeMobileMenu} />;
+  };
+
+  const renderMenuFooter = (isLanding) => {
+    if (isLanding) {
+      return (
+        <div className="border-t border-(--border) pt-4 mt-4 space-y-3">
+          <Link to="/dashboard" onClick={closeMobileMenu}>
+            <Button
+              className="btn-primary w-full"
+              data-testid="mobile-nav-dashboard-btn"
+            >
+              Start Investigation
+            </Button>
+          </Link>
+
+          {!isAuthenticated && renderCreateBadgeButton()}
+          {isAuthenticated &&
+            renderLogoutButton("mobile-landing-logout-btn", "mt-3")}
+        </div>
+      );
+    }
+
+    return (
+      <div className="border-t border-(--border) pt-4 mt-4">
+        {isAuthenticated
+          ? renderLogoutButton("mobile-logout-btn")
+          : renderCreateBadgeButton()}
+      </div>
+    );
+  };
+
+  const renderMenu = (isLanding) => (
+    <>
+      {renderNavLinks()}
+      {renderSupportSection(isLanding)}
+      {renderMenuFooter(isLanding)}
+    </>
+  );
 
   const handleLogout = async () => {
     try {
@@ -81,111 +218,6 @@ export default function Header({ variant = "default", reputation }) {
     }
   };
 
-  const renderLandingMenu = () => (
-    <>
-      <Link
-        to="https://github.com/ilianrusev/GitNoir/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className={LANDING_GITHUB_LINK_CLASS}
-        onClick={closeMobileMenu}
-        data-testid="mobile-nav-github"
-      >
-        <GitHubIcon className="w-5 h-5" />
-        GitHub
-      </Link>
-
-      <SupportButton onCloseMenu={closeMobileMenu} variant="landing" />
-
-      <div className="border-t border-(--border) pt-4 mt-4">
-        {user ? (
-          <>
-            <Link to="/dashboard" onClick={closeMobileMenu}>
-              <Button
-                className="btn-primary w-full"
-                data-testid="mobile-nav-dashboard-btn"
-              >
-                Dashboard
-              </Button>
-            </Link>
-            <button
-              type="button"
-              className={LANDING_LOGOUT_BUTTON_CLASS}
-              onClick={handleLogout}
-              data-testid="logout-btn"
-            >
-              <LogOut className="w-4 h-4 text-(--foreground-muted)" /> Logout
-            </button>
-          </>
-        ) : (
-          <div className="space-y-3">
-            <Link
-              to="/login"
-              className={LANDING_LOGIN_LINK_CLASS}
-              onClick={closeMobileMenu}
-              data-testid="mobile-nav-login"
-            >
-              Login
-            </Link>
-            <Link to="/register" onClick={closeMobileMenu}>
-              <Button
-                className="btn-primary w-full"
-                data-testid="mobile-nav-register-btn"
-              >
-                Start Investigation
-              </Button>
-            </Link>
-          </div>
-        )}
-      </div>
-    </>
-  );
-
-  const renderDefaultMenu = () => (
-    <>
-      <NavLink
-        to="/dashboard"
-        end
-        className={getDropdownNavLinkClass}
-        onClick={closeMobileMenu}
-        data-testid="mobile-nav-dashboard"
-      >
-        Dashboard
-      </NavLink>
-      <NavLink
-        to="/cheatsheet"
-        end
-        className={getDropdownNavLinkClass}
-        onClick={closeMobileMenu}
-        data-testid="mobile-nav-cheatsheet"
-      >
-        Cheat Sheet
-      </NavLink>
-      <NavLink
-        to="/leaderboard"
-        end
-        className={getDropdownNavLinkClass}
-        onClick={closeMobileMenu}
-        data-testid="mobile-nav-leaderboard"
-      >
-        Leaderboard
-      </NavLink>
-
-      <SupportButton onCloseMenu={closeMobileMenu} />
-
-      <div className="border-t border-(--border) pt-4 mt-4">
-        <Button
-          onClick={handleLogout}
-          className="btn-outline w-full flex items-center justify-center gap-2"
-          data-testid="mobile-logout-btn"
-        >
-          <LogOut className="w-4 h-4" />
-          Logout
-        </Button>
-      </div>
-    </>
-  );
-
   return (
     <nav className={NAV_CLASS_NAME}>
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
@@ -195,6 +227,68 @@ export default function Header({ variant = "default", reputation }) {
         </Link>
 
         <div className="flex items-center gap-3">
+          {showLandingDesktopIcons && (
+            <div className="hidden md:flex items-center gap-3">
+              <Link
+                to="https://github.com/ilianrusev/GitNoir/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={LANDING_DESKTOP_ICON_BUTTON_CLASS}
+                title="View on GitHub"
+                data-testid="landing-desktop-github"
+              >
+                <GitHubIcon className="w-5 h-5" />
+              </Link>
+
+              <div className="relative" ref={desktopSupportRef}>
+                <button
+                  type="button"
+                  className={LANDING_DESKTOP_ICON_BUTTON_CLASS}
+                  title="Support the project"
+                  data-testid="landing-desktop-support"
+                  onClick={() => setDesktopSupportOpen((previous) => !previous)}
+                >
+                  <HandHeart className="w-5 h-5 text-[#ffdd00]" />
+                </button>
+
+                {desktopSupportOpen && (
+                  <div className="absolute right-0 mt-2 w-52 bg-(--background) border border-(--border) z-50">
+                    <Link
+                      to="https://buymeacoffee.com/ilianrusev"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-3 text-sm font-mono text-[#ffdd00] hover:bg-(--background-paper)"
+                    >
+                      <CoffeeIcon className="w-4 h-4" />
+                      Buy Me a Coffee
+                    </Link>
+                    <Link
+                      to="https://revolut.me/iliyanecoe"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-3 text-sm font-mono text-(--foreground-muted) hover:bg-(--background-paper)"
+                    >
+                      <RevolutIcon className="w-4 h-4" />
+                      Revolut
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {showLandingProfileIcon && (
+            <Link
+              to="/login"
+              className={LANDING_DESKTOP_ICON_BUTTON_CLASS}
+              title="Login"
+              aria-label="Login"
+              data-testid="landing-profile"
+            >
+              <User className="w-5 h-5" />
+            </Link>
+          )}
+
           {showReputation ? (
             <div
               className="flex items-center gap-2 py-1.5 px-3 bg-(--background-paper) border border-(--border)"
@@ -230,7 +324,7 @@ export default function Header({ variant = "default", reputation }) {
           <div className="md:max-w-7xl md:mx-auto md:px-4 lg:px-6">
             <div ref={menuPanelRef} className={MENU_PANEL_CLASS}>
               <div className="px-4 py-6 space-y-4">
-                {isLandingVariant ? renderLandingMenu() : renderDefaultMenu()}
+                {renderMenu(isLandingVariant)}
               </div>
             </div>
           </div>

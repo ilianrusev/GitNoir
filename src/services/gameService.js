@@ -1,7 +1,7 @@
 // Mock data service - handles all game data locally without backend
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
-import { getCurrentUser, saveUser } from "./authService";
+import { getCurrentUser, isGuestUser, saveUser } from "./authService";
 import {
   getTierPosition,
   getTierUnlockCounts,
@@ -280,6 +280,7 @@ const fetchLeaderboardFromUsersTable = async () => {
 
 const updateLeaderboardCacheFromUser = (user) => {
   const normalizedUser = normalizeReputation(user);
+  if (isGuestUser(normalizedUser)) return;
   if (!normalizedUser?.id) return;
 
   const cached =

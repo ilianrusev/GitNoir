@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
+import { isGuestUser } from "../../services/authService";
 
 export default function LandingHeroSection({ user }) {
+  const isLoggedIn = Boolean(user) && !isGuestUser(user);
+
   return (
     <section className="hero-section">
       <div
@@ -26,7 +29,7 @@ export default function LandingHeroSection({ user }) {
           adventure.
         </p>
         <div className="flex flex-wrap gap-4">
-          <Link to="/register">
+          <Link to="/dashboard">
             <Button
               className="btn-primary text-base px-8 py-4"
               data-testid="hero-start-btn"
@@ -34,7 +37,19 @@ export default function LandingHeroSection({ user }) {
               Start Investigation
             </Button>
           </Link>
-          {user && (
+
+          {!isLoggedIn && (
+            <Link to="/register">
+              <Button
+                className="btn-outline text-base px-8 py-4"
+                data-testid="hero-register-btn"
+              >
+                Create Your Detective Badge
+              </Button>
+            </Link>
+          )}
+
+          {isLoggedIn && (
             <Link to="/leaderboard">
               <Button
                 className="btn-outline text-base px-8 py-4"

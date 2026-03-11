@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ProtectedRoute, PublicRoute } from "./RouteGuards";
+import { ProtectedRoute } from "./RouteGuards";
 import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
@@ -12,39 +12,11 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <LoginPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PublicRoute>
-            <RegisterPage />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/cases" element={<Navigate to="/dashboard" replace />} />
-      <Route
-        path="/game/:caseId"
-        element={
-          <ProtectedRoute>
-            <GamePage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/game/:caseId" element={<GamePage />} />
       <Route
         path="/leaderboard"
         element={
@@ -53,14 +25,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/cheatsheet"
-        element={
-          <ProtectedRoute>
-            <CheatSheetPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/cheatsheet" element={<CheatSheetPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

@@ -131,7 +131,7 @@ export default function LandingNavigation({
               >
                 <User className="w-5 h-5" />
               </Link>
-              <Link to="/register">
+              <Link to="/dashboard">
                 <Button className="btn-primary" data-testid="nav-register-btn">
                   Start Investigation
                 </Button>
