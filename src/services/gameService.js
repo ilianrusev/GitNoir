@@ -212,7 +212,7 @@ const normalizeLeaderboard = (entries = []) => {
     }))
     .filter((entry) => entry.reputation > 0)
     .sort((a, b) => b.reputation - a.reputation)
-    .slice(0, 10);
+    .slice(0, 20);
 
   return sorted.map((entry, index) => ({
     ...entry,
