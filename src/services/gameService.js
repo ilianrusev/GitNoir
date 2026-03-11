@@ -254,7 +254,7 @@ const fetchLeaderboardFromUsersTable = async () => {
   const leaderboardQuery = query(
     usersRef,
     orderBy("reputation", "desc"),
-    limit(10),
+    limit(20),
   );
   const snapshot = await getDocs(leaderboardQuery);
 
