@@ -54,6 +54,77 @@ function normalizeFileName(filePath) {
   return path.basename(filePath).trim().toLocaleLowerCase();
 }
 
+function normalizeOutputLines(value) {
+  if (typeof value === "string") {
+    return value === "" ? [] : [value];
+  }
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  return [];
+}
+
+function validateTerminalOutputRules(parsed) {
+  const issues = [];
+
+  parsed.steps.forEach((step, index) => {
+    const stepPath = `/steps/${index}`;
+    const expectedCommands = Array.isArray(step.expected_commands)
+      ? step.expected_commands
+      : [];
+
+    const hasTerminalOutput = Object.hasOwn(step, "terminal_output");
+    const hasOutputByCommand = Object.hasOwn(step, "terminal_output_by_command");
+
+    if (hasTerminalOutput) {
+      issues.push(
+        `${stepPath} uses deprecated terminal_output; use terminal_output_by_command only`,
+      );
+    }
+
+    if (!hasOutputByCommand) {
+      return;
+    }
+
+    const map = step.terminal_output_by_command;
+    const expectedSet = new Set(expectedCommands);
+    const mapKeys = Object.keys(map || {});
+
+    if (expectedCommands.length === 0) {
+      issues.push(`${stepPath} has terminal_output_by_command but no expected_commands`);
+    }
+
+    for (const command of expectedCommands) {
+      if (!Object.hasOwn(map, command)) {
+        issues.push(
+          `${stepPath}/terminal_output_by_command is missing key for expected command: ${command}`,
+        );
+      }
+    }
+
+    for (const key of mapKeys) {
+      if (!expectedSet.has(key)) {
+        issues.push(
+          `${stepPath}/terminal_output_by_command has key not present in expected_commands: ${key}`,
+        );
+      }
+
+      const lines = normalizeOutputLines(map[key]);
+      lines.forEach((line, lineIndex) => {
+        if (typeof line !== "string") {
+          issues.push(
+            `${stepPath}/terminal_output_by_command/${key}/${lineIndex} must be a string`,
+          );
+        }
+      });
+    }
+  });
+
+  return issues;
+}
+
 async function main() {
   const stepSchemaPath = path.join(schemasDir, "step.schema.json");
   const caseSchemaPath = path.join(schemasDir, "case.schema.json");
@@ -116,6 +187,18 @@ async function main() {
       );
       console.error(`  - total_points: ${parsed.total_points}`);
       console.error(`  - sum of steps[].points: ${stepsPointsTotal}`);
+      continue;
+    }
+
+    const terminalOutputIssues = validateTerminalOutputRules(parsed);
+    if (terminalOutputIssues.length > 0) {
+      hasFailures = true;
+      console.error(
+        `\n✖ ${toRelative(filePath)} has invalid terminal output definitions`,
+      );
+      for (const issue of terminalOutputIssues) {
+        console.error(`  - ${issue}`);
+      }
       continue;
     }
 

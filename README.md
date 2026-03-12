@@ -138,7 +138,36 @@ Follow these steps to add a case that works with the current data structure and 
 	 - `created_at` is optional, but when present (`YYYY-MM-DD`), recent cases get a `NEW` badge in the UI
 	 - `story_intro` should be engaging, clear, and fit the detective-noir tone of the game
 	 - each step needs: `instruction`, `narrative`, `expected_commands`, `hint`, `points`
+	 - optional terminal output field:
+		 - `terminal_output_by_command` keyed by exact command in `expected_commands`
+	 - terminal output should be console-like only (realistic Git/shell output), not narrative prose
 	 - unlocking is progression-based (not stored per case)
+
+### Terminal output authoring
+
+Use `terminal_output_by_command` as the single output format. Even if a step has one expected command, keep output under that command key.
+
+```json
+{
+	"expected_commands": [
+		"git status",
+		"git status --short"
+	],
+	"terminal_output_by_command": {
+		"git status": [
+			"On branch main",
+			"nothing to commit, working tree clean"
+		],
+		"git status --short": []
+	}
+}
+```
+
+Validation rules enforced by `npm run validate:cases`:
+
+- If `terminal_output_by_command` is present, every command in `expected_commands` must have a matching key.
+- `terminal_output_by_command` must not contain keys that are not listed in `expected_commands`.
+- `terminal_output` is deprecated and rejected by validation.
 
 5. Validate before committing:
 

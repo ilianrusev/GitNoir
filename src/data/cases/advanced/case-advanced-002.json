@@ -23,6 +23,16 @@
         "git bisect bad",
         "git bisect bad HEAD"
       ],
+      "terminal_output_by_command": {
+        "git bisect bad": [
+          "Bisecting: 49 revisions left to test after this (roughly 6 steps)",
+          "[9f73a10] checkpoint 50"
+        ],
+        "git bisect bad HEAD": [
+          "Bisecting: 49 revisions left to test after this (roughly 6 steps)",
+          "[9f73a10] checkpoint 50"
+        ]
+      },
       "hint": "Mark current commit as buggy",
       "points": 35
     },
@@ -42,6 +52,16 @@
         "git bisect good",
         "git bisect good HEAD"
       ],
+      "terminal_output_by_command": {
+        "git bisect good": [
+          "Bisecting: 24 revisions left to test after this (roughly 5 steps)",
+          "[5a217c3] checkpoint 75"
+        ],
+        "git bisect good HEAD": [
+          "Bisecting: 24 revisions left to test after this (roughly 5 steps)",
+          "[5a217c3] checkpoint 75"
+        ]
+      },
       "hint": "Mark tested commit as good",
       "points": 40
     },
@@ -52,6 +72,16 @@
         "git bisect reset",
         "git bisect reset HEAD"
       ],
+      "terminal_output_by_command": {
+        "git bisect reset": [
+          "Previous HEAD position was 5a217c3 checkpoint 75",
+          "Switched to branch 'main'"
+        ],
+        "git bisect reset HEAD": [
+          "Previous HEAD position was 5a217c3 checkpoint 75",
+          "Switched to branch 'main'"
+        ]
+      },
       "hint": "End the bisect session",
       "points": 50
     }

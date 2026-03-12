@@ -16,36 +16,98 @@
         "git log --all",
         "git log --all --oneline"
       ],
+      "terminal_output_by_command": {
+        "git log": [
+          "commit a7c9d12 (HEAD -> main)",
+          "Author: Detective <detective@gitnoir.local>",
+          "Date: Tue Mar 12 23:10:00 2026 +0000",
+          "",
+          "    Initial evidence snapshot",
+          "",
+          "commit 54be901",
+          "Author: Unknown <unknown@shadow.net>",
+          "Date: Tue Mar 12 21:02:00 2026 +0000",
+          "",
+          "    Redacted system adjustment"
+        ],
+        "git log --oneline": [
+          "a7c9d12 Initial evidence snapshot",
+          "54be901 Redacted system adjustment",
+          "0ddf8aa Intake report"
+        ],
+        "git log --all": [
+          "commit a7c9d12 (HEAD -> main)",
+          "Author: Detective <detective@gitnoir.local>",
+          "Date: Tue Mar 12 23:10:00 2026 +0000",
+          "",
+          "    Initial evidence snapshot",
+          "",
+          "commit c31f114 (old-suspect)",
+          "Author: Unknown <unknown@shadow.net>",
+          "Date: Tue Mar 12 20:40:00 2026 +0000",
+          "",
+          "    Activity moved off main timeline"
+        ],
+        "git log --all --oneline": [
+          "a7c9d12 (HEAD -> main) Initial evidence snapshot",
+          "c31f114 (old-suspect) Activity moved off main timeline",
+          "54be901 Redacted system adjustment",
+          "0ddf8aa Intake report"
+        ]
+      },
       "hint": "Use the command to view commit history",
       "points": 20
     },
     {
       "instruction": "Something looks wrong. Check the status of the working directory.",
       "narrative": "The logs revealed a gap - commits that should exist were nowhere to be seen. I needed to check the current state of affairs.",
-      "expected_commands": [
-        "git status"
-      ],
+      "expected_commands": ["git status"],
+      "terminal_output_by_command": {
+        "git status": [
+          "On branch main",
+          "Changes not staged for commit:",
+          "  modified:   case-notes.md",
+          "",
+          "no changes added to commit"
+        ]
+      },
       "hint": "Check the current state of your repository",
       "points": 20
     },
     {
       "instruction": "Let's see what changes were made but not yet staged.",
       "narrative": "Clues were scattered everywhere. Unstaged changes might hold the key to this mystery.",
-      "expected_commands": [
-        "git diff",
-        "git diff HEAD"
-      ],
+      "expected_commands": ["git diff", "git diff HEAD"],
+      "terminal_output_by_command": {
+        "git diff": [
+          "diff --git a/case-notes.md b/case-notes.md",
+          "index c0ffee1..faded42 100644",
+          "--- a/case-notes.md",
+          "+++ b/case-notes.md",
+          "@@ -1,2 +1,3 @@",
+          "+Recovered missing timeline entry"
+        ],
+        "git diff HEAD": [
+          "diff --git a/case-notes.md b/case-notes.md",
+          "index c0ffee1..faded42 100644",
+          "--- a/case-notes.md",
+          "+++ b/case-notes.md",
+          "@@ -1,2 +1,3 @@",
+          "+Recovered missing timeline entry"
+        ]
+      },
       "hint": "Show changes between commits, commit and working tree",
       "points": 20
     },
     {
       "instruction": "Stage all the evidence - add all changes to the staging area.",
       "narrative": "I gathered all the evidence carefully. Every piece matters in solving this case.",
-      "expected_commands": [
-        "git add .",
-        "git add -A",
-        "git add --all"
-      ],
+      "expected_commands": ["git add .", "git add -A", "git add --all"],
+      "terminal_output_by_command": {
+        "git add .": [],
+        "git add -A": [],
+        "git add --all": []
+      },
       "hint": "Stage all changes for commit",
       "points": 20
     },
@@ -56,6 +118,16 @@
         "git commit -m \"Case solved\"",
         "git commit -m 'Case solved'"
       ],
+      "terminal_output_by_command": {
+        "git commit -m \"Case solved\"": [
+          "[main 3b7e4f1] Case solved",
+          " 1 file changed, 1 insertion(+)"
+        ],
+        "git commit -m 'Case solved'": [
+          "[main 3b7e4f1] Case solved",
+          " 1 file changed, 1 insertion(+)"
+        ]
+      },
       "hint": "Commit your staged changes with a message",
       "points": 20
     }

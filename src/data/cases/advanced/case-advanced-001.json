@@ -18,6 +18,46 @@
         "git log --all --decorate --oneline",
         "git log --all --oneline --decorate"
       ],
+      "terminal_output_by_command": {
+        "git reflog": [
+          "8b31aa2 HEAD@{0}: rebase (finish): returning to refs/heads/main",
+          "44d7e19 HEAD@{1}: rebase (pick): align witness timeline",
+          "2af884c HEAD@{2}: commit: sanitize report"
+        ],
+        "git log --all": [
+          "commit 8b31aa2 (HEAD -> main)",
+          "Author: Analyst <analyst@agency.local>",
+          "Date: Tue Mar 12 21:33:00 2026 +0000",
+          "",
+          "    reconcile timeline",
+          "",
+          "commit 44d7e19 (feature/rewrite)",
+          "Author: Analyst <analyst@agency.local>",
+          "Date: Tue Mar 12 20:57:00 2026 +0000",
+          "",
+          "    align witness timeline"
+        ],
+        "git log --oneline --all": [
+          "8b31aa2 reconcile timeline",
+          "44d7e19 align witness timeline",
+          "2af884c sanitize report"
+        ],
+        "git log --all --oneline": [
+          "8b31aa2 reconcile timeline",
+          "44d7e19 align witness timeline",
+          "2af884c sanitize report"
+        ],
+        "git log --all --decorate --oneline": [
+          "8b31aa2 (HEAD -> main) reconcile timeline",
+          "44d7e19 (feature/rewrite) align witness timeline",
+          "2af884c sanitize report"
+        ],
+        "git log --all --oneline --decorate": [
+          "8b31aa2 (HEAD -> main) reconcile timeline",
+          "44d7e19 (feature/rewrite) align witness timeline",
+          "2af884c sanitize report"
+        ]
+      },
       "hint": "Show reference logs or all commits",
       "points": 35
     },
@@ -30,6 +70,20 @@
         "git rebase -i HEAD^^^",
         "git rebase --interactive HEAD^^^"
       ],
+      "terminal_output_by_command": {
+        "git rebase -i HEAD~3": [
+          "Successfully rebased and updated refs/heads/main."
+        ],
+        "git rebase --interactive HEAD~3": [
+          "Successfully rebased and updated refs/heads/main."
+        ],
+        "git rebase -i HEAD^^^": [
+          "Successfully rebased and updated refs/heads/main."
+        ],
+        "git rebase --interactive HEAD^^^": [
+          "Successfully rebased and updated refs/heads/main."
+        ]
+      },
       "hint": "Start interactive rebase for last 3 commits",
       "points": 40
     },
@@ -37,6 +91,17 @@
       "instruction": "Stash your current changes before the operation.",
       "narrative": "Before going deeper, I needed to secure my current findings.",
       "expected_commands": ["git stash", "git stash push", "git stash save"],
+      "terminal_output_by_command": {
+        "git stash": [
+          "Saved working directory and index state WIP on main: 8b31aa2 reconcile timeline"
+        ],
+        "git stash push": [
+          "Saved working directory and index state WIP on main: 8b31aa2 reconcile timeline"
+        ],
+        "git stash save": [
+          "Saved working directory and index state WIP on main: 8b31aa2 reconcile timeline"
+        ]
+      },
       "hint": "Temporarily store modified tracked files",
       "points": 40
     },
@@ -49,6 +114,30 @@
         "git stash pop stash@{0}",
         "git stash apply stash@{0}"
       ],
+      "terminal_output_by_command": {
+        "git stash pop": [
+          "On branch main",
+          "Changes not staged for commit:",
+          "  modified:   report.md",
+          "Dropped refs/stash@{0}"
+        ],
+        "git stash apply": [
+          "On branch main",
+          "Changes not staged for commit:",
+          "  modified:   report.md"
+        ],
+        "git stash pop stash@{0}": [
+          "On branch main",
+          "Changes not staged for commit:",
+          "  modified:   report.md",
+          "Dropped stash@{0}"
+        ],
+        "git stash apply stash@{0}": [
+          "On branch main",
+          "Changes not staged for commit:",
+          "  modified:   report.md"
+        ]
+      },
       "hint": "Restore stashed changes",
       "points": 40
     },
@@ -60,6 +149,11 @@
         "git reset --soft HEAD~",
         "git reset --soft HEAD^"
       ],
+      "terminal_output_by_command": {
+        "git reset --soft HEAD~1": [],
+        "git reset --soft HEAD~": [],
+        "git reset --soft HEAD^": []
+      },
       "hint": "Reset to previous commit, keep changes staged",
       "points": 45
     }

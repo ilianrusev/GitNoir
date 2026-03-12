@@ -14,6 +14,16 @@
         "git submodule add https://github.com/syndicate/tools.git tools",
         "git submodule add --name tools https://github.com/syndicate/tools.git tools"
       ],
+      "terminal_output_by_command": {
+        "git submodule add https://github.com/syndicate/tools.git tools": [
+          "Cloning into '/repo/tools'...",
+          "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'"
+        ],
+        "git submodule add --name tools https://github.com/syndicate/tools.git tools": [
+          "Cloning into '/repo/tools'...",
+          "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'"
+        ]
+      },
       "hint": "Add a repository as a submodule",
       "points": 45
     },
@@ -24,6 +34,14 @@
         "git submodule init",
         "git submodule update --init"
       ],
+      "terminal_output_by_command": {
+        "git submodule init": [
+          "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'"
+        ],
+        "git submodule update --init": [
+          "Submodule path 'tools': checked out '6f1a2b3'"
+        ]
+      },
       "hint": "Initialize submodules",
       "points": 40
     },
@@ -36,6 +54,20 @@
         "git submodule update --init --recursive",
         "git submodule update --remote --recursive"
       ],
+      "terminal_output_by_command": {
+        "git submodule update": [
+          "Submodule path 'tools': checked out '6f1a2b3'"
+        ],
+        "git submodule update --remote": [
+          "Submodule path 'tools': checked out '9c7d4a1'"
+        ],
+        "git submodule update --init --recursive": [
+          "Submodule path 'tools': checked out '6f1a2b3'"
+        ],
+        "git submodule update --remote --recursive": [
+          "Submodule path 'tools': checked out '9c7d4a1'"
+        ]
+      },
       "hint": "Update submodule contents",
       "points": 45
     },
@@ -47,6 +79,23 @@
         "git clone --recursive https://github.com/case/main.git",
         "git clone https://github.com/case/main.git --recurse-submodules"
       ],
+      "terminal_output_by_command": {
+        "git clone --recurse-submodules https://github.com/case/main.git": [
+          "Cloning into 'main'...",
+          "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'",
+          "Submodule path 'tools': checked out '9c7d4a1'"
+        ],
+        "git clone --recursive https://github.com/case/main.git": [
+          "Cloning into 'main'...",
+          "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'",
+          "Submodule path 'tools': checked out '9c7d4a1'"
+        ],
+        "git clone https://github.com/case/main.git --recurse-submodules": [
+          "Cloning into 'main'...",
+          "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'",
+          "Submodule path 'tools': checked out '9c7d4a1'"
+        ]
+      },
       "hint": "Clone with all submodules",
       "points": 45
     },
@@ -57,6 +106,15 @@
         "git submodule status",
         "git submodule summary"
       ],
+      "terminal_output_by_command": {
+        "git submodule status": [
+          " 9c7d4a1f0e2a7c4d3b9f8a1c2d4e6f7a8b9c0d1 tools (heads/main)"
+        ],
+        "git submodule summary": [
+          "* tools 6f1a2b3...9c7d4a1 (1):",
+          "  > update shared tooling"
+        ]
+      },
       "hint": "Show submodule status",
       "points": 45
     }

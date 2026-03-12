@@ -10,11 +10,32 @@
     {
       "instruction": "List all the branches in this investigation.",
       "narrative": "First rule of detective work - know all your leads. I needed to see every branch of this tangled case.",
-      "expected_commands": [
-        "git branch",
-        "git branch -a",
-        "git branch --list"
-      ],
+      "expected_commands": ["git branch", "git branch -a", "git branch --list"],
+      "terminal_output_by_command": {
+        "git branch": [
+          "* main",
+          "  old-suspect",
+          "  witness-statement",
+          "  evidence-locker",
+          ""
+        ],
+        "git branch -a": [
+          "* main",
+          "  old-suspect",
+          "  witness-statement",
+          "  evidence-locker",
+          "  remotes/origin/main",
+          "  remotes/origin/old-suspect",
+          ""
+        ],
+        "git branch --list": [
+          "* main",
+          "  old-suspect",
+          "  witness-statement",
+          "  evidence-locker",
+          ""
+        ]
+      },
       "hint": "List all branches in the repository",
       "points": 20
     },
@@ -26,6 +47,15 @@
         "git checkout -b investigation",
         "git switch -c investigation"
       ],
+      "terminal_output_by_command": {
+        "git branch investigation": [],
+        "git checkout -b investigation": [
+          "Switched to a new branch 'investigation'"
+        ],
+        "git switch -c investigation": [
+          "Switched to a new branch 'investigation'"
+        ]
+      },
       "hint": "Create a new branch for your investigation",
       "points": 25
     },
@@ -36,6 +66,10 @@
         "git checkout investigation",
         "git switch investigation"
       ],
+      "terminal_output_by_command": {
+        "git checkout investigation": ["Switched to branch 'investigation'"],
+        "git switch investigation": ["Switched to branch 'investigation'"]
+      },
       "hint": "Switch to the investigation branch",
       "points": 25
     },
@@ -47,6 +81,15 @@
         "git status",
         "git branch --show-current"
       ],
+      "terminal_output_by_command": {
+        "git branch": ["  main", "* investigation", "  old-suspect", ""],
+        "git status": [
+          "On branch investigation",
+          "nothing to commit, working tree clean",
+          ""
+        ],
+        "git branch --show-current": ["investigation"]
+      },
       "hint": "Show your current branch",
       "points": 25
     },
@@ -57,6 +100,10 @@
         "git branch -d old-suspect",
         "git branch -D old-suspect"
       ],
+      "terminal_output_by_command": {
+        "git branch -d old-suspect": ["Deleted branch old-suspect (was 91ab2cd)."],
+        "git branch -D old-suspect": ["Deleted branch old-suspect (was 91ab2cd)."]
+      },
       "hint": "Delete the branch that's no longer needed",
       "points": 25
     }

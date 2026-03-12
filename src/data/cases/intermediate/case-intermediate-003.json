@@ -29,6 +29,16 @@
         "git tag -m \"First case closure\" -a case-closed-v1",
         "git tag -m 'First case closure' -a case-closed-v1"
       ],
+      "terminal_output_by_command": {
+        "git tag -a case-closed-v1 -m \"First case closure\"": [],
+        "git tag -a case-closed-v1 -m 'First case closure'": [],
+        "git tag --annotate case-closed-v1 -m \"First case closure\"": [],
+        "git tag --annotate case-closed-v1 -m 'First case closure'": [],
+        "git tag -m \"First case closure\" case-closed-v1": [],
+        "git tag -m 'First case closure' case-closed-v1": [],
+        "git tag -m \"First case closure\" -a case-closed-v1": [],
+        "git tag -m 'First case closure' -a case-closed-v1": []
+      },
       "hint": "Create an annotated tag with a message",
       "points": 30
     },
@@ -40,6 +50,20 @@
         "git tag -l",
         "git tag --list"
       ],
+      "terminal_output_by_command": {
+        "git tag": [
+          "arrest-v1",
+          "case-closed-v1"
+        ],
+        "git tag -l": [
+          "arrest-v1",
+          "case-closed-v1"
+        ],
+        "git tag --list": [
+          "arrest-v1",
+          "case-closed-v1"
+        ]
+      },
       "hint": "List all tags",
       "points": 25
     },
@@ -59,6 +83,14 @@
         "git tag -d arrest-v1",
         "git tag --delete arrest-v1"
       ],
+      "terminal_output_by_command": {
+        "git tag -d arrest-v1": [
+          "Deleted tag 'arrest-v1' (was 54be901)"
+        ],
+        "git tag --delete arrest-v1": [
+          "Deleted tag 'arrest-v1' (was 54be901)"
+        ]
+      },
       "hint": "Delete a local tag",
       "points": 30
     }

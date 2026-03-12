@@ -149,6 +149,49 @@ export default function GamePage() {
     }
   };
 
+  const normalizeTerminalOutput = (terminalOutput) => {
+    if (typeof terminalOutput === "string") {
+      return terminalOutput;
+    }
+
+    if (Array.isArray(terminalOutput)) {
+      return terminalOutput.join("\n");
+    }
+
+    return "";
+  };
+
+  const resolveTerminalOutputForCommand = (stepData, userCommand) => {
+    if (!stepData) return "";
+
+    const commandKey = userCommand.trim().toLowerCase();
+    const commandOutputMap = stepData.terminal_output_by_command;
+
+    if (
+      commandOutputMap &&
+      typeof commandOutputMap === "object" &&
+      !Array.isArray(commandOutputMap)
+    ) {
+      if (Object.hasOwn(commandOutputMap, userCommand)) {
+        return normalizeTerminalOutput(commandOutputMap[userCommand]);
+      }
+
+      const matchedExpected = stepData.expected_commands.find((expected) => {
+        const normalizedExpected = expected.toLowerCase();
+        return (
+          commandKey === normalizedExpected ||
+          commandKey.startsWith(normalizedExpected)
+        );
+      });
+
+      if (matchedExpected && Object.hasOwn(commandOutputMap, matchedExpected)) {
+        return normalizeTerminalOutput(commandOutputMap[matchedExpected]);
+      }
+    }
+
+    return "";
+  };
+
   const restartCase = () => {
     setCaseCompleted(false);
     setCurrentStep(0);
@@ -171,18 +214,34 @@ export default function GamePage() {
     setHistory((prev) => [...prev, { type: "command", text: userCommand }]);
 
     try {
+      const executedStep = caseData.steps[currentStep];
       const result = validateCommand(caseId, currentStep, userCommand);
 
       if (result.is_correct) {
-        setHistory((prev) => [
-          ...prev,
-          {
+        const terminalOutput = resolveTerminalOutputForCommand(
+          executedStep,
+          userCommand,
+        );
+
+        setHistory((prev) => {
+          const nextHistory = [...prev];
+
+          if (terminalOutput) {
+            nextHistory.push({
+              type: "output",
+              text: terminalOutput,
+            });
+          }
+
+          nextHistory.push({
             type: "success",
             text: result.feedback,
             points: result.points_earned,
             isReplay: isReplay,
-          },
-        ]);
+          });
+
+          return nextHistory;
+        });
         setTotalEarned((prev) => prev + result.points_earned);
 
         if (result.case_completed) {
@@ -602,6 +661,13 @@ export default function GamePage() {
                 {item.type === "error" && (
                   <div className="pl-2 border-l-2 border-[#d00000]">
                     <p className="text-[#d00000]">{item.text}</p>
+                  </div>
+                )}
+                {item.type === "output" && (
+                  <div className="pl-2 border-l-2 border-(--border)">
+                    <pre className="text-(--foreground-muted) whitespace-pre-wrap wrap-break-word font-mono text-sm">
+                      {item.text}
+                    </pre>
                   </div>
                 )}
                 {item.type === "narrative" && (

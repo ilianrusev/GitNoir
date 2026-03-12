@@ -15,6 +15,31 @@
         "git log chaotic-investigation --oneline",
         "git log --oneline chaotic-investigation"
       ],
+      "terminal_output_by_command": {
+        "git log chaotic-investigation": [
+          "commit abc1234 (chaotic-investigation)",
+          "Author: Analyst <analyst@agency.local>",
+          "Date: Tue Mar 12 20:10:00 2026 +0000",
+          "",
+          "    Add verified witness transcript",
+          "",
+          "commit f80d991",
+          "Author: Analyst <analyst@agency.local>",
+          "Date: Tue Mar 12 19:48:00 2026 +0000",
+          "",
+          "    Temporary debug dump"
+        ],
+        "git log chaotic-investigation --oneline": [
+          "abc1234 Add verified witness transcript",
+          "f80d991 Temporary debug dump",
+          "9e0bc44 Merge branch 'scratch'"
+        ],
+        "git log --oneline chaotic-investigation": [
+          "abc1234 Add verified witness transcript",
+          "f80d991 Temporary debug dump",
+          "9e0bc44 Merge branch 'scratch'"
+        ]
+      },
       "hint": "View commits on another branch",
       "points": 30
     },
@@ -26,6 +51,17 @@
         "git switch main",
         "git checkout refs/heads/main"
       ],
+      "terminal_output_by_command": {
+        "git checkout main": [
+          "Switched to branch 'main'"
+        ],
+        "git switch main": [
+          "Switched to branch 'main'"
+        ],
+        "git checkout refs/heads/main": [
+          "Switched to branch 'main'"
+        ]
+      },
       "hint": "Switch to main branch",
       "points": 25
     },
@@ -36,6 +72,18 @@
         "git cherry-pick abc1234",
         "git cherry-pick --no-edit abc1234"
       ],
+      "terminal_output_by_command": {
+        "git cherry-pick abc1234": [
+          "[main d5a8842] Add verified witness transcript",
+          " Date: Tue Mar 12 20:10:00 2026 +0000",
+          " 1 file changed, 12 insertions(+)"
+        ],
+        "git cherry-pick --no-edit abc1234": [
+          "[main d5a8842] Add verified witness transcript",
+          " Date: Tue Mar 12 20:10:00 2026 +0000",
+          " 1 file changed, 12 insertions(+)"
+        ]
+      },
       "hint": "Apply a specific commit to current branch",
       "points": 40
     },
@@ -57,6 +105,44 @@
         "git log -n 10",
         "git log --oneline -n 10"
       ],
+      "terminal_output_by_command": {
+        "git log": [
+          "commit d5a8842 (HEAD -> main)",
+          "Author: Analyst <analyst@agency.local>",
+          "Date: Tue Mar 12 20:10:00 2026 +0000",
+          "",
+          "    Add verified witness transcript",
+          "",
+          "commit 8b471c0",
+          "Author: Detective <detective@agency.local>",
+          "Date: Tue Mar 12 18:01:00 2026 +0000",
+          "",
+          "    Baseline investigation notes"
+        ],
+        "git log --oneline": [
+          "d5a8842 Add verified witness transcript",
+          "8b471c0 Baseline investigation notes",
+          "6710f91 Initial repository setup"
+        ],
+        "git log -n 10": [
+          "commit d5a8842 (HEAD -> main)",
+          "Author: Analyst <analyst@agency.local>",
+          "Date: Tue Mar 12 20:10:00 2026 +0000",
+          "",
+          "    Add verified witness transcript",
+          "",
+          "commit 8b471c0",
+          "Author: Detective <detective@agency.local>",
+          "Date: Tue Mar 12 18:01:00 2026 +0000",
+          "",
+          "    Baseline investigation notes"
+        ],
+        "git log --oneline -n 10": [
+          "d5a8842 Add verified witness transcript",
+          "8b471c0 Baseline investigation notes",
+          "6710f91 Initial repository setup"
+        ]
+      },
       "hint": "Check commit history",
       "points": 35
     }

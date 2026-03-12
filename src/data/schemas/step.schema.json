@@ -35,6 +35,23 @@
     "points": {
       "type": "integer",
       "minimum": 1
+    },
+    "terminal_output_by_command": {
+      "description": "Optional command-specific simulated output keyed by expected command. Each value can be a string or array of output lines.",
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ]
+      }
     }
   }
 }

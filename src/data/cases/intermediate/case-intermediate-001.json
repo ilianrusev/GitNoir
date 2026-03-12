@@ -16,6 +16,20 @@
         "git checkout master",
         "git switch master"
       ],
+      "terminal_output_by_command": {
+        "git checkout main": [
+          "Switched to branch 'main'"
+        ],
+        "git switch main": [
+          "Switched to branch 'main'"
+        ],
+        "git checkout master": [
+          "Switched to branch 'master'"
+        ],
+        "git switch master": [
+          "Switched to branch 'master'"
+        ]
+      },
       "hint": "Switch to the main/master branch",
       "points": 25
     },
@@ -45,6 +59,11 @@
         "git add -A",
         "git add --all"
       ],
+      "terminal_output_by_command": {
+        "git add .": [],
+        "git add -A": [],
+        "git add --all": []
+      },
       "hint": "Stage the resolved files",
       "points": 30
     },
@@ -56,6 +75,17 @@
         "git commit -m \"Merge resolved\"",
         "git commit -m 'Merge resolved'"
       ],
+      "terminal_output_by_command": {
+        "git commit": [
+          "[main 6a82be9] Merge branch 'evidence'"
+        ],
+        "git commit -m \"Merge resolved\"": [
+          "[main 6a82be9] Merge resolved"
+        ],
+        "git commit -m 'Merge resolved'": [
+          "[main 6a82be9] Merge resolved"
+        ]
+      },
       "hint": "Commit to complete the merge",
       "points": 35
     }

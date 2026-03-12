@@ -15,6 +15,24 @@
         "git clone 'https://github.com/agency/evidence.git'",
         "git clone \"https://github.com/agency/evidence.git\""
       ],
+      "terminal_output_by_command": {
+        "git clone https://github.com/agency/evidence.git": [
+          "Cloning into 'evidence'...",
+          "remote: Counting objects: 42, done.",
+          "remote: Compressing objects: 100% (21/21), done.",
+          "Receiving objects: 100% (42/42), 8.54 KiB | 8.54 MiB/s, done."
+        ],
+        "git clone 'https://github.com/agency/evidence.git'": [
+          "Cloning into 'evidence'...",
+          "remote: Enumerating objects: 42, done.",
+          "Receiving objects: 100% (42/42), done."
+        ],
+        "git clone \"https://github.com/agency/evidence.git\"": [
+          "Cloning into 'evidence'...",
+          "remote: Enumerating objects: 42, done.",
+          "Receiving objects: 100% (42/42), done."
+        ]
+      },
       "hint": "Create a copy of a remote repository",
       "points": 25
     },
@@ -34,6 +52,15 @@
         "git remote -v",
         "git remote"
       ],
+      "terminal_output_by_command": {
+        "git remote -v": [
+          "origin  https://github.com/agency/evidence.git (fetch)",
+          "origin  https://github.com/agency/evidence.git (push)"
+        ],
+        "git remote": [
+          "origin"
+        ]
+      },
       "hint": "View remote repository connections",
       "points": 20
     },
@@ -45,6 +72,25 @@
         "ls -la",
         "dir"
       ],
+      "terminal_output_by_command": {
+        "ls": [
+          "README.md",
+          "case-notes.txt",
+          "suspects/",
+          "timeline/"
+        ],
+        "ls -la": [
+          "total 32",
+          "drwxr-xr-x  8 detective  staff   256 Mar 12 23:12 .",
+          "drwxr-xr-x  4 detective  staff   128 Mar 12 23:12 ..",
+          "drwxr-xr-x  8 detective  staff   256 Mar 12 23:12 .git",
+          "-rw-r--r--  1 detective  staff   512 Mar 12 23:12 README.md",
+          "-rw-r--r--  1 detective  staff   224 Mar 12 23:12 case-notes.txt"
+        ],
+        "dir": [
+          "README.md  case-notes.txt  suspects  timeline"
+        ]
+      },
       "hint": "List directory contents",
       "points": 20
     },
@@ -55,6 +101,26 @@
         "git log",
         "git log --oneline"
       ],
+      "terminal_output_by_command": {
+        "git log": [
+          "commit b19a2ff (HEAD -> main)",
+          "Author: Agent Gray <gray@agency.local>",
+          "Date: Tue Mar 12 18:04:00 2026 +0000",
+          "",
+          "    Archive security updates",
+          "",
+          "commit 7a31e90",
+          "Author: Agent Gray <gray@agency.local>",
+          "Date: Tue Mar 12 15:22:00 2026 +0000",
+          "",
+          "    Add suspect timeline files"
+        ],
+        "git log --oneline": [
+          "b19a2ff Archive security updates",
+          "7a31e90 Add suspect timeline files",
+          "4e0c1b2 Initial evidence import"
+        ]
+      },
       "hint": "Show commit history",
       "points": 20
     }
