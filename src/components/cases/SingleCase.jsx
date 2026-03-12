@@ -3,7 +3,7 @@ import { Lock, Play } from "lucide-react";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 
-const NEW_CASE_WINDOW_DAYS = 14;
+const NEW_CASE_WINDOW_DAYS = 3;
 
 function parseCaseDate(dateValue) {
   if (!dateValue) return null;
