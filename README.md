@@ -104,7 +104,7 @@ Follow these steps to add a case that works with the current data structure and 
 
 ```json
 {
-	"id": "case-021",
+	"id": "beginner-case-021",
 	"title": "THE BRANCH ALIBI",
 	"description": "A suspect branch disappeared after a rushed investigation.",
 	"difficulty": "Beginner",
@@ -116,6 +116,12 @@ Follow these steps to add a case that works with the current data structure and 
 			"instruction": "Check all local branches.",
 			"narrative": "I needed to see every lead before making a move.",
 			"expected_commands": ["git branch"],
+			"terminal_output_by_command": {
+				"git branch": [
+					"* main",
+					"  feature/alibi"
+				]
+			},
 			"hint": "List branches",
 			"points": 50
 		},
@@ -123,6 +129,14 @@ Follow these steps to add a case that works with the current data structure and 
 			"instruction": "Switch to the suspect branch.",
 			"narrative": "Time to chase the main lead.",
 			"expected_commands": ["git switch feature/alibi", "git checkout feature/alibi"],
+			"terminal_output_by_command": {
+				"git switch feature/alibi": [
+					"Switched to branch 'feature/alibi'"
+				],
+				"git checkout feature/alibi": [
+					"Switched to branch 'feature/alibi'"
+				]
+			},
 			"hint": "Move to the branch",
 			"points": 50
 		}
@@ -131,7 +145,7 @@ Follow these steps to add a case that works with the current data structure and 
 ```
 
 4. Keep values valid:
-	 - `id` must match `case-###` (example: `case-021`)
+	 - `id` must match `<difficulty>-case-###` (example: `beginner-case-021`)
 	 - `difficulty` must be exactly `Beginner`, `Intermediate`, or `Advanced`
 	 - `total_points` must be at least `1`
 	 - `total_points` must exactly equal the sum of all `steps[].points`
