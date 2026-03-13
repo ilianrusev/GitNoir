@@ -1,5 +1,12 @@
 // Mock data service - handles all game data locally without backend
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { getCurrentUser, isGuestUser, saveUser } from "./authService";
 import {
@@ -25,6 +32,7 @@ const STORAGE_KEYS = {
 
 const LEADERBOARD_CACHE_TTL_MS = 5 * 60 * 1000;
 const USERS_COLLECTION = "users";
+const LEADERBOARD_PAGE_SIZE = 20;
 
 const leaderboardMemoryCache = {
   data: null,
@@ -276,6 +284,47 @@ const fetchLeaderboardFromUsersTable = async () => {
   });
 
   return normalizeLeaderboard(entries);
+};
+
+export const getLeaderboardPage = async ({
+  pageSize = LEADERBOARD_PAGE_SIZE,
+  cursor = null,
+} = {}) => {
+  const usersRef = collection(db, USERS_COLLECTION);
+  const constraints = [orderBy("reputation", "desc"), limit(pageSize + 1)];
+
+  if (cursor) {
+    constraints.push(startAfter(cursor));
+  }
+
+  const leaderboardQuery = query(usersRef, ...constraints);
+  const snapshot = await getDocs(leaderboardQuery);
+  const docs = snapshot.docs;
+  const pageDocs = docs.slice(0, pageSize);
+  const hasMore = docs.length > pageSize;
+
+  const entries = pageDocs.map((userDoc) => {
+    const userData = userDoc.data();
+    const email = userData.email || "";
+    const fallbackName = email.includes("@")
+      ? email.split("@")[0]
+      : "Detective";
+
+    return {
+      user_id: userDoc.id,
+      username: userData.display_name || fallbackName,
+      reputation: Number(userData.reputation ?? 0),
+      cases_solved: Array.isArray(userData.completed_cases)
+        ? userData.completed_cases.length
+        : 0,
+    };
+  });
+
+  return {
+    entries,
+    nextCursor: hasMore && pageDocs.length > 0 ? pageDocs[pageDocs.length - 1] : null,
+    hasMore,
+  };
 };
 
 const updateLeaderboardCacheFromUser = (user) => {
