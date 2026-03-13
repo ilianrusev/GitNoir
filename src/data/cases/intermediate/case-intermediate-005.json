@@ -4,7 +4,7 @@
   "description": "Track down who wrote each line of code. Someone introduced a bug - find them.",
   "difficulty": "Intermediate",
   "total_points": 150,
-  "created_at": "2026-03-03",
+  "created_at": "2026-03-13",
   "story_intro": "The system crashed. Millions lost. 'WHO DID THIS?' the chief demanded.\n\nSomewhere in that file, someone wrote a bad line of code. Git remembers everything - every line, every author, every timestamp.\n\nTime to play the blame game.",
   "steps": [
     {
