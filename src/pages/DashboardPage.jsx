@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getCases, getUserProgress } from "../services/gameService";
+import { isGuestUser } from "../services/authService";
 import { isCaseUnlocked } from "../services/caseStatusService";
 import { Filter } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -29,6 +30,7 @@ export default function DashboardPage() {
   const [cases, setCases] = useState([]);
   const [progress, setProgress] = useState(null);
   const [filter, setFilter] = useState("all");
+  const shouldShowLeaderboardDisclaimer = !user || isGuestUser(user);
 
   useEffect(() => {
     loadData();
@@ -93,6 +95,14 @@ export default function DashboardPage() {
           }
           description="Your reputation speaks for itself. What case will you crack today?"
         />
+
+        {shouldShowLeaderboardDisclaimer && (
+          <div className="mb-6 border-l-2 border-(--primary) pl-3 py-1">
+            <p className="font-mono text-[11px] text-(--foreground-muted)">
+              Global Leaderboard page is available only for logged-in users.
+            </p>
+          </div>
+        )}
 
         {/* Stats Grid */}
         <DashboardStats
