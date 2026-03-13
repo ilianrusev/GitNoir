@@ -6,6 +6,7 @@ import {
   orderBy,
   query,
   startAfter,
+  where,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { getCurrentUser, isGuestUser, saveUser } from "./authService";
@@ -291,7 +292,11 @@ export const getLeaderboardPage = async ({
   cursor = null,
 } = {}) => {
   const usersRef = collection(db, USERS_COLLECTION);
-  const constraints = [orderBy("reputation", "desc"), limit(pageSize + 1)];
+  const constraints = [
+    where("reputation", ">", 0),
+    orderBy("reputation", "desc"),
+    limit(pageSize + 1),
+  ];
 
   if (cursor) {
     constraints.push(startAfter(cursor));
