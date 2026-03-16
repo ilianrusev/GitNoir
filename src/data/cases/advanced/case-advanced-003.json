@@ -72,26 +72,26 @@
       "points": 45
     },
     {
-      "instruction": "Clone a repository and all its submodules in one command.",
+      "instruction": "Clone 'https://github.com/syndicate/headquarters.git' and all its submodules in one command.",
       "narrative": "Get everything at once - the parent and all children.",
       "expected_commands": [
-        "git clone --recurse-submodules https://github.com/case/main.git",
-        "git clone --recursive https://github.com/case/main.git",
-        "git clone https://github.com/case/main.git --recurse-submodules"
+        "git clone --recurse-submodules https://github.com/syndicate/headquarters.git",
+        "git clone --recursive https://github.com/syndicate/headquarters.git",
+        "git clone https://github.com/syndicate/headquarters.git --recurse-submodules"
       ],
       "terminal_output_by_command": {
-        "git clone --recurse-submodules https://github.com/case/main.git": [
-          "Cloning into 'main'...",
+        "git clone --recurse-submodules https://github.com/syndicate/headquarters.git": [
+          "Cloning into 'headquarters'...",
           "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'",
           "Submodule path 'tools': checked out '9c7d4a1'"
         ],
-        "git clone --recursive https://github.com/case/main.git": [
-          "Cloning into 'main'...",
+        "git clone --recursive https://github.com/syndicate/headquarters.git": [
+          "Cloning into 'headquarters'...",
           "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'",
           "Submodule path 'tools': checked out '9c7d4a1'"
         ],
-        "git clone https://github.com/case/main.git --recurse-submodules": [
-          "Cloning into 'main'...",
+        "git clone https://github.com/syndicate/headquarters.git --recurse-submodules": [
+          "Cloning into 'headquarters'...",
           "Submodule 'tools' (https://github.com/syndicate/tools.git) registered for path 'tools'",
           "Submodule path 'tools': checked out '9c7d4a1'"
         ]
