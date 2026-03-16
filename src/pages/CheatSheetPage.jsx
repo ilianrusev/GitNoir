@@ -199,6 +199,44 @@ const sections = [
       },
     ],
   },
+  {
+    title: "SUBMODULES",
+    description: "Managing repositories within repositories",
+    commands: [
+      {
+        cmd: "git submodule add [url] [path]",
+        desc: "add a repository as a submodule at the specified path",
+      },
+      {
+        cmd: "git submodule init",
+        desc: "initialize all submodules recorded in the index",
+      },
+      {
+        cmd: "git submodule update",
+        desc: "fetch and checkout the committed submodule versions",
+      },
+      {
+        cmd: "git submodule update --init --recursive",
+        desc: "initialize and update all submodules, including nested ones",
+      },
+      {
+        cmd: "git submodule update --remote",
+        desc: "update submodules to the latest commit on their remote tracking branch",
+      },
+      {
+        cmd: "git clone --recurse-submodules [url]",
+        desc: "clone a repository and all its submodules in one command",
+      },
+      {
+        cmd: "git submodule status",
+        desc: "show the current commit, path, and branch of each submodule",
+      },
+      {
+        cmd: "git submodule summary",
+        desc: "show a summary of changes between committed and checked-out submodule versions",
+      },
+    ],
+  },
 ];
 
 export default function CheatSheetPage() {
