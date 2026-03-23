@@ -2,9 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
+  clearTerminalHistory,
   getCaseById,
+  getTerminalHistory,
   getUserProgress,
   isCaseUnlocked,
+  saveTerminalHistory,
   validateCommand,
 } from "../services/gameService";
 import {
@@ -86,6 +89,12 @@ export default function GamePage() {
   }, [history]);
 
   useEffect(() => {
+    if (history.length > 0 && !caseCompleted && !loading && caseData) {
+      saveTerminalHistory(caseId, history);
+    }
+  }, [history, caseCompleted, loading, caseData, caseId]);
+
+  useEffect(() => {
     if (caseCompleted) {
       return;
     }
@@ -138,6 +147,11 @@ export default function GamePage() {
         if (savedProgress) {
           setCurrentStep(savedProgress.current_step || 0);
           setTotalEarned(savedProgress.earned_points || 0);
+
+          const savedHistory = getTerminalHistory(caseId);
+          if (savedHistory.length > 0) {
+            setHistory(savedHistory);
+          }
         }
       }
     } catch (error) {
@@ -198,6 +212,7 @@ export default function GamePage() {
     setHistory([]);
     setTotalEarned(0);
     setShowHint(false);
+    clearTerminalHistory(caseId);
     // Keep isReplay true if it was already completed before
   };
 
@@ -246,6 +261,7 @@ export default function GamePage() {
 
         if (result.case_completed) {
           setCaseCompleted(true);
+          clearTerminalHistory(caseId);
           refreshUser();
           if (!isReplay) {
             toast.success("Case solved! Your reputation has increased.");

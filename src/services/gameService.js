@@ -29,6 +29,7 @@ const casesData = Object.values(caseModules)
 
 const STORAGE_KEYS = {
   LEADERBOARD: "git_quest_leaderboard_cache",
+  TERMINAL_HISTORY_PREFIX: "git_quest_terminal_",
 };
 
 const LEADERBOARD_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -49,6 +50,35 @@ export const getCases = () => {
 // Get a single case by ID
 export const getCaseById = (caseId) => {
   return casesData.find((c) => c.id === caseId);
+};
+
+const getTerminalStorageKey = (caseId) => {
+  const user = getCurrentUser();
+  const userId = user?.id || "anonymous";
+  return STORAGE_KEYS.TERMINAL_HISTORY_PREFIX + userId + "_" + caseId;
+};
+
+export const saveTerminalHistory = (caseId, history) => {
+  try {
+    localStorage.setItem(getTerminalStorageKey(caseId), JSON.stringify(history));
+  } catch {
+    // localStorage quota exceeded - silently ignore
+  }
+};
+
+export const getTerminalHistory = (caseId) => {
+  try {
+    const raw = localStorage.getItem(getTerminalStorageKey(caseId));
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+export const clearTerminalHistory = (caseId) => {
+  localStorage.removeItem(getTerminalStorageKey(caseId));
 };
 
 const saveGameUser = (user, options = {}) => {
