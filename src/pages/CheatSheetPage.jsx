@@ -237,6 +237,33 @@ const sections = [
       },
     ],
   },
+  {
+    title: "WORKTREES",
+    description:
+      "Working on multiple branches simultaneously in separate directories",
+    commands: [
+      {
+        cmd: "git worktree add [path] [branch]",
+        desc: "create a new worktree at the given path for the specified branch",
+      },
+      {
+        cmd: "git worktree add -b [new-branch] [path]",
+        desc: "create a new worktree with a new branch at the given path",
+      },
+      {
+        cmd: "git worktree list",
+        desc: "list all worktrees associated with the repository",
+      },
+      {
+        cmd: "git worktree remove [path]",
+        desc: "remove a worktree and its administrative files",
+      },
+      {
+        cmd: "git worktree prune",
+        desc: "clean up stale worktree tracking information",
+      },
+    ],
+  },
 ];
 
 export default function CheatSheetPage() {

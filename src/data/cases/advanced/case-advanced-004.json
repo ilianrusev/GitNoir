@@ -1,0 +1,182 @@
+{
+  "id": "advanced-case-004",
+  "title": "THE WORKTREE PARALLEL",
+  "description": "Work on multiple branches simultaneously without switching. Advanced multitasking.",
+  "difficulty": "Advanced",
+  "total_points": 210,
+  "created_at": "2026-03-23",
+  "story_intro": "Three cases demanded my attention simultaneously. Switching branches constantly was killing my productivity.\n\nThen I discovered worktrees - multiple working directories, each on a different branch, all from one repository.\n\nTime to work in parallel dimensions.",
+  "steps": [
+    {
+      "instruction": "Create a new worktree for the 'urgent-case' branch in '../urgent' folder.",
+      "narrative": "Create a parallel workspace for the urgent investigation.",
+      "expected_commands": [
+        "git worktree add ../urgent urgent-case",
+        "git worktree add ../urgent/ urgent-case",
+        "git worktree add \"../urgent\" urgent-case",
+        "git worktree add '../urgent' urgent-case",
+        "git worktree add ../urgent \"urgent-case\"",
+        "git worktree add ../urgent 'urgent-case'"
+      ],
+      "terminal_output_by_command": {
+        "git worktree add ../urgent urgent-case": [
+          "Preparing worktree (checking out 'urgent-case')",
+          "HEAD is now at 3a1f9b2 latest evidence update"
+        ],
+        "git worktree add ../urgent/ urgent-case": [
+          "Preparing worktree (checking out 'urgent-case')",
+          "HEAD is now at 3a1f9b2 latest evidence update"
+        ],
+        "git worktree add \"../urgent\" urgent-case": [
+          "Preparing worktree (checking out 'urgent-case')",
+          "HEAD is now at 3a1f9b2 latest evidence update"
+        ],
+        "git worktree add '../urgent' urgent-case": [
+          "Preparing worktree (checking out 'urgent-case')",
+          "HEAD is now at 3a1f9b2 latest evidence update"
+        ],
+        "git worktree add ../urgent \"urgent-case\"": [
+          "Preparing worktree (checking out 'urgent-case')",
+          "HEAD is now at 3a1f9b2 latest evidence update"
+        ],
+        "git worktree add ../urgent 'urgent-case'": [
+          "Preparing worktree (checking out 'urgent-case')",
+          "HEAD is now at 3a1f9b2 latest evidence update"
+        ]
+      },
+      "hint": "Add a new worktree for a branch",
+      "points": 45
+    },
+    {
+      "instruction": "List all worktrees associated with this repository.",
+      "narrative": "Verify the parallel workspace is active. See all dimensions at once.",
+      "expected_commands": [
+        "git worktree list",
+        "git worktree list --porcelain"
+      ],
+      "terminal_output_by_command": {
+        "git worktree list": [
+          "/repo                 a7c9d12 [main]",
+          "/repo/../urgent       3a1f9b2 [urgent-case]"
+        ],
+        "git worktree list --porcelain": [
+          "worktree /repo",
+          "HEAD a7c9d12f0e2a7c4d3b9f8a1c2d4e6f7a8b9c0d1",
+          "branch refs/heads/main",
+          "",
+          "worktree /repo/../urgent",
+          "HEAD 3a1f9b2e4ddab1109468e44a6dd70f0a913b9ce",
+          "branch refs/heads/urgent-case"
+        ]
+      },
+      "hint": "Show all worktrees",
+      "points": 35
+    },
+    {
+      "instruction": "Create a new worktree with a new branch 'cold-case' in '../cold' folder.",
+      "narrative": "A third case just came in. Start a fresh investigation in its own space.",
+      "expected_commands": [
+        "git worktree add -b cold-case ../cold",
+        "git worktree add ../cold -b cold-case",
+        "git worktree add -b cold-case ../cold/",
+        "git worktree add ../cold/ -b cold-case",
+        "git worktree add -b \"cold-case\" ../cold",
+        "git worktree add -b 'cold-case' ../cold",
+        "git worktree add -b cold-case \"../cold\"",
+        "git worktree add -b cold-case '../cold'",
+        "git worktree add \"../cold\" -b cold-case",
+        "git worktree add '../cold' -b cold-case"
+      ],
+      "terminal_output_by_command": {
+        "git worktree add -b cold-case ../cold": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add ../cold -b cold-case": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add -b cold-case ../cold/": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add ../cold/ -b cold-case": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add -b \"cold-case\" ../cold": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add -b 'cold-case' ../cold": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add -b cold-case \"../cold\"": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add -b cold-case '../cold'": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add \"../cold\" -b cold-case": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ],
+        "git worktree add '../cold' -b cold-case": [
+          "Preparing worktree (new branch 'cold-case')",
+          "HEAD is now at a7c9d12 latest evidence update"
+        ]
+      },
+      "hint": "Add worktree with new branch",
+      "points": 45
+    },
+    {
+      "instruction": "Remove the worktree at '../urgent' after the case is closed.",
+      "narrative": "The urgent case is solved. Time to close that parallel workspace.",
+      "expected_commands": [
+        "git worktree remove ../urgent",
+        "git worktree remove ../urgent/",
+        "git worktree remove --force ../urgent",
+        "git worktree remove --force ../urgent/",
+        "git worktree remove \"../urgent\"",
+        "git worktree remove '../urgent'",
+        "git worktree remove --force \"../urgent\"",
+        "git worktree remove --force '../urgent'"
+      ],
+      "terminal_output_by_command": {
+        "git worktree remove ../urgent": [],
+        "git worktree remove ../urgent/": [],
+        "git worktree remove --force ../urgent": [],
+        "git worktree remove --force ../urgent/": [],
+        "git worktree remove \"../urgent\"": [],
+        "git worktree remove '../urgent'": [],
+        "git worktree remove --force \"../urgent\"": [],
+        "git worktree remove --force '../urgent'": []
+      },
+      "hint": "Remove a worktree",
+      "points": 40
+    },
+    {
+      "instruction": "Prune stale worktree information.",
+      "narrative": "Some old worktrees were deleted manually but their records remain. Clean up the dead references.",
+      "expected_commands": [
+        "git worktree prune",
+        "git worktree prune --verbose",
+        "git worktree prune -v"
+      ],
+      "terminal_output_by_command": {
+        "git worktree prune": [],
+        "git worktree prune --verbose": [
+          "Removing worktrees/stale-investigation: gitdir file points to non-existing location"
+        ],
+        "git worktree prune -v": [
+          "Removing worktrees/stale-investigation: gitdir file points to non-existing location"
+        ]
+      },
+      "hint": "Clean up worktree administrative files",
+      "points": 45
+    }
+  ]
+}
