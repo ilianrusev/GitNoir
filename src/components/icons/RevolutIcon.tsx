@@ -1,4 +1,4 @@
-export default function RevolutIcon({ className }) {
+export default function RevolutIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none">
       <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor" />

@@ -1,11 +1,18 @@
 import { Button } from "./ui/button";
 
+interface GoogleAuthButtonProps {
+  onClick: () => void;
+  disabled?: boolean;
+  dataTestId?: string;
+  label?: string;
+}
+
 export default function GoogleAuthButton({
   onClick,
   disabled,
   dataTestId,
   label = "Continue with Google",
-}) {
+}: GoogleAuthButtonProps) {
   return (
     <Button
       type="button"

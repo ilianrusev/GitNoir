@@ -11,7 +11,6 @@ import {
   validateCommand,
 } from "../services/gameService";
 import {
-  Terminal,
   ArrowLeft,
   Award,
   CheckCircle,

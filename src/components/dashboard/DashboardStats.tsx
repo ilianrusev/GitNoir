@@ -1,4 +1,10 @@
-export default function DashboardStats({ reputation, completedCount, totalCases }) {
+interface DashboardStatsProps {
+  reputation: number;
+  completedCount: number;
+  totalCases: number;
+}
+
+export default function DashboardStats({ reputation, completedCount, totalCases }: DashboardStatsProps) {
   const completionPercent =
     totalCases > 0 ? Math.round((completedCount / totalCases) * 100) : 0;
 

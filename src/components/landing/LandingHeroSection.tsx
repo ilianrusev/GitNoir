@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { isGuestUser } from "../../services/authService";
+import type { User } from "../../types/types";
 
-export default function LandingHeroSection({ user }) {
+interface LandingHeroSectionProps {
+  user: User | null;
+}
+
+export default function LandingHeroSection({ user }: LandingHeroSectionProps) {
   const isLoggedIn = Boolean(user) && !isGuestUser(user);
 
   return (

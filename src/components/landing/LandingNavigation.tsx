@@ -3,21 +3,27 @@ import { Link } from "react-router-dom";
 import { Terminal, LogOut, HandHeart, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import type { User as UserType } from "../../types/types";
+
+interface LandingNavigationProps {
+  user: UserType | null;
+  logout: () => Promise<void>;
+}
 
 export default function LandingNavigation({
   user,
   logout,
-}) {
+}: LandingNavigationProps) {
   const [navSupportMenuOpen, setNavSupportMenuOpen] = useState(false);
-  const navSupportRef = useRef(null);
+  const navSupportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!navSupportMenuOpen) {
       return undefined;
     }
 
-    const handleOutsideClick = (event) => {
-      const target = event.target;
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
 
       if (navSupportRef.current && !navSupportRef.current.contains(target)) {
         setNavSupportMenuOpen(false);
@@ -36,7 +42,8 @@ export default function LandingNavigation({
       await logout();
       toast.success("Logged out successfully");
     } catch (error) {
-      toast.error(error.message || "Logout failed. Please try again.");
+      const message = error instanceof Error ? error.message : "Logout failed. Please try again.";
+      toast.error(message);
     }
   };
 

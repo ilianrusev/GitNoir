@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { Lock, Play } from "lucide-react";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
+import type { Case, CaseProgressEntry, CaseStatus } from "../../types/types";
 
 const NEW_CASE_WINDOW_DAYS = 3;
 
-function parseCaseDate(dateValue) {
+function parseCaseDate(dateValue: string | undefined): Date | null {
   if (!dateValue) return null;
 
   const dateOnlyMatch = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -18,13 +19,21 @@ function parseCaseDate(dateValue) {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+interface SingleCaseProps {
+  caseData: Case;
+  status: CaseStatus;
+  caseProgress?: CaseProgressEntry;
+  lockHint: string | null;
+  variant?: string;
+}
+
 export default function SingleCase({
   caseData,
   status,
   caseProgress,
   lockHint,
   variant = "dashboard",
-}) {
+}: SingleCaseProps) {
   const isUnlocked = status !== "locked";
   const isCasesVariant = variant === "cases";
   const shouldSoftLockBlur = isCasesVariant && !isUnlocked;

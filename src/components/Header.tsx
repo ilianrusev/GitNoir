@@ -57,7 +57,12 @@ const BASE_NAV_ITEMS = [
   },
 ];
 
-export default function Header({ variant = "default", reputation }) {
+interface HeaderProps {
+  variant?: "default" | "landing";
+  reputation?: number;
+}
+
+export default function Header({ variant = "default", reputation }: HeaderProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -68,9 +73,9 @@ export default function Header({ variant = "default", reputation }) {
   const showReputation =
     !isLandingVariant && reputation !== null && reputation !== undefined;
 
-  const menuButtonRef = useRef(null);
-  const menuPanelRef = useRef(null);
-  const desktopSupportRef = useRef(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuPanelRef = useRef<HTMLDivElement>(null);
+  const desktopSupportRef = useRef<HTMLDivElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [desktopSupportOpen, setDesktopSupportOpen] = useState(false);
 
@@ -94,7 +99,7 @@ export default function Header({ variant = "default", reputation }) {
     onOutsideClick: () => setDesktopSupportOpen(false),
   });
 
-  const getDropdownNavLinkClass = ({ isActive }) =>
+  const getDropdownNavLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive
       ? `${DROPDOWN_LINK_BASE_CLASS} ${DROPDOWN_LINK_ACTIVE_CLASS}`
       : `${DROPDOWN_LINK_BASE_CLASS} ${DROPDOWN_LINK_INACTIVE_CLASS}`;
@@ -136,7 +141,7 @@ export default function Header({ variant = "default", reputation }) {
     </Link>
   );
 
-  const renderLogoutButton = (testId, extraClass = "") => (
+  const renderLogoutButton = (testId: string, extraClass = "") => (
     <Button
       onClick={handleLogout}
       className={`btn-outline w-full flex items-center justify-center gap-2 ${extraClass}`}
@@ -147,7 +152,7 @@ export default function Header({ variant = "default", reputation }) {
     </Button>
   );
 
-  const renderSupportSection = (isLanding) => {
+  const renderSupportSection = (isLanding: boolean) => {
     if (isLanding) {
       return (
         <div className="md:hidden">
@@ -170,7 +175,7 @@ export default function Header({ variant = "default", reputation }) {
     return <SupportButton onCloseMenu={closeMobileMenu} />;
   };
 
-  const renderMenuFooter = (isLanding) => {
+  const renderMenuFooter = (isLanding: boolean) => {
     if (isLanding) {
       return (
         <div className="border-t border-(--border) pt-4 mt-4 space-y-3">
@@ -199,7 +204,7 @@ export default function Header({ variant = "default", reputation }) {
     );
   };
 
-  const renderMenu = (isLanding) => (
+  const renderMenu = (isLanding: boolean) => (
     <>
       {renderNavLinks()}
       {renderSupportSection(isLanding)}
@@ -214,7 +219,9 @@ export default function Header({ variant = "default", reputation }) {
       toast.success("Logged out successfully");
       closeMobileMenu();
     } catch (error) {
-      toast.error(error.message || "Logout failed. Please try again.");
+      toast.error(
+        (error as Error).message || "Logout failed. Please try again.",
+      );
     }
   };
 

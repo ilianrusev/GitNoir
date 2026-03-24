@@ -4,15 +4,15 @@ import { Terminal, HandHeart } from "lucide-react";
 
 export default function LandingFooter() {
   const [supportMenuOpen, setSupportMenuOpen] = useState(false);
-  const footerSupportRef = useRef(null);
+  const footerSupportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!supportMenuOpen) {
       return undefined;
     }
 
-    const handleOutsideClick = (event) => {
-      const target = event.target;
+    const handleOutsideClick = (event: PointerEvent) => {
+      const target = event.target as Node;
 
       if (footerSupportRef.current && !footerSupportRef.current.contains(target)) {
         setSupportMenuOpen(false);

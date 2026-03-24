@@ -1,4 +1,4 @@
-export default function GitHubIcon({ className }) {
+export default function GitHubIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24">
       <path

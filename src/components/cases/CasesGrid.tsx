@@ -3,13 +3,21 @@ import {
   getCaseStatus,
   getCaseUnlockHint,
 } from "../../services/caseStatusService";
+import type { Case, CaseProgressEntry, UserProgress } from "../../types/types";
+
+interface CasesGridProps {
+  filterCases: Case[];
+  progress: UserProgress | null;
+  variant?: string;
+  allCases?: Case[];
+}
 
 export default function CasesGrid({
   filterCases,
   progress,
   variant,
   allCases,
-}) {
+}: CasesGridProps) {
   const gridClassName =
     variant === "cases"
       ? "grid grid-cols-1 lg:grid-cols-2 gap-8"
@@ -19,7 +27,7 @@ export default function CasesGrid({
 
   return (
     <div className={gridClassName}>
-      {filterCases.map((caseData, index) => {
+      {filterCases.map((caseData) => {
         const status = getCaseStatus(caseData, progress, statusCases);
         const caseProgress = progress?.case_progress?.[caseData.id];
         const lockHint = getCaseUnlockHint(caseData, progress, statusCases);

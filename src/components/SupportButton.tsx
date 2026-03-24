@@ -13,7 +13,7 @@ const SUPPORT_COFFEE_LINK_CLASS =
 const SUPPORT_REVOLUT_LINK_CLASS =
   "flex items-center gap-2 py-2 px-10 text-(--foreground-muted) hover:text-(--primary) hover:bg-(--background-paper) font-mono text-xs uppercase tracking-wider transition-colors";
 
-export default function SupportButton({ onCloseMenu }) {
+export default function SupportButton({ onCloseMenu }: { onCloseMenu: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

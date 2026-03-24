@@ -2,7 +2,7 @@ import { useState, useEffect, type UIEvent } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getLeaderboardPage, getUserProgress } from "../services/gameService";
-import { Award, Trophy, ArrowLeft, Medal, Users } from "lucide-react";
+import { Award, Trophy, Medal, Users } from "lucide-react";
 import { Button } from "../components/ui/button";
 import Header from "../components/Header";
 import { toast } from "sonner";

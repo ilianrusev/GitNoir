@@ -1,5 +1,14 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import type { ReactNode } from "react";
+
+interface SecondaryHeaderProps {
+  backTo?: string;
+  backLabel?: string;
+  eyebrow: string;
+  title: ReactNode;
+  description?: string;
+}
 
 export default function SecondaryHeader({
   backTo,
@@ -7,7 +16,7 @@ export default function SecondaryHeader({
   eyebrow,
   title,
   description,
-}) {
+}: SecondaryHeaderProps) {
   return (
     <div className="mb-8">
       {backTo && backLabel && (
