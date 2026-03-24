@@ -1,15 +1,24 @@
-const DIFFICULTY_KEYS = {
+import type {
+  Case,
+  DifficultyKey,
+  TierCounts,
+  TierPosition,
+  UnlockRequirements,
+  UserProgress,
+} from "../types/types";
+
+const DIFFICULTY_KEYS: Record<DifficultyKey, DifficultyKey> = {
   beginner: "beginner",
   intermediate: "intermediate",
   advanced: "advanced",
 };
 
-const normalizeDifficulty = (difficulty) =>
+const normalizeDifficulty = (difficulty: string | undefined): string =>
   String(difficulty || "")
     .trim()
     .toLowerCase();
 
-const sortCasesWithinTier = (cases = []) =>
+const sortCasesWithinTier = (cases: Case[] = []): Case[] =>
   [...cases].sort((firstCase, secondCase) =>
     String(firstCase.id || "").localeCompare(
       String(secondCase.id || ""),
@@ -18,15 +27,19 @@ const sortCasesWithinTier = (cases = []) =>
     ),
   );
 
-const getCasesByDifficulty = (cases = []) => {
-  const grouped = {
+const getCasesByDifficulty = (
+  cases: Case[] = [],
+): Record<DifficultyKey, Case[]> => {
+  const grouped: Record<DifficultyKey, Case[]> = {
     [DIFFICULTY_KEYS.beginner]: [],
     [DIFFICULTY_KEYS.intermediate]: [],
     [DIFFICULTY_KEYS.advanced]: [],
   };
 
   cases.forEach((caseData) => {
-    const difficultyKey = normalizeDifficulty(caseData?.difficulty);
+    const difficultyKey = normalizeDifficulty(
+      caseData?.difficulty,
+    ) as DifficultyKey;
     if (!grouped[difficultyKey]) return;
     grouped[difficultyKey].push(caseData);
   });
@@ -44,9 +57,12 @@ const getCasesByDifficulty = (cases = []) => {
   };
 };
 
-export const getCompletedTierCounts = (progress, cases = []) => {
+export const getCompletedTierCounts = (
+  progress: UserProgress | null,
+  cases: Case[] = [],
+): TierCounts => {
   const completedCaseIds = new Set(progress?.completed_cases || []);
-  const counts = {
+  const counts: TierCounts = {
     [DIFFICULTY_KEYS.beginner]: 0,
     [DIFFICULTY_KEYS.intermediate]: 0,
     [DIFFICULTY_KEYS.advanced]: 0,
@@ -55,7 +71,9 @@ export const getCompletedTierCounts = (progress, cases = []) => {
   cases.forEach((caseData) => {
     if (!completedCaseIds.has(caseData.id)) return;
 
-    const difficultyKey = normalizeDifficulty(caseData.difficulty);
+    const difficultyKey = normalizeDifficulty(
+      caseData.difficulty,
+    ) as DifficultyKey;
     if (!counts[difficultyKey] && counts[difficultyKey] !== 0) return;
 
     counts[difficultyKey] += 1;
@@ -69,7 +87,10 @@ export const getCompletedTierCounts = (progress, cases = []) => {
 // - Beginner: completed beginner + 1
 // - Intermediate: first unlock after 2 beginners, then +1 per completed intermediate
 // - Advanced: first unlock after 2 intermediates, then +1 per completed advanced
-export const getTierUnlockCounts = (progress, cases = []) => {
+export const getTierUnlockCounts = (
+  progress: UserProgress | null,
+  cases: Case[] = [],
+): TierCounts => {
   const completedCounts = getCompletedTierCounts(progress, cases);
   const hasIntermediateGate =
     completedCounts.beginner >= 2 || completedCounts.intermediate > 0;
@@ -88,10 +109,13 @@ export const getTierUnlockCounts = (progress, cases = []) => {
 };
 
 // Returns case position inside its own difficulty tier.
-export const getTierPosition = (caseData, cases = []) => {
+export const getTierPosition = (
+  caseData: Case | null | undefined,
+  cases: Case[] = [],
+): TierPosition => {
   const difficultyKey = normalizeDifficulty(caseData?.difficulty);
   const groupedCases = getCasesByDifficulty(cases);
-  const tierCases = groupedCases[difficultyKey] || [];
+  const tierCases = groupedCases[difficultyKey as DifficultyKey] || [];
 
   const position = tierCases.findIndex((entry) => entry.id === caseData?.id);
 
@@ -102,7 +126,11 @@ export const getTierPosition = (caseData, cases = []) => {
 };
 
 // Computes unlock state and remaining requirement for a specific case.
-export const getUnlockRequirements = (caseData, progress, cases = []) => {
+export const getUnlockRequirements = (
+  caseData: Case,
+  progress: UserProgress | null,
+  cases: Case[] = [],
+): UnlockRequirements => {
   const { difficultyKey, position } = getTierPosition(caseData, cases);
 
   if (!difficultyKey || !position) {
@@ -117,7 +145,7 @@ export const getUnlockRequirements = (caseData, progress, cases = []) => {
 
   const completedCounts = getCompletedTierCounts(progress, cases);
   const tierUnlockCounts = getTierUnlockCounts(progress, cases);
-  const unlocked = position <= (tierUnlockCounts[difficultyKey] || 0);
+  const unlocked = position <= (tierUnlockCounts[difficultyKey as DifficultyKey] || 0);
 
   if (unlocked) {
     return {
@@ -130,7 +158,7 @@ export const getUnlockRequirements = (caseData, progress, cases = []) => {
   }
 
   let remaining = 0;
-  let requiredDifficulty = null;
+  let requiredDifficulty: DifficultyKey | null = null;
 
   if (difficultyKey === DIFFICULTY_KEYS.beginner) {
     remaining = Math.max(0, position - (completedCounts.beginner + 1));
@@ -163,7 +191,11 @@ export const getUnlockRequirements = (caseData, progress, cases = []) => {
 };
 
 // Converts computed unlock requirements into user-facing helper text.
-export const getUnlockRequirementText = (caseData, progress, cases = []) => {
+export const getUnlockRequirementText = (
+  caseData: Case,
+  progress: UserProgress | null,
+  cases: Case[] = [],
+): string | null => {
   const requirement = getUnlockRequirements(caseData, progress, cases);
 
   if (requirement.unlocked || requirement.remaining === null) {

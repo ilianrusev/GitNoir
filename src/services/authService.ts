@@ -7,20 +7,27 @@ import {
   signInWithRedirect,
   signOut,
   updateProfile,
+  type User as FirebaseUser,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import type {
+  CaseProgressEntry,
+  GoogleLoginResult,
+  User,
+} from "../types/types";
 
 const STORAGE_KEYS = {
   USER: "git_quest_user",
   GUEST_USER: "unauth_user",
-};
+} as const;
+
 const USERS_COLLECTION = "users";
 const googleProvider = new GoogleAuthProvider();
-let runtimeUserSnapshot = null;
+let runtimeUserSnapshot: User | null = null;
 const PASSWORD_POLICY_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 
-const createGuestUser = () => ({
+const createGuestUser = (): User => ({
   id: "guest-user",
   username: "Detective",
   email: "",
@@ -32,13 +39,13 @@ const createGuestUser = () => ({
   is_guest: true,
 });
 
-const normalizeUser = (user) => {
+const normalizeUser = (user: Partial<User> | null | undefined): User | null => {
   if (!user || typeof user !== "object") {
     return null;
   }
 
   return {
-    ...user,
+    ...(user as User),
     reputation: Number(user.reputation ?? 0),
     completed_cases: Array.isArray(user.completed_cases)
       ? user.completed_cases
@@ -50,7 +57,7 @@ const normalizeUser = (user) => {
   };
 };
 
-const readStorageUser = (key) => {
+const readStorageUser = (key: string): User | null => {
   const raw = localStorage.getItem(key);
   if (!raw) return null;
 
@@ -62,13 +69,16 @@ const readStorageUser = (key) => {
   }
 };
 
-const mergeCaseProgress = (baseProgress = {}, incomingProgress = {}) => {
+const mergeCaseProgress = (
+  baseProgress: Record<string, CaseProgressEntry> = {},
+  incomingProgress: Record<string, CaseProgressEntry> = {},
+): Record<string, CaseProgressEntry> => {
   const merged = { ...baseProgress };
 
   Object.entries(incomingProgress).forEach(([caseId, incomingCaseProgress]) => {
     const normalizedIncoming = normalizeUser({
       case_progress: { [caseId]: incomingCaseProgress },
-    })?.case_progress?.[caseId];
+    } as Partial<User>)?.case_progress?.[caseId];
 
     if (!normalizedIncoming) return;
 
@@ -95,10 +105,12 @@ const mergeCaseProgress = (baseProgress = {}, incomingProgress = {}) => {
   return merged;
 };
 
-const mergeCompletedCases = (first = [], second = []) =>
-  Array.from(new Set([...(first || []), ...(second || [])]));
+const mergeCompletedCases = (
+  first: string[] = [],
+  second: string[] = [],
+): string[] => Array.from(new Set([...(first || []), ...(second || [])]));
 
-const getOrCreateGuestUser = () => {
+const getOrCreateGuestUser = (): User => {
   const storedGuest = readStorageUser(STORAGE_KEYS.GUEST_USER);
   const guestUser = storedGuest || createGuestUser();
 
@@ -110,16 +122,17 @@ const getOrCreateGuestUser = () => {
 export const PASSWORD_POLICY_MESSAGE =
   "Password must be at least 8 symbols long and include at least one uppercase letter, one lowercase letter, and one number.";
 
-export const isPasswordPolicyValid = (password = "") =>
+export const isPasswordPolicyValid = (password = ""): boolean =>
   PASSWORD_POLICY_REGEX.test(password);
 
-export const setRuntimeUserSnapshot = (user) => {
+export const setRuntimeUserSnapshot = (user: User | null | undefined): void => {
   runtimeUserSnapshot = user ?? null;
 };
 
-export const isGuestUser = (user) => Boolean(user?.is_guest);
+export const isGuestUser = (user: User | null | undefined): boolean =>
+  Boolean(user?.is_guest);
 
-export const getCurrentUser = () => {
+export const getCurrentUser = (): User => {
   const storedAuthUser = readStorageUser(STORAGE_KEYS.USER);
   if (storedAuthUser) {
     runtimeUserSnapshot = storedAuthUser;
@@ -139,7 +152,17 @@ export const getCurrentUser = () => {
   return getOrCreateGuestUser();
 };
 
-const persistUserProfile = async (user) => {
+interface PersistUserProfileData {
+  display_name: string;
+  email: string;
+  reputation: number;
+  completed_cases: string[];
+  case_progress: Record<string, CaseProgressEntry>;
+  created_at: string;
+  updated_at: string;
+}
+
+const persistUserProfile = async (user: User): Promise<void> => {
   if (!user?.id) return;
 
   const reputation = user.reputation ?? 0;
@@ -155,12 +178,20 @@ const persistUserProfile = async (user) => {
       case_progress: user.case_progress ?? {},
       created_at: user.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    },
+    } satisfies PersistUserProfileData,
     { merge: true },
   );
 };
 
-export const saveUser = (user, options = {}) => {
+interface SaveUserOptions {
+  persistProfile?: boolean;
+  clearGuestUser?: boolean;
+}
+
+export const saveUser = (
+  user: Partial<User> | null | undefined,
+  options: SaveUserOptions = {},
+): void => {
   const { persistProfile = true, clearGuestUser = false } = options;
   const normalizedUser = normalizeUser(user);
   if (!normalizedUser) return;
@@ -168,7 +199,10 @@ export const saveUser = (user, options = {}) => {
   runtimeUserSnapshot = normalizedUser;
 
   if (isGuestUser(normalizedUser)) {
-    localStorage.setItem(STORAGE_KEYS.GUEST_USER, JSON.stringify(normalizedUser));
+    localStorage.setItem(
+      STORAGE_KEYS.GUEST_USER,
+      JSON.stringify(normalizedUser),
+    );
     return;
   }
 
@@ -182,7 +216,17 @@ export const saveUser = (user, options = {}) => {
   }
 };
 
-export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
+interface SyncOptions {
+  password?: string;
+  displayName?: string;
+  persistProfile?: boolean;
+  mergeGuestProgress?: boolean;
+}
+
+export const syncUserFromFirebaseUser = async (
+  firebaseUser: FirebaseUser | null,
+  options: SyncOptions = {},
+): Promise<User> => {
   if (!firebaseUser) {
     localStorage.removeItem(STORAGE_KEYS.USER);
     return getOrCreateGuestUser();
@@ -206,7 +250,7 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   const shouldPersistProfile = persistProfile || needsReputationMigration;
 
   const dbCompletedCases = Array.isArray(dbUser?.completed_cases)
-    ? dbUser.completed_cases
+    ? (dbUser.completed_cases as string[])
     : [];
   const storedCompletedCases = storedAuthUser?.completed_cases ?? [];
   const guestCompletedCases = guestUser?.completed_cases ?? [];
@@ -216,7 +260,10 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   );
 
   const mergedCaseProgress = mergeCaseProgress(
-    mergeCaseProgress(dbUser?.case_progress ?? {}, storedAuthUser?.case_progress ?? {}),
+    mergeCaseProgress(
+      (dbUser?.case_progress as Record<string, CaseProgressEntry>) ?? {},
+      storedAuthUser?.case_progress ?? {},
+    ),
     guestUser?.case_progress ?? {},
   );
 
@@ -236,7 +283,7 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
     firebaseUser.displayName ||
     (firebaseUser.email ? firebaseUser.email.split("@")[0] : "Detective");
 
-  const syncedUser = {
+  const syncedUser: User = {
     ...storedAuthUser,
     id: firebaseUser.uid,
     is_guest: false,
@@ -254,7 +301,7 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
       dbUser?.created_at ||
       storedAuthUser?.created_at ||
       new Date().toISOString(),
-  };
+  } as User;
 
   saveUser(syncedUser, {
     persistProfile: shouldPersistProfile,
@@ -263,7 +310,16 @@ export const syncUserFromFirebaseUser = async (firebaseUser, options = {}) => {
   return syncedUser;
 };
 
-export const registerUser = async (username, email, password) => {
+interface FirebaseAuthError {
+  code: string;
+  message: string;
+}
+
+export const registerUser = async (
+  username: string,
+  email: string,
+  password: string,
+): Promise<User> => {
   if (!isPasswordPolicyValid(password)) {
     throw new Error(PASSWORD_POLICY_MESSAGE);
   }
@@ -288,7 +344,7 @@ export const registerUser = async (username, email, password) => {
       mergeGuestProgress: true,
     });
   } catch (error) {
-    const registrationErrors = {
+    const registrationErrors: Record<string, string> = {
       "auth/email-already-in-use": "An account with this email already exists.",
       "auth/invalid-email": "Please enter a valid email address.",
       "auth/weak-password": "Password must be at least 8 characters.",
@@ -297,14 +353,17 @@ export const registerUser = async (username, email, password) => {
     };
 
     const message =
-      registrationErrors[error.code] ||
+      registrationErrors[(error as FirebaseAuthError).code] ||
       "Registration failed. Please try again.";
 
     throw new Error(message);
   }
 };
 
-export const loginUser = async (email, password) => {
+export const loginUser = async (
+  email: string,
+  password: string,
+): Promise<User> => {
   try {
     const credentials = await signInWithEmailAndPassword(auth, email, password);
     return await syncUserFromFirebaseUser(credentials.user, {
@@ -312,7 +371,7 @@ export const loginUser = async (email, password) => {
       persistProfile: false,
     });
   } catch (error) {
-    const loginErrors = {
+    const loginErrors: Record<string, string> = {
       "auth/invalid-email": "Please enter a valid email address.",
       "auth/invalid-credential": "Invalid email or password.",
       "auth/user-not-found": "No account found with this email.",
@@ -323,71 +382,76 @@ export const loginUser = async (email, password) => {
     };
 
     const message =
-      loginErrors[error.code] ||
+      loginErrors[(error as FirebaseAuthError).code] ||
       "Login failed. Check your credentials and try again.";
 
     throw new Error(message);
   }
 };
 
-export const loginWithGoogleUser = async () => {
-  try {
-    const credentials = await signInWithPopup(auth, googleProvider);
-    const additionalUserInfo = getAdditionalUserInfo(credentials);
-    const isNewUser = additionalUserInfo?.isNewUser ?? false;
-    const syncedUser = await syncUserFromFirebaseUser(credentials.user, {
-      displayName: credentials.user.displayName || "",
-      persistProfile: isNewUser,
-      mergeGuestProgress: isNewUser,
-    });
+export const loginWithGoogleUser =
+  async (): Promise<GoogleLoginResult | null> => {
+    try {
+      const credentials = await signInWithPopup(auth, googleProvider);
+      const additionalUserInfo = getAdditionalUserInfo(credentials);
+      const isNewUser = additionalUserInfo?.isNewUser ?? false;
+      const syncedUser = await syncUserFromFirebaseUser(credentials.user, {
+        displayName: credentials.user.displayName || "",
+        persistProfile: isNewUser,
+        mergeGuestProgress: isNewUser,
+      });
 
-    return {
-      user: syncedUser,
-      isNewUser,
-    };
-  } catch (error) {
-    const isCoopWindowCheckIssue =
-      typeof error?.message === "string" &&
-      error.message.includes("Cross-Origin-Opener-Policy");
-    const shouldUseRedirectFallback =
-      isCoopWindowCheckIssue ||
-      error?.code === "auth/popup-blocked" ||
-      error?.code === "auth/operation-not-supported-in-this-environment";
+      return {
+        user: syncedUser,
+        isNewUser,
+      };
+    } catch (error) {
+      const typedError = error as FirebaseAuthError;
+      const isCoopWindowCheckIssue =
+        typeof typedError?.message === "string" &&
+        typedError.message.includes("Cross-Origin-Opener-Policy");
+      const shouldUseRedirectFallback =
+        isCoopWindowCheckIssue ||
+        typedError?.code === "auth/popup-blocked" ||
+        typedError?.code ===
+          "auth/operation-not-supported-in-this-environment";
 
-    if (shouldUseRedirectFallback) {
-      await signInWithRedirect(auth, googleProvider);
-      return null;
+      if (shouldUseRedirectFallback) {
+        await signInWithRedirect(auth, googleProvider);
+        return null;
+      }
+
+      const googleLoginErrors: Record<string, string> = {
+        "auth/popup-closed-by-user": "Google sign-in was canceled.",
+        "auth/popup-blocked":
+          "Popup was blocked. Allow popups and try again.",
+        "auth/cancelled-popup-request": "Google sign-in was canceled.",
+        "auth/account-exists-with-different-credential":
+          "An account already exists with this email using a different sign-in method.",
+        "auth/network-request-failed":
+          "Network error. Check your connection and try again.",
+      };
+
+      const message =
+        googleLoginErrors[typedError.code] ||
+        "Google sign-in failed. Please try again.";
+
+      throw new Error(message);
     }
+  };
 
-    const googleLoginErrors = {
-      "auth/popup-closed-by-user": "Google sign-in was canceled.",
-      "auth/popup-blocked": "Popup was blocked. Allow popups and try again.",
-      "auth/cancelled-popup-request": "Google sign-in was canceled.",
-      "auth/account-exists-with-different-credential":
-        "An account already exists with this email using a different sign-in method.",
-      "auth/network-request-failed":
-        "Network error. Check your connection and try again.",
-    };
-
-    const message =
-      googleLoginErrors[error.code] ||
-      "Google sign-in failed. Please try again.";
-
-    throw new Error(message);
-  }
-};
-
-export const logoutUser = async () => {
+export const logoutUser = async (): Promise<void> => {
   try {
     await signOut(auth);
   } catch (error) {
-    const logoutErrors = {
+    const logoutErrors: Record<string, string> = {
       "auth/network-request-failed":
         "Network error while logging out. Please try again.",
     };
 
     const message =
-      logoutErrors[error.code] || "Logout failed. Please try again.";
+      logoutErrors[(error as FirebaseAuthError).code] ||
+      "Logout failed. Please try again.";
     throw new Error(message);
   } finally {
     localStorage.removeItem(STORAGE_KEYS.USER);

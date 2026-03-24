@@ -4,12 +4,20 @@ import {
   getTierUnlockCounts,
   getUnlockRequirementText,
 } from "./unlockProgressionService";
+import type { Case, CaseStatus, UserProgress } from "../types/types";
 
-const isCompletedOrInProgress = (caseData, progress) =>
+const isCompletedOrInProgress = (
+  caseData: Case,
+  progress: UserProgress | null,
+): boolean =>
   progress?.completed_cases?.includes(caseData.id) ||
   Boolean(progress?.case_progress?.[caseData.id]);
 
-export const isCaseUnlocked = (caseData, progress, allCases = getCases()) => {
+export const isCaseUnlocked = (
+  caseData: Case | null | undefined,
+  progress: UserProgress | null,
+  allCases: Case[] = getCases(),
+): boolean => {
   if (!caseData) return false;
   if (isCompletedOrInProgress(caseData, progress)) return true;
 
@@ -22,7 +30,11 @@ export const isCaseUnlocked = (caseData, progress, allCases = getCases()) => {
   return false;
 };
 
-export const getCaseStatus = (caseData, progress, allCases = getCases()) => {
+export const getCaseStatus = (
+  caseData: Case,
+  progress: UserProgress | null,
+  allCases: Case[] = getCases(),
+): CaseStatus => {
   if (progress?.completed_cases?.includes(caseData.id)) return "completed";
   if (progress?.case_progress?.[caseData.id]) return "in_progress";
   if (isCaseUnlocked(caseData, progress, allCases)) return "unlocked";
@@ -30,10 +42,10 @@ export const getCaseStatus = (caseData, progress, allCases = getCases()) => {
 };
 
 export const getCaseUnlockHint = (
-  caseData,
-  progress,
-  allCases = getCases(),
-) => {
+  caseData: Case,
+  progress: UserProgress | null,
+  allCases: Case[] = getCases(),
+): string | null => {
   if (isCaseUnlocked(caseData, progress, allCases)) return null;
 
   const progressionHint = getUnlockRequirementText(

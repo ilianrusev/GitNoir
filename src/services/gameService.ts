@@ -1,4 +1,3 @@
-// Mock data service - handles all game data locally without backend
 import {
   collection,
   getDocs,
@@ -7,6 +6,7 @@ import {
   query,
   startAfter,
   where,
+  type DocumentSnapshot,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { getCurrentUser, isGuestUser, saveUser } from "./authService";
@@ -14,12 +14,20 @@ import {
   getTierPosition,
   getTierUnlockCounts,
 } from "./unlockProgressionService";
+import type {
+  Case,
+  LeaderboardEntry,
+  LeaderboardPageResult,
+  User,
+  UserProgress,
+  ValidateCommandResult,
+} from "../types/types";
 
 const caseModules = import.meta.glob("../data/cases/**/*.json", {
   eager: true,
-});
+}) as Record<string, { default: Case }>;
 
-const casesData = Object.values(caseModules)
+const casesData: Case[] = Object.values(caseModules)
   .map((module) => module.default)
   .sort((a, b) => {
     const first = Number(String(a.id || "").replace(/[^0-9]/g, ""));
@@ -30,35 +38,42 @@ const casesData = Object.values(caseModules)
 const STORAGE_KEYS = {
   LEADERBOARD: "git_quest_leaderboard_cache",
   TERMINAL_HISTORY_PREFIX: "git_quest_terminal_",
-};
+} as const;
 
 const LEADERBOARD_CACHE_TTL_MS = 5 * 60 * 1000;
 const USERS_COLLECTION = "users";
 const LEADERBOARD_PAGE_SIZE = 20;
 
-const leaderboardMemoryCache = {
+interface LeaderboardCache {
+  data: LeaderboardEntry[] | null;
+  fetchedAt: number;
+  pendingRequest: Promise<LeaderboardEntry[]> | null;
+}
+
+const leaderboardMemoryCache: LeaderboardCache = {
   data: null,
   fetchedAt: 0,
   pendingRequest: null,
 };
 
-// Get all cases
-export const getCases = () => {
+export const getCases = (): Case[] => {
   return casesData;
 };
 
-// Get a single case by ID
-export const getCaseById = (caseId) => {
+export const getCaseById = (caseId: string): Case | undefined => {
   return casesData.find((c) => c.id === caseId);
 };
 
-const getTerminalStorageKey = (caseId) => {
+const getTerminalStorageKey = (caseId: string): string => {
   const user = getCurrentUser();
   const userId = user?.id || "anonymous";
   return STORAGE_KEYS.TERMINAL_HISTORY_PREFIX + userId + "_" + caseId;
 };
 
-export const saveTerminalHistory = (caseId, history) => {
+export const saveTerminalHistory = (
+  caseId: string,
+  history: string[],
+): void => {
   try {
     localStorage.setItem(getTerminalStorageKey(caseId), JSON.stringify(history));
   } catch {
@@ -66,7 +81,7 @@ export const saveTerminalHistory = (caseId, history) => {
   }
 };
 
-export const getTerminalHistory = (caseId) => {
+export const getTerminalHistory = (caseId: string): string[] => {
   try {
     const raw = localStorage.getItem(getTerminalStorageKey(caseId));
     if (!raw) return [];
@@ -77,16 +92,16 @@ export const getTerminalHistory = (caseId) => {
   }
 };
 
-export const clearTerminalHistory = (caseId) => {
+export const clearTerminalHistory = (caseId: string): void => {
   localStorage.removeItem(getTerminalStorageKey(caseId));
 };
 
-const saveGameUser = (user, options = {}) => {
+const saveGameUser = (user: User, options: { persistProfile?: boolean } = {}): void => {
   saveUser(user, options);
   updateLeaderboardCacheFromUser(user);
 };
 
-const normalizeReputation = (user) => {
+const normalizeReputation = (user: User | null): User | null => {
   if (!user) return user;
 
   user.reputation = user.reputation ?? 0;
@@ -94,8 +109,7 @@ const normalizeReputation = (user) => {
   return user;
 };
 
-// Get user progress
-export const getUserProgress = () => {
+export const getUserProgress = (): UserProgress | null => {
   const user = normalizeReputation(getCurrentUser());
   if (!user) return null;
 
@@ -107,8 +121,7 @@ export const getUserProgress = () => {
   };
 };
 
-// Check if case is unlocked
-export const isCaseUnlocked = (caseId) => {
+export const isCaseUnlocked = (caseId: string): boolean => {
   const caseData = getCaseById(caseId);
   const user = normalizeReputation(getCurrentUser());
 
@@ -126,13 +139,12 @@ export const isCaseUnlocked = (caseId) => {
   return false;
 };
 
-// Validate a command
 export const validateCommand = (
-  caseId,
-  stepIndex,
-  command,
+  caseId: string,
+  stepIndex: number,
+  command: string,
   isReplay = false,
-) => {
+): ValidateCommandResult => {
   const caseData = getCaseById(caseId);
   const user = normalizeReputation(getCurrentUser());
 
@@ -143,10 +155,8 @@ export const validateCommand = (
   const step = caseData.steps[stepIndex];
   const userCommand = command.trim().toLowerCase();
 
-  // Check if this case was already completed (replay mode = no points)
   const isAlreadyCompleted = user.completed_cases.includes(caseId);
 
-  // Check if command matches any expected command
   let isCorrect = false;
   for (const expected of step.expected_commands) {
     if (
@@ -159,7 +169,6 @@ export const validateCommand = (
   }
 
   if (isCorrect) {
-    // Initialize progress if not exists (for replay tracking)
     if (!user.case_progress[caseId]) {
       user.case_progress[caseId] = {
         current_step: 0,
@@ -172,7 +181,6 @@ export const validateCommand = (
     const caseProgress = user.case_progress[caseId];
     let pointsEarned = 0;
 
-    // Award points ONLY if step not already completed AND not a replay of completed case
     if (
       !caseProgress.completed_steps.includes(stepIndex) &&
       !isAlreadyCompleted
@@ -182,7 +190,6 @@ export const validateCommand = (
       caseProgress.earned_points += pointsEarned;
       user.reputation += pointsEarned;
     } else {
-      // Still track progress for replay but no points
       if (!caseProgress.completed_steps.includes(stepIndex)) {
         caseProgress.completed_steps.push(stepIndex);
       }
@@ -192,7 +199,6 @@ export const validateCommand = (
     const caseCompleted = nextStep >= caseData.steps.length;
 
     if (caseCompleted) {
-      // Mark case as completed (only adds if not already there)
       if (!user.completed_cases.includes(caseId)) {
         user.completed_cases.push(caseId);
       }
@@ -203,8 +209,7 @@ export const validateCommand = (
 
     saveGameUser(user, { persistProfile: !isAlreadyCompleted });
 
-    // Different feedback for replay
-    let feedback;
+    let feedback: string;
     if (caseCompleted) {
       feedback = isAlreadyCompleted
         ? "Case replayed! No additional reputation earned."
@@ -241,7 +246,9 @@ export const validateCommand = (
   }
 };
 
-const normalizeLeaderboard = (entries = []) => {
+const normalizeLeaderboard = (
+  entries: LeaderboardEntry[] = [],
+): LeaderboardEntry[] => {
   const sorted = [...entries]
     .map((entry) => ({
       user_id: entry.user_id || null,
@@ -259,7 +266,12 @@ const normalizeLeaderboard = (entries = []) => {
   }));
 };
 
-const readLeaderboardCache = () => {
+interface StoredLeaderboardCache {
+  data: LeaderboardEntry[];
+  fetchedAt: number;
+}
+
+const readLeaderboardCache = (): StoredLeaderboardCache | null => {
   const raw = localStorage.getItem(STORAGE_KEYS.LEADERBOARD);
   if (!raw) return null;
 
@@ -275,7 +287,10 @@ const readLeaderboardCache = () => {
   }
 };
 
-const writeLeaderboardCache = (data, fetchedAt = Date.now()) => {
+const writeLeaderboardCache = (
+  data: LeaderboardEntry[],
+  fetchedAt = Date.now(),
+): LeaderboardEntry[] => {
   const normalizedData = normalizeLeaderboard(data);
   leaderboardMemoryCache.data = normalizedData;
   leaderboardMemoryCache.fetchedAt = fetchedAt;
@@ -288,39 +303,40 @@ const writeLeaderboardCache = (data, fetchedAt = Date.now()) => {
   return normalizedData;
 };
 
-const fetchLeaderboardFromUsersTable = async () => {
-  const usersRef = collection(db, USERS_COLLECTION);
-  const leaderboardQuery = query(
-    usersRef,
-    orderBy("reputation", "desc"),
-    limit(20),
-  );
-  const snapshot = await getDocs(leaderboardQuery);
+const fetchLeaderboardFromUsersTable =
+  async (): Promise<LeaderboardEntry[]> => {
+    const usersRef = collection(db, USERS_COLLECTION);
+    const leaderboardQuery = query(
+      usersRef,
+      orderBy("reputation", "desc"),
+      limit(20),
+    );
+    const snapshot = await getDocs(leaderboardQuery);
 
-  const entries = snapshot.docs.map((userDoc) => {
-    const userData = userDoc.data();
-    const email = userData.email || "";
-    const fallbackName = email.includes("@")
-      ? email.split("@")[0]
-      : "Detective";
+    const entries: LeaderboardEntry[] = snapshot.docs.map((userDoc) => {
+      const userData = userDoc.data();
+      const email = (userData.email as string) || "";
+      const fallbackName = email.includes("@")
+        ? email.split("@")[0]
+        : "Detective";
 
-    return {
-      user_id: userDoc.id,
-      username: userData.display_name || fallbackName,
-      reputation: Number(userData.reputation ?? 0),
-      cases_solved: Array.isArray(userData.completed_cases)
-        ? userData.completed_cases.length
-        : 0,
-    };
-  });
+      return {
+        user_id: userDoc.id,
+        username: (userData.display_name as string) || fallbackName,
+        reputation: Number(userData.reputation ?? 0),
+        cases_solved: Array.isArray(userData.completed_cases)
+          ? userData.completed_cases.length
+          : 0,
+      };
+    });
 
-  return normalizeLeaderboard(entries);
-};
+    return normalizeLeaderboard(entries);
+  };
 
 export const getLeaderboardPage = async ({
   pageSize = LEADERBOARD_PAGE_SIZE,
-  cursor = null,
-} = {}) => {
+  cursor = null as DocumentSnapshot | null,
+} = {}): Promise<LeaderboardPageResult> => {
   const usersRef = collection(db, USERS_COLLECTION);
   const constraints = [
     where("reputation", ">", 0),
@@ -338,16 +354,16 @@ export const getLeaderboardPage = async ({
   const pageDocs = docs.slice(0, pageSize);
   const hasMore = docs.length > pageSize;
 
-  const entries = pageDocs.map((userDoc) => {
+  const entries: LeaderboardEntry[] = pageDocs.map((userDoc) => {
     const userData = userDoc.data();
-    const email = userData.email || "";
+    const email = (userData.email as string) || "";
     const fallbackName = email.includes("@")
       ? email.split("@")[0]
       : "Detective";
 
     return {
       user_id: userDoc.id,
-      username: userData.display_name || fallbackName,
+      username: (userData.display_name as string) || fallbackName,
       reputation: Number(userData.reputation ?? 0),
       cases_solved: Array.isArray(userData.completed_cases)
         ? userData.completed_cases.length
@@ -357,21 +373,22 @@ export const getLeaderboardPage = async ({
 
   return {
     entries,
-    nextCursor: hasMore && pageDocs.length > 0 ? pageDocs[pageDocs.length - 1] : null,
+    nextCursor:
+      hasMore && pageDocs.length > 0 ? pageDocs[pageDocs.length - 1] : null,
     hasMore,
   };
 };
 
-const updateLeaderboardCacheFromUser = (user) => {
+const updateLeaderboardCacheFromUser = (user: User): void => {
   const normalizedUser = normalizeReputation(user);
+  if (!normalizedUser) return;
   if (isGuestUser(normalizedUser)) return;
-  if (!normalizedUser?.id) return;
+  if (!normalizedUser.id) return;
 
   const cached =
     leaderboardMemoryCache.data || readLeaderboardCache()?.data || [];
-  let leaderboard = [...cached];
+  const leaderboard: LeaderboardEntry[] = [...cached];
 
-  // Find and update or add user
   const existingIndex = leaderboard.findIndex(
     (entry) =>
       entry.user_id === normalizedUser.id ||
@@ -397,8 +414,9 @@ const updateLeaderboardCacheFromUser = (user) => {
   writeLeaderboardCache(leaderboard, Date.now());
 };
 
-// Get leaderboard
-export const getLeaderboard = async ({ forceRefresh = false } = {}) => {
+export const getLeaderboard = async ({
+  forceRefresh = false,
+} = {}): Promise<LeaderboardEntry[]> => {
   const now = Date.now();
 
   if (!forceRefresh && leaderboardMemoryCache.data) {
