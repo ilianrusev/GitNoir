@@ -29,7 +29,6 @@ export interface CaseProgressEntry {
   current_step: number;
   completed_steps: number[];
   earned_points: number;
-  is_replay?: boolean;
 }
 
 export interface User {
@@ -86,12 +85,12 @@ export interface LeaderboardPageResult {
 export type TierCounts = Record<DifficultyKey, number>;
 
 export interface TierPosition {
-  difficultyKey: string;
+  difficultyKey: DifficultyKey;
   position: number | null;
 }
 
 export interface UnlockRequirements {
-  difficultyKey: string;
+  difficultyKey: DifficultyKey;
   position: number | null;
   remaining: number | null;
   requiredDifficulty: DifficultyKey | null;

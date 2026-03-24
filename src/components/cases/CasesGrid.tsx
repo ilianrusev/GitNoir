@@ -3,7 +3,7 @@ import {
   getCaseStatus,
   getCaseUnlockHint,
 } from "../../services/caseStatusService";
-import type { Case, CaseProgressEntry, UserProgress } from "../../types/types";
+import type { Case, UserProgress } from "../../types/types";
 
 interface CasesGridProps {
   filterCases: Case[];

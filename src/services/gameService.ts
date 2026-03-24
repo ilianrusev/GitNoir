@@ -7,6 +7,7 @@ import {
   startAfter,
   where,
   type DocumentSnapshot,
+  type QueryConstraint,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { getCurrentUser, isGuestUser, saveUser } from "./authService";
@@ -132,7 +133,13 @@ export const isCaseUnlocked = (caseId: string): boolean => {
 
   const { difficultyKey, position } = getTierPosition(caseData, casesData);
   if (difficultyKey && position) {
-    const unlockCounts = getTierUnlockCounts(user, casesData);
+    const progress: UserProgress = {
+      user_id: user.id,
+      reputation: user.reputation,
+      completed_cases: user.completed_cases,
+      case_progress: user.case_progress,
+    };
+    const unlockCounts = getTierUnlockCounts(progress, casesData);
     return position <= (unlockCounts[difficultyKey] || 0);
   }
 
@@ -143,7 +150,6 @@ export const validateCommand = (
   caseId: string,
   stepIndex: number,
   command: string,
-  isReplay = false,
 ): ValidateCommandResult => {
   const caseData = getCaseById(caseId);
   const user = normalizeReputation(getCurrentUser());
@@ -174,7 +180,6 @@ export const validateCommand = (
         current_step: 0,
         completed_steps: [],
         earned_points: 0,
-        is_replay: isAlreadyCompleted,
       };
     }
 
@@ -338,7 +343,7 @@ export const getLeaderboardPage = async ({
   cursor = null as DocumentSnapshot | null,
 } = {}): Promise<LeaderboardPageResult> => {
   const usersRef = collection(db, USERS_COLLECTION);
-  const constraints = [
+  const constraints: QueryConstraint[] = [
     where("reputation", ">", 0),
     orderBy("reputation", "desc"),
     limit(pageSize + 1),

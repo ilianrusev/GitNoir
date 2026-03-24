@@ -7,12 +7,6 @@ import type {
   UserProgress,
 } from "../types/types";
 
-const DIFFICULTY_KEYS: Record<DifficultyKey, DifficultyKey> = {
-  beginner: "beginner",
-  intermediate: "intermediate",
-  advanced: "advanced",
-};
-
 const normalizeDifficulty = (difficulty: string | undefined): string =>
   String(difficulty || "")
     .trim()
@@ -31,9 +25,9 @@ const getCasesByDifficulty = (
   cases: Case[] = [],
 ): Record<DifficultyKey, Case[]> => {
   const grouped: Record<DifficultyKey, Case[]> = {
-    [DIFFICULTY_KEYS.beginner]: [],
-    [DIFFICULTY_KEYS.intermediate]: [],
-    [DIFFICULTY_KEYS.advanced]: [],
+    beginner: [],
+    intermediate: [],
+    advanced: [],
   };
 
   cases.forEach((caseData) => {
@@ -45,15 +39,9 @@ const getCasesByDifficulty = (
   });
 
   return {
-    [DIFFICULTY_KEYS.beginner]: sortCasesWithinTier(
-      grouped[DIFFICULTY_KEYS.beginner],
-    ),
-    [DIFFICULTY_KEYS.intermediate]: sortCasesWithinTier(
-      grouped[DIFFICULTY_KEYS.intermediate],
-    ),
-    [DIFFICULTY_KEYS.advanced]: sortCasesWithinTier(
-      grouped[DIFFICULTY_KEYS.advanced],
-    ),
+    beginner: sortCasesWithinTier(grouped.beginner),
+    intermediate: sortCasesWithinTier(grouped.intermediate),
+    advanced: sortCasesWithinTier(grouped.advanced),
   };
 };
 
@@ -63,9 +51,9 @@ export const getCompletedTierCounts = (
 ): TierCounts => {
   const completedCaseIds = new Set(progress?.completed_cases || []);
   const counts: TierCounts = {
-    [DIFFICULTY_KEYS.beginner]: 0,
-    [DIFFICULTY_KEYS.intermediate]: 0,
-    [DIFFICULTY_KEYS.advanced]: 0,
+    beginner: 0,
+    intermediate: 0,
+    advanced: 0,
   };
 
   cases.forEach((caseData) => {
@@ -98,11 +86,11 @@ export const getTierUnlockCounts = (
     completedCounts.intermediate >= 2 || completedCounts.advanced > 0;
 
   return {
-    [DIFFICULTY_KEYS.beginner]: completedCounts.beginner + 1,
-    [DIFFICULTY_KEYS.intermediate]: hasIntermediateGate
+    beginner: completedCounts.beginner + 1,
+    intermediate: hasIntermediateGate
       ? completedCounts.intermediate + 1
       : 0,
-    [DIFFICULTY_KEYS.advanced]: hasAdvancedGate
+    advanced: hasAdvancedGate
       ? completedCounts.advanced + 1
       : 0,
   };
@@ -113,9 +101,9 @@ export const getTierPosition = (
   caseData: Case | null | undefined,
   cases: Case[] = [],
 ): TierPosition => {
-  const difficultyKey = normalizeDifficulty(caseData?.difficulty);
+  const difficultyKey = normalizeDifficulty(caseData?.difficulty) as DifficultyKey;
   const groupedCases = getCasesByDifficulty(cases);
-  const tierCases = groupedCases[difficultyKey as DifficultyKey] || [];
+  const tierCases = groupedCases[difficultyKey] || [];
 
   const position = tierCases.findIndex((entry) => entry.id === caseData?.id);
 
@@ -145,7 +133,7 @@ export const getUnlockRequirements = (
 
   const completedCounts = getCompletedTierCounts(progress, cases);
   const tierUnlockCounts = getTierUnlockCounts(progress, cases);
-  const unlocked = position <= (tierUnlockCounts[difficultyKey as DifficultyKey] || 0);
+  const unlocked = position <= (tierUnlockCounts[difficultyKey] || 0);
 
   if (unlocked) {
     return {
@@ -160,24 +148,24 @@ export const getUnlockRequirements = (
   let remaining = 0;
   let requiredDifficulty: DifficultyKey | null = null;
 
-  if (difficultyKey === DIFFICULTY_KEYS.beginner) {
+  if (difficultyKey === "beginner") {
     remaining = Math.max(0, position - (completedCounts.beginner + 1));
-    requiredDifficulty = DIFFICULTY_KEYS.beginner;
-  } else if (difficultyKey === DIFFICULTY_KEYS.intermediate) {
+    requiredDifficulty = "beginner";
+  } else if (difficultyKey === "intermediate") {
     if (position === 1) {
       remaining = Math.max(0, 2 - completedCounts.beginner);
-      requiredDifficulty = DIFFICULTY_KEYS.beginner;
+      requiredDifficulty = "beginner";
     } else {
       remaining = Math.max(0, position - 1 - completedCounts.intermediate);
-      requiredDifficulty = DIFFICULTY_KEYS.intermediate;
+      requiredDifficulty = "intermediate";
     }
-  } else if (difficultyKey === DIFFICULTY_KEYS.advanced) {
+  } else if (difficultyKey === "advanced") {
     if (position === 1) {
       remaining = Math.max(0, 2 - completedCounts.intermediate);
-      requiredDifficulty = DIFFICULTY_KEYS.intermediate;
+      requiredDifficulty = "intermediate";
     } else {
       remaining = Math.max(0, position - 1 - completedCounts.advanced);
-      requiredDifficulty = DIFFICULTY_KEYS.advanced;
+      requiredDifficulty = "advanced";
     }
   }
 
@@ -204,15 +192,15 @@ export const getUnlockRequirementText = (
 
   const suffix = requirement.remaining === 1 ? "case" : "cases";
 
-  if (requirement.requiredDifficulty === DIFFICULTY_KEYS.beginner) {
+  if (requirement.requiredDifficulty === "beginner") {
     return `Complete ${requirement.remaining} more Beginner ${suffix} to unlock`;
   }
 
-  if (requirement.requiredDifficulty === DIFFICULTY_KEYS.intermediate) {
+  if (requirement.requiredDifficulty === "intermediate") {
     return `Complete ${requirement.remaining} more Intermediate ${suffix} to unlock`;
   }
 
-  if (requirement.requiredDifficulty === DIFFICULTY_KEYS.advanced) {
+  if (requirement.requiredDifficulty === "advanced") {
     return `Complete ${requirement.remaining} more Advanced ${suffix} to unlock`;
   }
 
