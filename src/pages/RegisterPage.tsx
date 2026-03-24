@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Terminal, ArrowLeft, Info, Eye, EyeOff } from "lucide-react";
@@ -28,7 +28,7 @@ export default function RegisterPage() {
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -53,7 +53,9 @@ export default function RegisterPage() {
       toast.success("Badge created! Welcome to the agency, Detective.");
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.message || "Registration failed. Try again.");
+      toast.error(
+        (error as Error).message || "Registration failed. Try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -77,7 +79,9 @@ export default function RegisterPage() {
 
       toast.info("Redirecting to Google sign-in...");
     } catch (error) {
-      toast.error(error.message || "Google sign-in failed. Please try again.");
+      toast.error(
+        (error as Error).message || "Google sign-in failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }

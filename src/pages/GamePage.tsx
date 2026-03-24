@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type FormEvent, type ChangeEvent } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -27,9 +27,45 @@ import {
   AccordionTrigger,
 } from "../components/ui/accordion";
 import { toast } from "sonner";
+import type { Case, Step } from "../types/types";
+
+interface HistoryCommand {
+  type: "command";
+  text: string;
+}
+
+interface HistorySuccess {
+  type: "success";
+  text: string;
+  points: number;
+  isReplay: boolean;
+}
+
+interface HistoryError {
+  type: "error";
+  text: string;
+}
+
+interface HistoryOutput {
+  type: "output";
+  text: string;
+}
+
+interface HistoryNarrative {
+  type: "narrative";
+  text: string;
+  instruction?: string;
+}
+
+type HistoryItem =
+  | HistoryCommand
+  | HistorySuccess
+  | HistoryError
+  | HistoryOutput
+  | HistoryNarrative;
 
 export default function GamePage() {
-  const { caseId } = useParams();
+  const { caseId } = useParams<{ caseId: string }>();
   const { refreshUser } = useAuth();
   const navigate = useNavigate();
 
@@ -37,10 +73,10 @@ export default function GamePage() {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   };
 
-  const [caseData, setCaseData] = useState(null);
+  const [caseData, setCaseData] = useState<Case | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [command, setCommand] = useState("");
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showHint, setShowHint] = useState(false);
@@ -48,8 +84,8 @@ export default function GamePage() {
   const [totalEarned, setTotalEarned] = useState(0);
   const [isReplay, setIsReplay] = useState(false);
 
-  const inputRef = useRef(null);
-  const terminalRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
 
   const focusCommandInput = () => {
     const input = inputRef.current;
@@ -90,7 +126,7 @@ export default function GamePage() {
 
   useEffect(() => {
     if (history.length > 0 && !caseCompleted && !loading && caseData) {
-      saveTerminalHistory(caseId, history);
+      saveTerminalHistory(caseId!, history as unknown as string[]);
     }
   }, [history, caseCompleted, loading, caseData, caseId]);
 
@@ -119,7 +155,7 @@ export default function GamePage() {
 
   const loadCase = () => {
     try {
-      const caseInfo = getCaseById(caseId);
+      const caseInfo = getCaseById(caseId!);
       const progress = getUserProgress();
 
       if (!caseInfo) {
@@ -128,7 +164,7 @@ export default function GamePage() {
         return;
       }
 
-      if (!isCaseUnlocked(caseId)) {
+      if (!isCaseUnlocked(caseId!)) {
         toast.error("You need more reputation to access this case.");
         navigate("/dashboard");
         return;
@@ -137,20 +173,20 @@ export default function GamePage() {
       setCaseData(caseInfo);
 
       // Check if case is already completed (replay mode)
-      if (progress?.completed_cases?.includes(caseId)) {
+      if (progress?.completed_cases?.includes(caseId!)) {
         setIsReplay(true);
         setCaseCompleted(false); // Allow replay
         setCurrentStep(0);
       } else {
         // Resume from saved progress
-        const savedProgress = progress?.case_progress?.[caseId];
+        const savedProgress = progress?.case_progress?.[caseId!];
         if (savedProgress) {
           setCurrentStep(savedProgress.current_step || 0);
           setTotalEarned(savedProgress.earned_points || 0);
 
-          const savedHistory = getTerminalHistory(caseId);
+          const savedHistory = getTerminalHistory(caseId!);
           if (savedHistory.length > 0) {
-            setHistory(savedHistory);
+            setHistory(savedHistory as unknown as HistoryItem[]);
           }
         }
       }
@@ -163,7 +199,7 @@ export default function GamePage() {
     }
   };
 
-  const normalizeTerminalOutput = (terminalOutput) => {
+  const normalizeTerminalOutput = (terminalOutput: string | string[]): string => {
     if (typeof terminalOutput === "string") {
       return terminalOutput;
     }
@@ -175,7 +211,10 @@ export default function GamePage() {
     return "";
   };
 
-  const resolveTerminalOutputForCommand = (stepData, userCommand) => {
+  const resolveTerminalOutputForCommand = (
+    stepData: Step,
+    userCommand: string,
+  ): string => {
     if (!stepData) return "";
 
     const commandKey = userCommand.trim().toLowerCase();
@@ -212,11 +251,11 @@ export default function GamePage() {
     setHistory([]);
     setTotalEarned(0);
     setShowHint(false);
-    clearTerminalHistory(caseId);
+    clearTerminalHistory(caseId!);
     // Keep isReplay true if it was already completed before
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!command.trim() || submitting) return;
 
@@ -229,8 +268,8 @@ export default function GamePage() {
     setHistory((prev) => [...prev, { type: "command", text: userCommand }]);
 
     try {
-      const executedStep = caseData.steps[currentStep];
-      const result = validateCommand(caseId, currentStep, userCommand);
+      const executedStep = caseData!.steps[currentStep];
+      const result = validateCommand(caseId!, currentStep, userCommand);
 
       if (result.is_correct) {
         const terminalOutput = resolveTerminalOutputForCommand(
@@ -261,7 +300,7 @@ export default function GamePage() {
 
         if (result.case_completed) {
           setCaseCompleted(true);
-          clearTerminalHistory(caseId);
+          clearTerminalHistory(caseId!);
           refreshUser();
           if (!isReplay) {
             toast.success("Case solved! Your reputation has increased.");
@@ -269,7 +308,7 @@ export default function GamePage() {
             toast.info("Case replayed! Practice makes perfect.");
           }
         } else {
-          setCurrentStep(result.next_step);
+          setCurrentStep(result.next_step!);
           // Add narrative for next step
           setTimeout(() => {
             setHistory((prev) => [
@@ -278,10 +317,10 @@ export default function GamePage() {
                 type: "narrative",
                 text:
                   result.next_step_narrative ||
-                  caseData.steps[result.next_step].narrative,
+                  caseData!.steps[result.next_step!].narrative,
                 instruction:
                   result.next_step_instruction ||
-                  caseData.steps[result.next_step].instruction,
+                  caseData!.steps[result.next_step!].instruction,
               },
             ]);
 
@@ -305,7 +344,7 @@ export default function GamePage() {
     }
   };
 
-  const handleCommandChange = (event) => {
+  const handleCommandChange = (event: ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value;
     if (nextValue.length === 1) {
       setCommand(nextValue.toLowerCase());
@@ -411,10 +450,6 @@ export default function GamePage() {
               >
                 {caseData.difficulty}
               </span>
-              {/* <h1 className="font-typewriter text-3xl text-(--foreground) mb-2">
-                {caseData.title}
-              </h1>
-              <p className="text-sm text-[#666]">{caseData.description}</p> */}
             </div>
 
             {caseCompleted ? (

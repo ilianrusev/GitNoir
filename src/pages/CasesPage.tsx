@@ -12,6 +12,7 @@ import {
 import Header from "../components/Header";
 import SecondaryHeader from "../components/SecondaryHeader";
 import CasesGrid from "../components/cases/CasesGrid";
+import type { Case, UserProgress } from "../types/types";
 
 const FILTER_OPTIONS = [
   { value: "all", label: "All Cases" },
@@ -23,8 +24,8 @@ const FILTER_OPTIONS = [
 ];
 
 export default function CasesPage() {
-  const [cases, setCases] = useState([]);
-  const [progress, setProgress] = useState(null);
+  const [cases, setCases] = useState<Case[]>([]);
+  const [progress, setProgress] = useState<UserProgress | null>(null);
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
@@ -38,13 +39,13 @@ export default function CasesPage() {
     setProgress(userProgress);
   };
 
-  const difficultyOrder = {
+  const difficultyOrder: Record<string, number> = {
     beginner: 0,
     intermediate: 1,
     advanced: 2,
   };
 
-  const sortByDifficulty = (casesList) =>
+  const sortByDifficulty = (casesList: Case[]) =>
     [...casesList].sort((a, b) => {
       const aOrder = difficultyOrder[a.difficulty?.toLowerCase()] ?? 999;
       const bOrder = difficultyOrder[b.difficulty?.toLowerCase()] ?? 999;

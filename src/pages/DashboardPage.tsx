@@ -15,6 +15,7 @@ import Header from "../components/Header";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import CasesGrid from "../components/cases/CasesGrid";
 import SecondaryHeader from "../components/SecondaryHeader";
+import type { Case, UserProgress } from "../types/types";
 
 const FILTER_OPTIONS = [
   { value: "all", label: "All Cases" },
@@ -27,8 +28,8 @@ const FILTER_OPTIONS = [
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const [cases, setCases] = useState([]);
-  const [progress, setProgress] = useState(null);
+  const [cases, setCases] = useState<Case[]>([]);
+  const [progress, setProgress] = useState<UserProgress | null>(null);
   const [filter, setFilter] = useState("all");
   const shouldShowLeaderboardDisclaimer = !user || isGuestUser(user);
 
@@ -46,13 +47,13 @@ export default function DashboardPage() {
   const reputation = progress?.reputation || 0;
   const completedCount = progress?.completed_cases?.length || 0;
 
-  const difficultyOrder = {
+  const difficultyOrder: Record<string, number> = {
     beginner: 0,
     intermediate: 1,
     advanced: 2,
   };
 
-  const sortByDifficulty = (casesList) =>
+  const sortByDifficulty = (casesList: Case[]) =>
     [...casesList].sort((a, b) => {
       const aOrder = difficultyOrder[a.difficulty?.toLowerCase()] ?? 999;
       const bOrder = difficultyOrder[b.difficulty?.toLowerCase()] ?? 999;

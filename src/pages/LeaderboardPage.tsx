@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type UIEvent } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getLeaderboardPage, getUserProgress } from "../services/gameService";
@@ -7,24 +7,25 @@ import { Button } from "../components/ui/button";
 import Header from "../components/Header";
 import { toast } from "sonner";
 import SecondaryHeader from "../components/SecondaryHeader";
+import type { LeaderboardEntry, UserProgress } from "../types/types";
 
 const LEADERBOARD_PAGE_SIZE = 20;
 
 export default function LeaderboardPage() {
   const { user } = useAuth();
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const [nextCursor, setNextCursor] = useState(null);
-  const [progress, setProgress] = useState(null);
+  const [nextCursor, setNextCursor] = useState<unknown>(null);
+  const [progress, setProgress] = useState<UserProgress | null>(null);
   const shouldScrollLeaderboard = leaderboard.length > 20 || hasMore;
 
   useEffect(() => {
     void loadLeaderboard();
   }, []);
 
-  const loadLeaderboard = async ({ forceRefresh = false } = {}) => {
+  const loadLeaderboard = async () => {
     try {
       const [leaderboardPage, userProgress] = await Promise.all([
         getLeaderboardPage({ pageSize: LEADERBOARD_PAGE_SIZE }),
@@ -59,7 +60,7 @@ export default function LeaderboardPage() {
     try {
       const leaderboardPage = await getLeaderboardPage({
         pageSize: LEADERBOARD_PAGE_SIZE,
-        cursor: nextCursor,
+        cursor: nextCursor as any,
       });
 
       setLeaderboard((previous) => {
@@ -81,7 +82,7 @@ export default function LeaderboardPage() {
     }
   };
 
-  const handleLeaderboardScroll = (event) => {
+  const handleLeaderboardScroll = (event: UIEvent<HTMLDivElement>) => {
     if (!hasMore || loadingMore) return;
 
     const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
@@ -92,7 +93,7 @@ export default function LeaderboardPage() {
     }
   };
 
-  const getRankIcon = (rank) => {
+  const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
         return <Trophy className="w-5 h-5 text-(--primary)" />;
@@ -179,12 +180,12 @@ export default function LeaderboardPage() {
                       data-testid={`leaderboard-row-${index + 1}`}
                     >
                       <div className="flex items-center justify-center">
-                        {getRankIcon(entry.rank)}
+                        {getRankIcon(entry.rank!)}
                       </div>
                       <div className="flex items-center gap-3">
                         <div
                           className={`w-8 h-8 flex items-center justify-center border ${
-                            entry.rank <= 3
+                            entry.rank! <= 3
                               ? "border-(--primary)"
                               : "border-(--border)"
                           }`}

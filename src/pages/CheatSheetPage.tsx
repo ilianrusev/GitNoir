@@ -2,7 +2,18 @@ import Header from "../components/Header";
 import SecondaryHeader from "../components/SecondaryHeader";
 import { useAuth } from "../context/AuthContext";
 
-const sections = [
+interface CheatSheetCommand {
+  cmd: string;
+  desc: string;
+}
+
+interface CheatSheetSection {
+  title: string;
+  description: string;
+  commands: CheatSheetCommand[];
+}
+
+const sections: CheatSheetSection[] = [
   {
     title: "SETUP",
     description:
@@ -83,11 +94,11 @@ const sections = [
       },
       {
         cmd: "git merge [branch]",
-        desc: "merge the specified branch’s history into the current one",
+        desc: "merge the specified branch's history into the current one",
       },
       {
         cmd: "git log",
-        desc: "show all commits in the current branch’s history",
+        desc: "show all commits in the current branch's history",
       },
     ],
   },

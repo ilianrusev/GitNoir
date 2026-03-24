@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Terminal, ArrowLeft } from "lucide-react";
@@ -15,7 +15,7 @@ export default function LoginPage() {
   const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -24,7 +24,9 @@ export default function LoginPage() {
       toast.success("Welcome back, Detective!");
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.message || "Login failed. Check your credentials.");
+      toast.error(
+        (error as Error).message || "Login failed. Check your credentials.",
+      );
     } finally {
       setLoading(false);
     }
@@ -44,7 +46,9 @@ export default function LoginPage() {
 
       toast.info("Redirecting to Google sign-in...");
     } catch (error) {
-      toast.error(error.message || "Google sign-in failed. Please try again.");
+      toast.error(
+        (error as Error).message || "Google sign-in failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
