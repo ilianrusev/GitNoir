@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import {
@@ -10,11 +16,12 @@ import {
   setRuntimeUserSnapshot,
   syncUserFromFirebaseUser,
 } from "../services/authService";
+import type { AuthContextValue, GoogleLoginResult, User } from "../types/types";
 
-const AuthContext = createContext(null);
+const AuthContext = createContext<AuthContextValue | null>(null);
 const MIN_AUTH_LOADING_MS = 250;
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextValue => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
@@ -22,13 +29,13 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const authCheckStartedAt = Date.now();
-    let loadingTimeout;
+    let loadingTimeout: ReturnType<typeof setTimeout>;
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
@@ -58,19 +65,23 @@ export const AuthProvider = ({ children }) => {
     setRuntimeUserSnapshot(user);
   }, [user]);
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<User> => {
     const userData = await loginUser(email, password);
     setUser(userData);
     return userData;
   };
 
-  const register = async (username, email, password) => {
+  const register = async (
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<User> => {
     const userData = await registerUser(username, email, password);
     setUser(userData);
     return userData;
   };
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (): Promise<GoogleLoginResult | null> => {
     const result = await loginWithGoogleUser();
     if (result?.user) {
       setUser(result.user);
@@ -78,12 +89,12 @@ export const AuthProvider = ({ children }) => {
     return result;
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     await logoutUser();
     setUser(getCurrentUser());
   };
 
-  const refreshUser = () => {
+  const refreshUser = (): User | null => {
     const updatedUser = getCurrentUser();
     setUser(updatedUser);
     return updatedUser;

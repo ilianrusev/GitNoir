@@ -2,8 +2,9 @@ import { Navigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import { useAuth } from "../context/AuthContext";
 import { isGuestUser } from "../services/authService";
+import type { ReactNode } from "react";
 
-export const ProtectedRoute = ({ children }) => {
+export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -17,7 +18,7 @@ export const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-export const PublicRoute = ({ children }) => {
+export const PublicRoute = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
 
   if (loading) {

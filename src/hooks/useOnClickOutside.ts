@@ -1,12 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, type RefObject } from "react";
 
-export function useOnClickOutside({ refs, enabled, onOutsideClick }) {
+interface UseOnClickOutsideOptions {
+  refs: RefObject<HTMLElement | null>[];
+  enabled: boolean;
+  onOutsideClick: () => void;
+}
+
+export function useOnClickOutside({
+  refs,
+  enabled,
+  onOutsideClick,
+}: UseOnClickOutsideOptions): void {
   useEffect(() => {
     if (!enabled) {
       return undefined;
     }
 
-    const handlePointerDown = (event) => {
+    const handlePointerDown = (event: PointerEvent) => {
       const target = event.target;
 
       if (!(target instanceof Node)) {
